@@ -1,0 +1,103 @@
+<!doctype html>
+<!--
+  Template da imagem de compartilhamento (Open Graph).
+  Renderizado para assets/img/og-image.png (1200x630) por scripts/gerar_og.js:
+      node scripts/gerar_og.js
+  Precisa do servidor local em pe (a pagina usa as fontes e o logo do site).
+-->
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../css/tokens.css" />
+    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/components.css" />
+    <style>
+      body {
+        width: 1200px;
+        height: 630px;
+        margin: 0;
+        overflow: hidden;
+        background: var(--c-bg);
+        position: relative;
+      }
+      .og {
+        position: relative;
+        z-index: 1;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 64px 72px;
+        box-sizing: border-box;
+      }
+      .og__logo {
+        height: 52px;
+        /* sem align-self o flex-column estica a caixa e a mascara centraliza */
+        align-self: flex-start;
+        background-color: var(--c-brand);
+        aspect-ratio: 1822.53 / 510;
+        -webkit-mask: url("../assets/img/logo-ufcinova.svg") no-repeat center / contain;
+        mask: url("../assets/img/logo-ufcinova.svg") no-repeat center / contain;
+      }
+      .og__titulo {
+        font-family: var(--ff-title);
+        font-weight: 700;
+        font-size: 76px;
+        line-height: 1.02;
+        letter-spacing: -0.02em;
+        max-width: 15ch;
+        margin: 0;
+      }
+      .og__eyebrow {
+        font-size: 20px;
+        letter-spacing: 0.08em;
+      }
+      .og__eyebrow::before {
+        width: 14px;
+        height: 14px;
+      }
+      .og__rodape {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        font-size: 22px;
+        font-weight: 500;
+        color: var(--c-text-muted);
+      }
+      .og__pip {
+        width: 10px;
+        height: 10px;
+        background: var(--c-brand);
+      }
+      /* mosaico decorativo, canto direito */
+      .og__mosaico span {
+        position: absolute;
+        display: block;
+        background: var(--c-brand);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="og__mosaico" aria-hidden="true">
+      <span style="right: -40px; top: 60px; width: 180px; height: 180px; opacity: 1"></span>
+      <span style="right: 200px; top: 20px; width: 70px; height: 70px; opacity: 0.4"></span>
+      <span style="right: 90px; top: 300px; width: 120px; height: 120px; opacity: 0.15"></span>
+      <span style="right: 250px; top: 420px; width: 56px; height: 56px; opacity: 0.4"></span>
+      <span style="right: -30px; top: 470px; width: 96px; height: 96px; opacity: 0.25"></span>
+    </div>
+
+    <div class="og">
+      <div class="og__logo"></div>
+
+      <div>
+        <p class="eyebrow og__eyebrow">Vitrine de Patentes</p>
+        <h1 class="og__titulo">Tecnologias da UFC prontas para gerar impacto.</h1>
+      </div>
+
+      <div class="og__rodape">
+        <span class="og__pip"></span>
+        <span>60 patentes · 10 áreas tecnológicas · Universidade Federal do Ceará</span>
+      </div>
+    </div>
+  </body>
+</html>

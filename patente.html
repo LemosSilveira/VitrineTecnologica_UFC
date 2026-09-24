@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Titulo e description sao preenchidos por js/patente.js a partir do ?id= -->
+    <title>Patente — Vitrine de Patentes UFC</title>
+    <meta name="description" content="Ficha técnica da patente na Vitrine de Patentes da UFC." />
+    <meta name="theme-color" content="#5C069D" />
+
+    <meta property="og:type" content="article" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content="Vitrine de Patentes UFC" />
+    <meta property="og:image" content="assets/img/og-image.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
+
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="assets/fonts/UFCInova-Bold.woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="assets/fonts/Metropolis-Regular.woff2"
+      crossorigin
+    />
+
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/pages.css" />
+
+    <script src="js/config.js"></script>
+    <script src="js/data/patentes.js"></script>
+    <script src="js/ui.js" defer></script>
+    <script src="js/patente.js" defer></script>
+  </head>
+
+  <body>
+    <a class="pular-link" href="#conteudo">Pular para o conteúdo</a>
+
+    <header class="cabecalho">
+      <div class="container cabecalho__inner">
+        <div class="cabecalho__marca">
+          <a
+            class="logo-link"
+            href="https://ufcinova.sitios.sti.ufc.br"
+            target="_blank"
+            rel="noopener"
+            aria-label="UFC Inova — abre o site da agência em nova aba"
+          >
+            <span class="logo-ufcinova"></span>
+          </a>
+          <span class="cabecalho__sep" aria-hidden="true"></span>
+          <a class="cabecalho__titulo" href="index.html">Vitrine de Patentes</a>
+        </div>
+
+        <nav class="cabecalho__nav" aria-label="Navegação principal">
+          <a href="index.html#patentes">Patentes</a>
+          <a href="index.html#sobre">Sobre</a>
+          <a
+            class="botao botao--secundario"
+            href="https://ufcinova.sitios.sti.ufc.br"
+            target="_blank"
+            rel="noopener"
+            >Conheça a UFC Inova<span data-icone="arrow-up-right" class="seta-ext"></span
+          ></a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="conteudo" class="pagina">
+      <div class="container">
+        <nav class="migalhas" aria-label="Trilha de navegação" data-migalhas></nav>
+
+        <article data-patente>
+          <!-- preenchido por js/patente.js -->
+        </article>
+      </div>
+
+      <div class="container">
+        <nav class="nav-patentes" aria-label="Navegar entre patentes" data-nav></nav>
+      </div>
+
+      <section class="relacionadas" data-relacionadas hidden>
+        <div class="container">
+          <h2 data-relacionadas-titulo></h2>
+          <div class="grade" data-relacionadas-grade></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="rodape">
+      <div class="rodape__mosaico" data-mosaico-rodape aria-hidden="true"></div>
+
+      <div class="container rodape__inner">
+        <div class="rodape__sobre">
+          <a
+            class="logo-link"
+            href="https://ufcinova.sitios.sti.ufc.br"
+            target="_blank"
+            rel="noopener"
+            aria-label="UFC Inova — abre o site da agência em nova aba"
+          >
+            <span class="logo-ufcinova"></span>
+          </a>
+          <p>
+            Universidade Federal do Ceará — UFC Inova, Agência de Inovação.
+            Vitrine das tecnologias protegidas e disponíveis para licenciamento.
+          </p>
+        </div>
+
+        <nav class="rodape__nav" aria-label="Links da vitrine">
+          <h2 class="rodape__titulo">Vitrine</h2>
+          <div class="rodape__links">
+            <a href="index.html#patentes">Todas as patentes</a>
+            <a href="index.html#sobre">Sobre a vitrine</a>
+          </div>
+        </nav>
+
+        <nav class="rodape__nav" aria-label="Links da UFC">
+          <h2 class="rodape__titulo">Institucional</h2>
+          <div class="rodape__links">
+            <a
+              href="https://ufcinova.sitios.sti.ufc.br"
+              target="_blank"
+              rel="noopener"
+              >UFC Inova<span data-icone="arrow-up-right" class="seta-ext"></span
+            ></a>
+            <a href="https://www.ufc.br" target="_blank" rel="noopener"
+              >Universidade Federal do Ceará<span
+                data-icone="arrow-up-right"
+                class="seta-ext"
+              ></span
+            ></a>
+          </div>
+        </nav>
+      </div>
+
+      <div class="container rodape__base">
+        <p>© 2026 UFC Inova — Universidade Federal do Ceará.</p>
+        <p>Fichas técnicas fornecidas pela Agência de Inovação da UFC.</p>
+      </div>
+    </footer>
+
+    <button class="ao-topo" type="button" aria-label="Voltar ao topo da página">
+      <span data-icone="chevron-up"></span>
+    </button>
+
+    <dialog class="lightbox" data-lightbox aria-label="Ficha técnica em tela cheia">
+      <div class="lightbox__acoes">
+        <button class="lightbox__btn" type="button" data-zoom>
+          <span data-icone="maximize-2"></span>
+          <span data-zoom-rotulo>Ampliar</span>
+        </button>
+        <button class="lightbox__btn" type="button" data-fechar aria-label="Fechar">
+          <span data-icone="x"></span>
+        </button>
+      </div>
+      <div class="lightbox__viewport">
+        <img class="lightbox__img" alt="" />
+      </div>
+    </dialog>
+  </body>
+</html>

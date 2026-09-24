@@ -1,0 +1,109 @@
+/* ============================================================
+   tokens.css — variaveis de design da Vitrine de Patentes UFC
+   Paleta restrita: #F4F4F5, #27272A, #5C069D + derivados e zinc.
+   Nenhum outro matiz (sem cor por categoria), para manter a seriedade.
+   ============================================================ */
+
+:root {
+  /* ---- Marca ---- */
+  --c-bg: #f4f4f5; /* fundo da pagina (zinc-100) */
+  --c-text: #27272a; /* texto principal (zinc-800) */
+  --c-brand: #5c069d; /* roxo UFC Inova */
+
+  /* ---- Roxo derivado ---- */
+  --c-brand-800: #47057a; /* hover / pressed de botoes */
+  --c-brand-900: #2e0350; /* rodape, fundo da 404 */
+  --c-brand-100: #eee5f6; /* fundo de chips ativos, tags */
+  --c-brand-50: #f7f2fb; /* realces muito sutis, placeholder de imagem */
+  --c-brand-a12: rgb(92 6 157 / 0.12); /* anel de foco, borda hover */
+  --c-brand-a24: rgb(92 6 157 / 0.24);
+
+  /* ---- Neutros (escala zinc) ---- */
+  --c-surface: #ffffff; /* cards, header */
+  --c-border: #e4e4e7; /* zinc-200 */
+  --c-border-strong: #d4d4d8; /* zinc-300 */
+  --c-text-muted: #52525b; /* zinc-600 — 7.0:1 sobre o fundo, ok em texto pequeno */
+  --c-text-subtle: #71717a; /* zinc-500 — 4.4:1, SO para texto >= 18px ou icone decorativo */
+  --c-on-brand: #ffffff;
+
+  /* Sobre fundo roxo escuro (rodape / 404) */
+  --c-on-dark: #ffffff;
+  --c-on-dark-muted: #d4d4d8; /* zinc-300 */
+
+  /* ---- Tipografia ---- */
+  --ff-title: "UFCInova", "Metropolis", system-ui, sans-serif;
+  --ff-text: "Metropolis", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --fs-display: clamp(2.5rem, 1.6rem + 4vw, 5rem);
+  --fs-h1: clamp(2rem, 1.5rem + 2.2vw, 3.25rem);
+  --fs-h2: clamp(1.5rem, 1.2rem + 1.2vw, 2.25rem);
+  --fs-h3: 1.125rem;
+  --fs-eyebrow: 0.75rem;
+  --fs-body: 1rem;
+  --fs-body-lg: 1.0625rem; /* corpo da pagina de detalhe */
+  --fs-strong: 0.9375rem; /* botoes, corpo forte */
+  --fs-caption: 0.8125rem;
+
+  /* ---- Espacamento (escala base 4px) ---- */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --s-8: 64px;
+  --s-9: 96px;
+  --s-10: 128px;
+
+  /* ---- Layout ---- */
+  --container-max: 1280px;
+  --gutter: 24px;
+  --header-h: 72px;
+  --header-h-compact: 60px;
+  --measure: 68ch; /* largura maxima de paragrafo */
+
+  /* ---- Raios ---- */
+  --r-sm: 6px; /* chips, inputs */
+  --r-md: 12px; /* cards */
+  --r-lg: 20px; /* paineis grandes, previa */
+
+  /* ---- Sombras (neutras, discretas) ---- */
+  --sh-1: 0 1px 2px rgb(39 39 42 / 0.06), 0 1px 1px rgb(39 39 42 / 0.04);
+  --sh-2: 0 8px 24px -6px rgb(39 39 42 / 0.14), 0 2px 6px rgb(39 39 42 / 0.06);
+  --sh-3: 0 24px 48px -12px rgb(46 3 80 / 0.28);
+
+  /* ---- Movimento ---- */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-1: 120ms;
+  --dur-2: 200ms;
+  --dur-3: 320ms;
+  --dur-4: 560ms;
+
+  /* ---- Camadas ---- */
+  --z-header: 100;
+  --z-filtros: 90;
+  --z-preview: 200;
+  --z-topo: 150;
+}
+
+@media (max-width: 639px) {
+  :root {
+    --gutter: 16px;
+    --header-h: 64px;
+    --header-h-compact: 56px;
+  }
+}
+
+/* Movimento reduzido: encurta tudo em vez de espalhar overrides pelo CSS.
+   Regras pontuais (flutuacao, shimmer, stagger) sao desligadas nos
+   respectivos arquivos com a mesma media query. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-1: 120ms;
+    --dur-2: 120ms;
+    --dur-3: 120ms;
+    --dur-4: 120ms;
+  }
+}

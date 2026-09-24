@@ -1,0 +1,122 @@
+<!doctype html>
+<!--
+  Pagina 404 personalizada.
+
+  IMPORTANTE: todos os caminhos aqui sao ABSOLUTOS (comecam com "/"), porque
+  esta pagina pode ser servida em qualquer profundidade de URL -- por exemplo
+  em /patente/xyz/abc. Com caminhos relativos, o CSS, as fontes e o logo
+  quebrariam nesses casos.
+
+  Se o site for hospedado numa SUBPASTA (ex.: GitHub Pages em
+  /vitrine-patentes/), troque CONFIG.basePath em js/config.js e ajuste os
+  caminhos "/..." abaixo para "/vitrine-patentes/...".
+
+  Configuracao de servidor:
+    - Apache: o .htaccess na raiz ja traz "ErrorDocument 404 /404.html".
+    - GitHub Pages e Netlify: usam /404.html automaticamente, sem configurar.
+    - Nginx: error_page 404 /404.html;
+-->
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Página não encontrada — Vitrine de Patentes UFC</title>
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" content="#2E0350" />
+    <meta
+      name="description"
+      content="A página que você procurava não existe na Vitrine de Patentes da UFC."
+    />
+
+    <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml" />
+
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/assets/fonts/UFCInova-Bold.woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/assets/fonts/Metropolis-Regular.woff2"
+      crossorigin
+    />
+
+    <link rel="stylesheet" href="/css/tokens.css" />
+    <link rel="stylesheet" href="/css/base.css" />
+    <link rel="stylesheet" href="/css/components.css" />
+    <link rel="stylesheet" href="/css/pages.css" />
+
+    <script src="/js/config.js"></script>
+    <script src="/js/ui.js" defer></script>
+    <script src="/js/erro.js" defer></script>
+
+    <style>
+      /* O logo e carregado por mascara; na 404 o caminho precisa ser absoluto. */
+      .logo-ufcinova {
+        -webkit-mask-image: url("/assets/img/logo-ufcinova.svg");
+        mask-image: url("/assets/img/logo-ufcinova.svg");
+      }
+    </style>
+  </head>
+
+  <body class="erro">
+    <div class="erro__mosaico" data-mosaico-erro aria-hidden="true"></div>
+
+    <header class="erro__topo">
+      <div class="container">
+        <a
+          class="logo-link"
+          href="https://ufcinova.sitios.sti.ufc.br"
+          target="_blank"
+          rel="noopener"
+          aria-label="UFC Inova — abre o site da agência em nova aba"
+        >
+          <span class="logo-ufcinova"></span>
+        </a>
+      </div>
+    </header>
+
+    <main class="erro__main">
+      <div class="container">
+        <!-- O "0" do meio e um quadrado em contorno, citando o "i" do logo. -->
+        <p class="erro__codigo" aria-hidden="true">
+          4<span class="erro__quadrado"></span>4
+        </p>
+
+        <h1 class="erro__titulo">
+          <span class="visualmente-oculto">Erro 404 — </span>Esta página ainda
+          não foi inventada.
+        </h1>
+
+        <p class="erro__texto">
+          O endereço que você acessou não existe ou foi movido. Que tal explorar
+          as patentes da UFC?
+        </p>
+
+        <div class="erro__acoes">
+          <a class="botao botao--claro" href="/index.html">Voltar para a vitrine</a>
+          <a
+            class="link-ext"
+            href="https://ufcinova.sitios.sti.ufc.br"
+            target="_blank"
+            rel="noopener"
+            >Ir para o site da UFC Inova<span
+              data-icone="arrow-up-right"
+              class="seta-ext"
+            ></span
+          ></a>
+        </div>
+      </div>
+    </main>
+
+    <footer class="erro__base">
+      <div class="container">
+        <p>© 2026 UFC Inova — Universidade Federal do Ceará.</p>
+      </div>
+    </footer>
+  </body>
+</html>

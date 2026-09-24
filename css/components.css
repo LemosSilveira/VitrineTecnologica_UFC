@@ -1,0 +1,1045 @@
+/* ============================================================
+   components.css — header, rodape, botoes, chips, card, previa,
+   TRL, lightbox, voltar-ao-topo
+   ============================================================ */
+
+/* ============================================================
+   Logo
+   ============================================================ */
+.logo-link {
+  display: inline-flex;
+  align-items: center;
+  color: var(--c-brand);
+  /* area de respiro ~ altura do quadrado do "i" */
+  padding: var(--s-1);
+  margin: calc(var(--s-1) * -1);
+  border-radius: var(--r-sm);
+  transition: color var(--dur-2) var(--ease-out);
+}
+
+.logo-link:hover {
+  color: var(--c-brand-800);
+}
+
+/* O logo e um unico SVG externo aplicado como mascara: assim herda a cor do
+   texto (roxo no header, branco no rodape e na 404) sem duplicar 11 KB de
+   paths em cada pagina e sem depender de fetch() -- que nao funciona em
+   file://. A proporcao vem do viewBox original (1822.53 x 510). */
+.logo-ufcinova {
+  display: block;
+  height: 36px;
+  aspect-ratio: 1822.53 / 510;
+  background-color: currentColor;
+  -webkit-mask: url("../assets/img/logo-ufcinova.svg") no-repeat center / contain;
+  mask: url("../assets/img/logo-ufcinova.svg") no-repeat center / contain;
+}
+
+.rodape .logo-link,
+.erro .logo-link {
+  color: var(--c-on-dark);
+}
+
+.rodape .logo-link:hover,
+.erro .logo-link:hover {
+  color: var(--c-brand-100);
+}
+
+.rodape .logo-ufcinova {
+  height: 44px;
+}
+
+@media (max-width: 767px) {
+  .logo-ufcinova {
+    height: 28px;
+  }
+  .rodape .logo-ufcinova {
+    height: 36px;
+  }
+}
+
+/* ============================================================
+   Header
+   ============================================================ */
+.cabecalho {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: var(--z-header);
+  background: rgb(255 255 255 / 0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--c-border);
+  transition: box-shadow var(--dur-2) var(--ease-out);
+}
+
+.cabecalho__inner {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  height: var(--header-h);
+  transition: height var(--dur-2) var(--ease-out);
+}
+
+.cabecalho.is-compacto {
+  box-shadow: var(--sh-1);
+}
+
+.cabecalho.is-compacto .cabecalho__inner {
+  height: var(--header-h-compact);
+}
+
+.cabecalho.is-compacto .logo-ufcinova {
+  height: 30px;
+}
+
+.cabecalho__marca {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  min-width: 0;
+}
+
+.cabecalho__sep {
+  width: 1px;
+  height: 28px;
+  background: var(--c-border-strong);
+  flex: none;
+}
+
+.cabecalho__titulo {
+  font-family: var(--ff-text);
+  font-size: var(--fs-strong);
+  font-weight: 600;
+  color: var(--c-text);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color var(--dur-2) var(--ease-out);
+}
+
+.cabecalho__titulo:hover {
+  color: var(--c-brand);
+}
+
+.cabecalho__nav {
+  display: flex;
+  align-items: center;
+  gap: var(--s-5);
+  margin-left: auto;
+}
+
+.cabecalho__nav a:not(.botao) {
+  font-size: var(--fs-strong);
+  font-weight: 600;
+  color: var(--c-text-muted);
+  text-decoration: none;
+  transition: color var(--dur-2) var(--ease-out);
+}
+
+.cabecalho__nav a:not(.botao):hover {
+  color: var(--c-brand);
+}
+
+/* botao de busca, so no mobile */
+.cabecalho__busca-mob {
+  display: none;
+  margin-left: auto;
+  padding: var(--s-2);
+  border-radius: var(--r-sm);
+  color: var(--c-text-muted);
+  min-width: 44px;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+}
+
+.cabecalho__busca-mob:hover {
+  color: var(--c-brand);
+  background: var(--c-brand-50);
+}
+
+@media (max-width: 767px) {
+  .cabecalho__nav {
+    display: none;
+  }
+  .cabecalho__busca-mob {
+    display: inline-flex;
+  }
+  .cabecalho__sep,
+  .cabecalho__titulo {
+    display: none;
+  }
+}
+
+/* ============================================================
+   Botoes
+   ============================================================ */
+.botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  min-height: 44px;
+  padding: var(--s-3) var(--s-5);
+  border-radius: var(--r-sm);
+  border: 1px solid transparent;
+  font-size: var(--fs-strong);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--dur-1) var(--ease-out),
+    border-color var(--dur-1) var(--ease-out),
+    color var(--dur-1) var(--ease-out), transform var(--dur-1) var(--ease-out);
+}
+
+.botao:active {
+  transform: translateY(1px);
+}
+
+.botao svg {
+  flex: none;
+  width: 18px;
+  height: 18px;
+}
+
+/* a seta "abre em nova aba" anda na diagonal no hover */
+.botao .seta-ext,
+.link-ext .seta-ext {
+  transition: transform var(--dur-2) var(--ease-out);
+}
+
+.botao:hover .seta-ext,
+.link-ext:hover .seta-ext {
+  transform: translate(2px, -2px);
+}
+
+.botao--primario {
+  background: var(--c-brand);
+  color: var(--c-on-brand);
+}
+
+.botao--primario:hover {
+  background: var(--c-brand-800);
+  color: var(--c-on-brand);
+}
+
+.botao--secundario {
+  background: var(--c-surface);
+  color: var(--c-brand);
+  border-color: var(--c-border-strong);
+}
+
+.botao--secundario:hover {
+  background: var(--c-brand-50);
+  border-color: var(--c-brand-a24);
+  color: var(--c-brand-800);
+}
+
+.botao--terciario {
+  background: none;
+  color: var(--c-brand);
+  padding-inline: var(--s-2);
+}
+
+.botao--terciario:hover {
+  background: var(--c-brand-50);
+  color: var(--c-brand-800);
+}
+
+.botao--claro {
+  background: #fff;
+  color: var(--c-brand);
+}
+
+.botao--claro:hover {
+  background: var(--c-brand-100);
+  color: var(--c-brand-800);
+}
+
+.botao--bloco {
+  width: 100%;
+}
+
+.link-ext {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.link-ext:hover {
+  text-decoration: underline;
+}
+
+.link-ext svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+/* ============================================================
+   Chips e badges
+   ============================================================ */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-height: 40px;
+  padding: var(--s-2) var(--s-4);
+  border-radius: 999px;
+  border: 1px solid var(--c-border-strong);
+  background: var(--c-surface);
+  color: var(--c-text-muted);
+  font-size: var(--fs-strong);
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background-color var(--dur-1) var(--ease-out),
+    border-color var(--dur-1) var(--ease-out),
+    color var(--dur-1) var(--ease-out), transform var(--dur-1) var(--ease-out);
+}
+
+.chip:hover {
+  border-color: var(--c-brand-a24);
+  color: var(--c-brand);
+  background: var(--c-brand-50);
+}
+
+.chip:active {
+  transform: scale(0.97);
+}
+
+.chip[aria-pressed="true"] {
+  background: var(--c-brand);
+  border-color: var(--c-brand);
+  color: var(--c-on-brand);
+}
+
+/* Sem opacidade: 0.75 sobre --c-text-muted compunha #7d7d84 (4.08:1),
+   abaixo do minimo AA para texto pequeno. Herdar a cor do chip da 7.0:1. */
+.chip__total {
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--s-2);
+  border-radius: var(--r-sm);
+  background: var(--c-brand-100);
+  color: var(--c-brand-800);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.badge--forte {
+  background: var(--c-brand);
+  color: var(--c-on-brand);
+}
+
+/* ============================================================
+   Segmented control (tipo de protecao)
+   ============================================================ */
+.segmentado {
+  display: inline-flex;
+  padding: 3px;
+  gap: 2px;
+  border: 1px solid var(--c-border-strong);
+  border-radius: var(--r-sm);
+  background: var(--c-surface);
+}
+
+.segmentado__opcao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: var(--s-2) var(--s-4);
+  border-radius: 4px;
+  font-size: var(--fs-strong);
+  font-weight: 600;
+  color: var(--c-text-muted);
+  white-space: nowrap;
+  transition: background-color var(--dur-1) var(--ease-out),
+    color var(--dur-1) var(--ease-out);
+}
+
+.segmentado__opcao:hover {
+  color: var(--c-brand);
+  background: var(--c-brand-50);
+}
+
+.segmentado__opcao[aria-checked="true"] {
+  background: var(--c-brand);
+  color: var(--c-on-brand);
+}
+
+/* Rotulo por extenso no desktop; sigla no celular, onde "Modelo de
+   Utilidade (MU)" estouraria a largura do container. */
+.segmentado__curto {
+  display: none;
+}
+
+@media (max-width: 639px) {
+  .segmentado__longo {
+    display: none;
+  }
+  .segmentado__curto {
+    display: inline;
+  }
+}
+
+/* ============================================================
+   Campo de busca
+   ============================================================ */
+.busca {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.busca__icone {
+  position: absolute;
+  left: var(--s-4);
+  width: 20px;
+  height: 20px;
+  color: var(--c-text-muted);
+  pointer-events: none;
+}
+
+.busca__campo {
+  width: 100%;
+  min-height: 48px;
+  padding: var(--s-3) var(--s-5) var(--s-3) calc(var(--s-4) * 2 + 20px);
+  border: 1px solid var(--c-border-strong);
+  border-radius: var(--r-sm);
+  background: var(--c-surface);
+  font-size: var(--fs-body);
+  color: var(--c-text);
+  transition: border-color var(--dur-2) var(--ease-out),
+    box-shadow var(--dur-2) var(--ease-out);
+}
+
+.busca__campo::placeholder {
+  color: var(--c-text-subtle);
+}
+
+.busca__campo:hover {
+  border-color: var(--c-brand-a24);
+}
+
+.busca__campo:focus {
+  outline: none;
+  border-color: var(--c-brand);
+  box-shadow: 0 0 0 3px var(--c-brand-a12);
+}
+
+.busca__campo:focus-visible {
+  outline: none;
+}
+
+.busca__atalho {
+  position: absolute;
+  right: var(--s-3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--c-border-strong);
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--c-text-subtle);
+  pointer-events: none;
+}
+
+.busca__campo:focus + .busca__atalho,
+.busca__campo:not(:placeholder-shown) + .busca__atalho {
+  opacity: 0;
+}
+
+@media (max-width: 767px) {
+  .busca__atalho {
+    display: none;
+  }
+}
+
+/* ============================================================
+   Card de patente
+   ============================================================ */
+.card {
+  position: relative;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+  box-shadow: var(--sh-1);
+  overflow: hidden;
+  transition: transform var(--dur-2) var(--ease-out),
+    box-shadow var(--dur-2) var(--ease-out),
+    border-color var(--dur-2) var(--ease-out);
+}
+
+.card__link {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
+.card__link:hover {
+  color: inherit;
+}
+
+.card__media {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: var(--c-brand-50);
+  border-bottom: 1px solid var(--c-border);
+}
+
+.card__media img {
+  width: 100%;
+  height: 100%;
+  /* "contain" e nao "cover": 58 das 60 capas sao 1:1 (identico a cover),
+     e as duas que nao sao (ids 10 e 12) teriam o nome do produto cortado. */
+  object-fit: contain;
+  transition: transform var(--dur-2) var(--ease-out);
+}
+
+.card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  padding: var(--s-4);
+  flex: 1;
+}
+
+.card__eyebrow {
+  font-size: var(--fs-eyebrow);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-brand);
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  line-height: 1.2;
+}
+
+.card__eyebrow::before {
+  content: "";
+  flex: none;
+  width: 8px;
+  height: 8px;
+  background: currentColor;
+}
+
+.card__titulo {
+  font-size: var(--fs-h3);
+  line-height: 1.3;
+  color: var(--c-text);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* resumo: so abaixo de 1024px, onde nao ha previa flutuante */
+.card__resumo {
+  display: none;
+  font-size: var(--fs-caption);
+  line-height: 1.5;
+  color: var(--c-text-muted);
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@media (max-width: 1023px) {
+  .card__resumo {
+    display: -webkit-box;
+  }
+}
+
+.card__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin-top: auto;
+  padding-top: var(--s-3);
+}
+
+.card__numero {
+  font-size: var(--fs-caption);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--c-text-muted);
+}
+
+.card__arrow {
+  width: 18px;
+  height: 18px;
+  margin-left: auto;
+  flex: none;
+  color: var(--c-text-subtle);
+  transition: transform var(--dur-2) var(--ease-out),
+    color var(--dur-2) var(--ease-out);
+}
+
+/* hover e foco de teclado tem o mesmo tratamento */
+.card:hover,
+.card:has(.card__link:focus-visible) {
+  transform: translateY(-4px);
+  box-shadow: var(--sh-2);
+  border-color: var(--c-brand-a12);
+}
+
+.card:hover .card__media img,
+.card:has(.card__link:focus-visible) .card__media img {
+  transform: scale(1.04);
+}
+
+.card:hover .card__arrow,
+.card:has(.card__link:focus-visible) .card__arrow {
+  transform: translate(3px, -3px);
+  color: var(--c-brand);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .card__media img,
+  .card__arrow {
+    transition: none;
+  }
+  .card:hover,
+  .card:has(.card__link:focus-visible) {
+    transform: none;
+  }
+  .card:hover .card__media img,
+  .card:has(.card__link:focus-visible) .card__media img {
+    transform: none;
+  }
+}
+
+/* shimmer enquanto a capa carrega; para assim que a imagem aparece */
+.card__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgb(255 255 255 / 0.55) 50%,
+    transparent 100%
+  );
+  transform: translateX(-100%);
+  animation: shimmer 1.2s linear infinite;
+  pointer-events: none;
+}
+
+.card__media.is-carregada::after {
+  display: none;
+  animation: none;
+}
+
+@keyframes shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card__media::after {
+    animation: none;
+    display: none;
+  }
+}
+
+/* ============================================================
+   Previa flutuante da ficha (hover) — instancia unica
+   ============================================================ */
+.previa {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: var(--z-preview);
+  width: 340px;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-3);
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.96) translateX(var(--previa-dx, 8px));
+  transition: opacity var(--dur-1) var(--ease-out),
+    transform var(--dur-1) var(--ease-out), visibility 0s linear var(--dur-1);
+  pointer-events: none;
+}
+
+.previa.is-visivel {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1) translateX(0);
+  transition: opacity var(--dur-2) var(--ease-out),
+    transform var(--dur-2) var(--ease-out), visibility 0s;
+}
+
+.previa__img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  object-position: top center;
+  background: var(--c-brand-50);
+}
+
+.previa__rodape {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  padding: var(--s-3) var(--s-4);
+  border-top: 1px solid var(--c-border);
+  background: var(--c-surface);
+}
+
+.previa__cta {
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  color: var(--c-brand);
+  white-space: nowrap;
+}
+
+/* nunca mostrar a previa sem hover fino ou abaixo de 1024px */
+@media (max-width: 1023px), (hover: none), (pointer: coarse) {
+  .previa {
+    display: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .previa {
+    transform: none;
+  }
+  .previa.is-visivel {
+    transform: none;
+  }
+}
+
+/* ============================================================
+   Medidor de TRL
+   ============================================================ */
+.trl {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+.trl__barra {
+  display: flex;
+  gap: 3px;
+}
+
+.trl__seg {
+  width: 8px;
+  height: 24px;
+  border-radius: 1px;
+  background: var(--c-border);
+}
+
+.trl__seg.is-ativo {
+  background: var(--c-brand);
+}
+
+.trl__rotulo {
+  font-size: var(--fs-caption);
+  font-weight: 500;
+  color: var(--c-text-muted);
+}
+
+/* chip compacto de TRL, usado na previa */
+.trl-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: 2px var(--s-2);
+  border-radius: var(--r-sm);
+  background: var(--c-brand-100);
+  color: var(--c-brand-800);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   Lightbox
+   ============================================================ */
+.lightbox {
+  width: 100vw;
+  max-width: 100vw;
+  height: 100vh;
+  max-height: 100vh;
+  padding: 0;
+  border: none;
+  background: transparent;
+  overflow: hidden;
+}
+
+.lightbox::backdrop {
+  background: rgb(46 3 80 / 0.85);
+  animation: fade-in var(--dur-3) var(--ease-out);
+}
+
+.lightbox__viewport {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  display: grid;
+  place-items: center;
+  padding: var(--s-6);
+  scrollbar-width: thin;
+}
+
+.lightbox__img {
+  max-width: 100%;
+  max-height: calc(100vh - var(--s-8));
+  width: auto;
+  height: auto;
+  border-radius: var(--r-md);
+  box-shadow: var(--sh-3);
+  animation: lightbox-in var(--dur-3) var(--ease-out);
+}
+
+/* modo 100%: a imagem passa do viewport e o usuario navega pela rolagem */
+.lightbox.is-zoom .lightbox__viewport {
+  place-items: start center;
+}
+
+.lightbox.is-zoom .lightbox__img {
+  max-width: none;
+  max-height: none;
+  width: auto;
+  cursor: grab;
+}
+
+.lightbox__acoes {
+  position: fixed;
+  top: var(--s-4);
+  right: var(--s-4);
+  display: flex;
+  gap: var(--s-2);
+}
+
+.lightbox__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  min-width: 44px;
+  min-height: 44px;
+  padding: var(--s-2) var(--s-4);
+  border-radius: var(--r-sm);
+  background: rgb(255 255 255 / 0.12);
+  color: #fff;
+  font-size: var(--fs-strong);
+  font-weight: 600;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: background-color var(--dur-1) var(--ease-out);
+}
+
+.lightbox__btn:hover {
+  background: rgb(255 255 255 / 0.24);
+}
+
+.lightbox__btn:focus-visible {
+  outline-color: #fff;
+}
+
+.lightbox__btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes lightbox-in {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lightbox__img {
+    animation: none;
+  }
+  .lightbox::backdrop {
+    animation: none;
+  }
+}
+
+/* ============================================================
+   Voltar ao topo
+   ============================================================ */
+.ao-topo {
+  position: fixed;
+  right: var(--gutter);
+  bottom: var(--gutter);
+  z-index: var(--z-topo);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border-strong);
+  box-shadow: var(--sh-2);
+  color: var(--c-brand);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition: opacity var(--dur-2) var(--ease-out),
+    transform var(--dur-2) var(--ease-out), visibility 0s linear var(--dur-2),
+    background-color var(--dur-1) var(--ease-out);
+}
+
+.ao-topo.is-visivel {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition: opacity var(--dur-2) var(--ease-out),
+    transform var(--dur-2) var(--ease-out), visibility 0s,
+    background-color var(--dur-1) var(--ease-out);
+}
+
+.ao-topo:hover {
+  background: var(--c-brand-50);
+}
+
+.ao-topo svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* ============================================================
+   Rodape
+   ============================================================ */
+.rodape {
+  position: relative;
+  margin-top: var(--s-10);
+  background: var(--c-brand-900);
+  color: var(--c-on-dark-muted);
+  overflow: hidden;
+}
+
+.rodape__mosaico {
+  position: absolute;
+  inset: 0;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+.rodape__mosaico span {
+  position: absolute;
+  display: block;
+  background: #fff;
+}
+
+.rodape__inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) repeat(2, minmax(0, 1fr));
+  gap: var(--s-7);
+  padding-block: var(--s-8);
+}
+
+.rodape__sobre p {
+  margin-top: var(--s-4);
+  max-width: 42ch;
+  font-size: var(--fs-strong);
+  line-height: 1.6;
+}
+
+.rodape__titulo {
+  font-family: var(--ff-text);
+  font-size: var(--fs-eyebrow);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-on-dark);
+  margin-bottom: var(--s-4);
+}
+
+.rodape__links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+
+.rodape__links a {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  width: fit-content;
+  color: var(--c-on-dark-muted);
+  font-size: var(--fs-strong);
+  text-decoration: none;
+  transition: color var(--dur-1) var(--ease-out);
+}
+
+.rodape__links a:hover {
+  color: var(--c-on-dark);
+  text-decoration: underline;
+}
+
+.rodape__links svg {
+  width: 14px;
+  height: 14px;
+  flex: none;
+}
+
+.rodape__base {
+  position: relative;
+  border-top: 1px solid rgb(255 255 255 / 0.16);
+  padding-block: var(--s-5);
+  font-size: var(--fs-caption);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3) var(--s-5);
+  justify-content: space-between;
+}
+
+@media (max-width: 899px) {
+  .rodape__inner {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--s-6);
+  }
+  .rodape__sobre {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 639px) {
+  .rodape__inner {
+    grid-template-columns: 1fr;
+  }
+}
