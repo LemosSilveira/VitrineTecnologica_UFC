@@ -440,8 +440,22 @@ RedirectMatch 404 \.(py|md|json|log|spec|ps1|bat)$
 - O selo "Local — só neste computador" (`.badge`, fundo `--c-brand-100`) deixa claro, o tempo todo, que é uma ferramenta interna.
 - No rodapé da barra lateral, o contador de **alterações não publicadas**, que leva à tela Publicar.
 
-### 7.3 Cor de erro (exceção controlada)
-Formulários precisam de um estado de erro inequívoco. Proposta: `--c-danger: #B42318` (contraste de 6,6:1 sobre `#FFFFFF` e 6,0:1 sobre `#F4F4F5`), usado **só no painel** e **só** em mensagens de validação, borda de campo inválido e botão de exclusão definitiva. Nunca como decoração. O erro também é indicado por **ícone e texto**, não só pela cor. **PENDENTE: o usuário aprovar**. Se não aprovar, usar `--c-text` + ícone + borda de 2 px `--c-brand` para o erro.
+### 7.3 Cor de erro (exceção controlada) — **RESOLVIDO em 29/09/2026**
+Formulários precisam de um estado de erro inequívoco. A cor escolhida pelo usuário é **`#ED455A`**, com as variações derivadas abaixo. Usada **só no painel** e **só** em mensagens de validação, borda de campo inválido e botão de exclusão definitiva. Nunca como decoração. O erro também é indicado por **ícone e texto**, não só pela cor.
+
+`#ED455A` puro rende 3,41:1 sobre `#F4F4F5` e 3,75:1 contra branco: passa no mínimo de **3:1 exigido para componente de interface**, mas fica abaixo dos **4,5:1 de texto normal**. Como texto de mensagem ele reprovaria no axe (`color-contrast`, serious), que é porta de saída da Fase 6 (12.3, item 15). Por isso o token base fica nos usos gráficos e o texto usa a variação escura da **mesma matiz** (HSL 352,5° · 82,4%, só a luminosidade muda):
+
+| Token | Valor | Contraste | Onde |
+|---|---|---|---|
+| `--c-danger` | `#ED455A` | 3,41:1 sobre `#F4F4F5` | borda de campo inválido (2 px), ícone de erro, barra de 4 px do resumo de erros, anel de foco do campo inválido |
+| `--c-danger-700` | `#D1142C` | 4,97:1 sobre `#F4F4F5` · 5,46:1 com branco | **texto** das mensagens de validação; fundo do botão de exclusão definitiva |
+| `--c-danger-800` | `#A71023` | 6,97:1 sobre `#F4F4F5` · 7,66:1 com branco | hover/pressed do botão destrutivo |
+| `--c-danger-100` | `#FCDEE2` | — | fundo de badge/chip de erro |
+| `--c-danger-50` | `#FEF1F3` | — | fundo da caixa de resumo de erros |
+| `--c-danger-a12` | `rgb(237 69 90 / 0.12)` | — | anel de foco (espelha `--c-brand-a12`) |
+| `--c-danger-a24` | `rgb(237 69 90 / 0.24)` | — | borda em hover |
+
+Os tokens moram em `admin/ui/painel.css`, **não** em `css/tokens.css`: o site público continua com a paleta de matiz única descrita no README.
 
 ### 7.4 Componentes novos (em `painel.css`)
 | Componente | Especificação |
@@ -749,9 +763,9 @@ Em cada fase: commits pequenos, com a mensagem explicando o **porquê**, sem mis
 
 | # | Pergunta | Impacto |
 |---|---|---|
-| P1 | O arquivo `19,47,52` na raiz pode ser apagado? | Fase 0 |
-| P2 | A pasta `tests/` existia em algum lugar (outro computador, outro branch)? | Fase 0 |
-| P3 | A cor de erro `#B42318` no painel está aprovada? (7.3) | Fase 4 |
+| ~~P1~~ | ~~O arquivo `19,47,52` na raiz pode ser apagado?~~ **Sim, apagado na Fase 0.** | Fase 0 |
+| ~~P2~~ | ~~A pasta `tests/` existia em algum lugar?~~ **Não: o repositório tem um commit só e nada no reflog. Recriada do zero na Fase 0, só em Chromium.** | Fase 0 |
+| ~~P3~~ | ~~A cor de erro no painel está aprovada?~~ **`#ED455A` + variações, ver 7.3.** | Fase 4 |
 | P4 | Quantas pessoas e computadores vão usar o painel? O acervo fica numa pasta local ou compartilhada (rede/OneDrive)? Pasta compartilhada exige trava entre computadores; na v1, **um computador por vez**. | Fases 3 e 7 |
 | P5 | Como o pacote chega ao servidor (STI, FTP, GitHub Pages)? Define o texto de "próximo passo" e a v1.1. | Fase 6 |
 | P6 | A UFC ou a STI tem certificado de assinatura de código? | Fase 7 |
