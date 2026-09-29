@@ -116,26 +116,41 @@ quebrariam o CSS, as fontes e o logo.
 ```bash
 cd tests
 npm install
-npx playwright install chromium firefox webkit
+npx playwright install chromium
 
-npm test                              # tudo
-npx playwright test --project=chromium-desktop   # só um motor
-npx playwright show-report
+npm test                 # tudo, nos dois viewports
+npm run test:desktop     # só 1440×900
+npm run report           # relatório HTML da última execução
 ```
 
 Cobre: renderização das 60 patentes, busca (com e sem acento, por número),
 filtros por área e tipo, ordenação, estado na URL, prévia da ficha no hover
 (posição, teclado, `Esc`), as 60 páginas de detalhe, lightbox, navegação
 circular, redirecionamento para a 404, `prefers-reduced-motion`, ausência de
-rolagem horizontal em 360/768/1440 e **axe-core sem violações
-serious/critical**.
+rolagem horizontal e **axe-core sem violações serious/critical**.
 
-Roda em **Chromium, Firefox e WebKit**, nos viewports 1440×900 e 390×844.
-Os screenshots de revisão ficam em `tests/screenshots/`.
+Roda em **Chromium**, nos viewports 1440×900 e 390×844. Nenhum spec depende do
+motor: voltar a incluir Firefox e WebKit é acrescentar dois `projects` em
+`tests/playwright.config.js`.
 
-Alguns testes são pulados por limitação de plataforma, sempre com o motivo no
-código — por exemplo, o WebKit não percorre links com `Tab` enquanto o acesso
-completo por teclado do sistema está desligado.
+Há também **referências visuais** (`tests/specs/visual.spec.js-snapshots/`) da
+home, do hero, do card, da prévia, de 3 detalhes e da 404, com tolerância de
+0,1% dos pixels. Elas existem para garantir que refatorar a renderização não
+mude um pixel.
+
+Detalhes em [`tests/README.md`](tests/README.md).
+
+### Snapshot do build
+
+`tests/fixtures/snapshot-fase0/` congela `js/data/patentes.js`,
+`scripts/build_report.md` e os hashes dos 300 arquivos de `assets/patentes/**`
+de antes da refatoração do build.
+
+```bash
+python tests/fixtures/snapshot-fase0/verificar_snapshot.py
+```
+
+Sai com código ≠ 0 em qualquer divergência byte a byte.
 
 ---
 
@@ -167,7 +182,12 @@ completo por teclado do sistema está desligado.
 │   ├── fonts_to_woff2.py   Conversão das fontes
 │   ├── gerar_og.js         Gera a og-image a partir de og_template.html
 │   └── build_report.md     GERADO — relatório do build
-└── tests/                  Playwright + axe
+└── tests/
+    ├── server.js           Servidor estático que serve a 404.html
+    ├── specs/              Playwright + axe
+    └── fixtures/
+        ├── build_legado.py       Cópia do build de antes da refatoração
+        └── snapshot-fase0/       Linha de base byte a byte da vitrine
 ```
 
 ---
