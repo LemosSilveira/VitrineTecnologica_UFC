@@ -67,9 +67,29 @@ Confira sempre o `scripts/build_report.md` depois de rodar.
    os contadores do hero e a navegação anterior/próxima saem todos de
    `window.PATENTES`.
 
-A **categoria** precisa estar no mapa `CATEGORIA_MAP` do script. Se aparecer
+A **categoria** precisa estar no mapa `dados/categorias.json`. Se aparecer
 uma categoria desconhecida, o build **falha com mensagem clara** em vez de
 inventar uma área nova — se a categoria for legítima, adicione-a ao mapa.
+
+### Onde a lógica mora
+
+`scripts/build_patentes.py` é só a casca de linha de comando. O pipeline
+está em **`scripts/vitrine_core/`**, para que o painel local importe o mesmo
+código em vez de duplicá-lo:
+
+| Módulo | Responsabilidade |
+|---|---|
+| `nomes.py` | normalização de texto, slug e os regex de pasta/arquivo |
+| `io_seguro.py` | escrita atômica, `write_if_changed`, confinamento de caminho |
+| `extracao.py` | leitura das fichas em PDF (título, seções, TRL) |
+| `imagens.py` | capas e render da ficha em WebP |
+| `acervo.py` | leitura das pastas originais e de `dados/categorias.json` |
+| `build.py` | o pipeline completo, a serialização e o relatório |
+
+```python
+from vitrine_core.build import roda_build
+res = roda_build(Path("<acervo>"), Path("."))
+```
 
 ### O que o build resolve sozinho
 
@@ -140,6 +160,18 @@ mude um pixel.
 
 Detalhes em [`tests/README.md`](tests/README.md).
 
+### Testes do `vitrine_core`
+
+```bash
+pip install pytest
+python -m pytest tests/core
+```
+
+Cobre as funções puras do pipeline (normalização, slug, seções da ficha,
+TRL, resumo, escape de JS, escrita atômica, `categorias.json`) e a
+**paridade com o build legado**: enquanto `tests/core/test_build.py` passar,
+a extração do pacote não mudou comportamento nenhum.
+
 ### Snapshot do build
 
 `tests/fixtures/snapshot-fase0/` congela `js/data/patentes.js`,
@@ -177,14 +209,18 @@ Sai com código ≠ 0 em qualquer divergência byte a byte.
 │   ├── fonts/              UFCInova-Bold + Metropolis (5 pesos), woff2
 │   ├── img/                logo, favicon, og-image
 │   └── patentes/<slug>/    capa-400/800.webp, ficha-600/1620.webp, ficha.pdf
+├── dados/
+│   └── categorias.json     Mapa das áreas tecnológicas (lido pelo build)
 ├── scripts/
-│   ├── build_patentes.py   Pipeline de dados
+│   ├── build_patentes.py   CLI do build
+│   ├── vitrine_core/       Pipeline de dados (importado também pelo painel)
 │   ├── fonts_to_woff2.py   Conversão das fontes
 │   ├── gerar_og.js         Gera a og-image a partir de og_template.html
 │   └── build_report.md     GERADO — relatório do build
 └── tests/
     ├── server.js           Servidor estático que serve a 404.html
-    ├── specs/              Playwright + axe
+    ├── specs/              Playwright + axe (site)
+    ├── core/               pytest (vitrine_core)
     └── fixtures/
         ├── build_legado.py       Cópia do build de antes da refatoração
         └── snapshot-fase0/       Linha de base byte a byte da vitrine

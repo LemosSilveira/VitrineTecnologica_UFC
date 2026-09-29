@@ -1,0 +1,18 @@
+{
+  "versao": 1,
+  "_comentario": "Areas tecnologicas da vitrine. A chave e como a area aparece no nome do arquivo da ficha, comparada sem acento e sem caixa; o valor e o nome exibido no site. Varias chaves podem apontar para o mesmo nome (quimico/quimicos). O painel acrescenta areas por aqui; o build le este arquivo e falha com mensagem clara se encontrar uma area fora do mapa.",
+  "mapa": {
+    "alimentos": "Alimentos",
+    "agropecuaria": "Agropecuária",
+    "tic": "TIC",
+    "engenharias": "Engenharias",
+    "biotecnologia": "Biotecnologia",
+    "ciencias da saude": "Ciências da Saúde",
+    "industria": "Indústria",
+    "quimico": "Química",
+    "quimicos": "Química",
+    "cosmetico": "Cosméticos",
+    "cosmeticos": "Cosméticos",
+    "energia e meio ambiente": "Energia e Meio Ambiente"
+  }
+}
