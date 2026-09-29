@@ -852,7 +852,10 @@
   min-height: 44px;
   padding: var(--s-2) var(--s-4);
   border-radius: var(--r-sm);
-  background: rgb(255 255 255 / 0.12);
+  /* Roxo escuro, nao branco translucido: no celular a ficha ocupa toda a
+     largura e os botoes ficam sobre a parte clara da imagem, onde texto
+     branco sobre 12% de branco nao tem contraste. */
+  background: rgb(46 3 80 / 0.88);
   color: #fff;
   font-size: var(--fs-strong);
   font-weight: 600;
@@ -862,7 +865,7 @@
 }
 
 .lightbox__btn:hover {
-  background: rgb(255 255 255 / 0.24);
+  background: rgb(71 5 122 / 0.95);
 }
 
 .lightbox__btn:focus-visible {
