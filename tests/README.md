@@ -36,6 +36,26 @@ ele reaproveita.
 `specs/_ajuda.js` concentra os utilitários; não é um spec (o `testMatch` só
 pega `*.spec.js`).
 
+## Testes do `vitrine_core` (pytest)
+
+```bash
+pip install pytest
+python -m pytest tests/core       # da raiz do repositório
+```
+
+| Arquivo | Cobre |
+|---|---|
+| `core/test_nomes.py` | normalização de texto, slug, e os regex de pasta/arquivo com as inconsistências reais das 60 pastas |
+| `core/test_extracao.py` | fatiamento das seções, junção de parágrafo, diferenciais, TRL e resumo |
+| `core/test_io_seguro.py` | escrita atômica (inclusive falha no meio), idempotência do `write_if_changed`, confinamento de caminho |
+| `core/test_acervo.py` | ordenação e classificação das pastas, validação do `dados/categorias.json` |
+| `core/test_build.py` | escape de JS, formato do `patentes.js` e **paridade com o build legado** |
+
+A classe `TestParidadeComOLegado` compara as funções puras com
+`fixtures/build_legado.py`. Enquanto ela passar, a extração do pacote não
+mudou comportamento; se um dia uma mudança for intencional, ela precisa
+aparecer ali e ser justificada, não passar despercebida.
+
 ## Referências visuais
 
 Ficam versionadas em `specs/visual.spec.js-snapshots/`. Tolerância de **0,1%**
