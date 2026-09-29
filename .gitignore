@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Painel / PyInstaller
+build/
+dist/
+*.spec.bak
+admin/ui/site/
+
+# Pacotes e saidas locais
+*.zip
+SHA256SUMS.txt
+
+# Testes
+tests/node_modules/
+tests/test-results/
+tests/playwright-report/
+tests/screenshots/
+
+# Sistema
+Thumbs.db
+desktop.ini
+.DS_Store
+._*
