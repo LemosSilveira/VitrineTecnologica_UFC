@@ -57,6 +57,29 @@ python -m pytest tests/core       # da raiz do repositório
 | `core/test_build_integracao.py` | o build ponta a ponta num acervo sintético: oculta, merge, sem PDF, lixeira, gravação só sem erro, limpeza de assets |
 | `core/test_build.py` | escape de JS, formato do `patentes.js` e **paridade com o build legado** |
 
+## Testes do painel (pytest)
+
+```bash
+python -m pytest tests/painel tests/seguranca
+```
+
+| Arquivo | Cobre |
+|---|---|
+| `painel/test_config.py` | onde cada coisa mora (`%APPDATA%` vs `%LOCALAPPDATA%`), validação das duas pastas, `config.json` |
+| `painel/test_auditoria_backup.py` | uma linha JSON por ação, paginação, linha corrompida; backup, retenção de 50 com exceção por patente, restauração |
+| `painel/test_validacao.py` | a tabela da seção 8, campo por campo |
+| `painel/test_armazenamento.py` | quarentena e tokens, gravação no acervo, `oculta`, lixeira, próximo ID |
+| `painel/test_api.py` | os fluxos da seção 9 de ponta a ponta |
+| `seguranca/test_caminhos_e_superficie.py` | a superfície da `Api` é **exatamente** a tabela 5.3; varredura de argumentos hostis; destinos de lista fechada; servidor local só em 127.0.0.1 |
+| `seguranca/test_arquivos_maliciosos.py` | PDF e imagem hostis, e o que sai publicado |
+| `seguranca/test_pacote_e_integridade.py` | nomes seguros, o zip sem nada interno, integridade e auditoria |
+
+As fixtures de `tests/conftest.py` montam um ambiente completo de mentira —
+site, acervo, `%APPDATA%` e `%LOCALAPPDATA%` em `tmp_path`. **Nenhum teste
+toca a vitrine de verdade nem a configuração da máquina.** Os seletores
+nativos do Windows entram por injeção (`dialogos_falsos`), que é o motivo de a
+`Api` recebê-los pelo construtor.
+
 O teste de ouro (`core/test_ler_ficha.py::TestDeOuro`) depende das 60 fichas
 originais e é **pulado** em máquinas que não têm o acervo.
 

@@ -228,6 +228,18 @@ TRL, resumo, escape de JS, escrita atômica, `categorias.json`) e a
 **paridade com o build legado**: enquanto `tests/core/test_build.py` passar,
 a extração do pacote não mudou comportamento nenhum.
 
+### Testes do painel
+
+```bash
+python -m pytest tests/painel tests/seguranca
+```
+
+Cobre a configuração, o histórico, os backups, a validação dos campos, a
+quarentena de arquivos, o armazenamento no acervo, o pacote de publicação e os
+fluxos da `Api` de ponta a ponta — mais a suíte de segurança: arquivos
+maliciosos, caminhos hostis, nomes de arquivo, integridade e a **superfície da
+`Api`**, que precisa continuar sendo exatamente a tabela 5.3 do PRD.
+
 ### Snapshot do build
 
 `tests/fixtures/snapshot-fase0/` congela `js/data/patentes.js`,
@@ -267,6 +279,10 @@ Sai com código ≠ 0 em qualquer divergência byte a byte.
 │   ├── fonts/              UFCInova-Bold + Metropolis (5 pesos), woff2
 │   ├── img/                logo, favicon, og-image
 │   └── patentes/<slug>/    capa-400/800.webp, ficha-600/1620.webp, ficha.pdf
+├── admin/                  NUNCA publicado — o painel local
+│   ├── painel/             config, auditoria, backup, validação,
+│   │                       armazenamento, prévia, publicação, api
+│   └── requirements*.txt   Dependências fixadas com hash
 ├── dados/
 │   └── categorias.json     Mapa das áreas tecnológicas (lido pelo build)
 ├── scripts/
@@ -277,12 +293,58 @@ Sai com código ≠ 0 em qualquer divergência byte a byte.
 │   └── build_report.md     GERADO — relatório do build
 └── tests/
     ├── server.js           Servidor estático que serve a 404.html
+    ├── conftest.py         Ambiente de mentira (site, acervo, APPDATA)
     ├── specs/              Playwright + axe (site)
     ├── core/               pytest (vitrine_core)
+    ├── painel/             pytest (painel)
+    ├── seguranca/          pytest (modelo de ameaças da seção 5)
     └── fixtures/
         ├── build_legado.py       Cópia do build de antes da refatoração
         └── snapshot-fase0/       Linha de base byte a byte da vitrine
 ```
+
+---
+
+## Painel local
+
+Aplicativo de janela única que a equipe da UFC Inova abre com dois cliques
+para cadastrar, editar e publicar patentes sem terminal. O código fica em
+`admin/` e **nunca é publicado**.
+
+```bash
+pip install --require-hashes -r admin/requirements.txt
+```
+
+### Modelo de segurança (resumo)
+
+- **Não há login, e por isso o painel não fica acessível pela rede.** A
+  fronteira de segurança é a conta do Windows de quem usa o computador.
+- **Sem API HTTP.** A interface fala com o Python pela ponte interna do
+  pywebview, dentro do processo — nenhum site aberto no navegador da pessoa
+  alcança o painel.
+- **O Python não confia na interface.** Toda validação é refeita no backend; a
+  do formulário serve só para dar retorno imediato e pode ter sido alterada
+  pelo DevTools.
+- **Superfície mínima.** O pywebview expõe todo método público da classe
+  passada em `js_api`, então `admin/painel/api.py` tem apenas os 20 métodos da
+  tabela 5.3 do PRD. Um teste falha se aparecer um a mais.
+- **Quarentena.** Todo arquivo recebido é gravado com nome fixo em
+  `%LOCALAPPDATA%` e validado antes de chegar ao acervo. O nome que veio de
+  fora nunca é usado.
+- **Nada é apagado.** Excluir move a pasta para `_lixeira`; toda alteração faz
+  backup antes; IDs nunca são reaproveitados.
+- **Pacote por lista de permissões.** O `.zip` de publicação leva só os
+  arquivos públicos — não uma lista de exclusões, que deixaria um arquivo novo
+  entrar por padrão.
+
+### Onde o painel guarda as coisas
+
+| Pasta | Conteúdo |
+|---|---|
+| `%APPDATA%\PainelVitrine\` | `config.json`, `auditoria.log`, `backups\` — **não pode ser perdido** |
+| `%LOCALAPPDATA%\PainelVitrine\` | `quarentena\`, `pacotes\`, `painel.lock`, `painel.log` — descartável |
+
+Nada é gravado dentro do repositório da vitrine.
 
 ---
 
