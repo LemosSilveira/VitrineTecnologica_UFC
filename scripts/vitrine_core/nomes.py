@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import re
 import unicodedata
+from pathlib import Path
 
 __all__ = [
     "SLUG_MAX",
@@ -23,6 +24,14 @@ __all__ = [
     "limpa_texto",
     "NUMERO_RE",
     "normaliza_numero",
+    "TITULO_MAX_NO_NOME",
+    "CAMINHO_MAX",
+    "RESERVADOS_WINDOWS",
+    "NomeInvalido",
+    "nome_seguro",
+    "numero_para_pasta",
+    "nome_pasta_patente",
+    "nome_arquivo_patente",
 ]
 
 SLUG_MAX = 80
@@ -140,3 +149,118 @@ def limpa_texto(s: object) -> str:
         return ""
     texto = unicodedata.normalize("NFC", str(s))
     return normaliza_espacos(_INVISIVEIS_RE.sub("", texto))
+
+
+# --------------------------------------------------------------------------
+# Nomes de arquivo e de pasta gerados pelo painel (PRD 5.7)
+# --------------------------------------------------------------------------
+
+# O titulo completo fica no patente.json; no NOME do arquivo ele e cortado,
+# porque o caminho no Windows tem limite e a pasta do acervo pode estar
+# alguns niveis abaixo de Documents.
+TITULO_MAX_NO_NOME = 80
+CAMINHO_MAX = 240
+
+# Nomes que o Windows reserva para dispositivos. Um arquivo "CON.pdf" nao
+# pode ser criado, e a mensagem de erro do sistema nao explica por que.
+RESERVADOS_WINDOWS = frozenset(
+    {"CON", "PRN", "AUX", "NUL"}
+    | {f"COM{i}" for i in range(1, 10)}
+    | {f"LPT{i}" for i in range(1, 10)}
+)
+
+# Conjunto deliberadamente estreito: letras (com acento), digitos, espaco e
+# a pontuacao que aparece nos titulos reais. Tudo fora disso vira espaco --
+# inclusive `/`, `\`, `:` e `..`, que e o que impede um titulo de escapar da
+# pasta de destino.
+_FORA_DO_PERMITIDO = re.compile(r"[^A-Za-z0-9À-ÿ .,()_\-]+")
+
+
+class NomeInvalido(Exception):
+    """Nao foi possivel gerar um nome de arquivo utilizavel."""
+
+
+def nome_seguro(texto: object, limite: int = TITULO_MAX_NO_NOME) -> str:
+    """Transforma texto livre num pedaco de nome de arquivo seguro.
+
+    Nao e escape: e uma lista de permissoes. O que nao esta nela vira espaco
+    e os espacos colapsam, entao `..\\..\\Windows` sai como `Windows` e nao
+    como um caminho. Tambem tira ponto e espaco do fim, que o Windows
+    silenciosamente remove ao criar o arquivo (e o nome gravado deixaria de
+    bater com o esperado).
+    """
+    limpo = _FORA_DO_PERMITIDO.sub(" ", limpa_texto(texto))
+    limpo = normaliza_espacos(limpo)
+    if len(limpo) > limite:
+        limpo = limpo[:limite].rstrip()
+        # nao cortar no meio de uma palavra quando da para evitar
+        if " " in limpo:
+            limpo = limpo.rsplit(" ", 1)[0]
+    limpo = limpo.rstrip(". ").lstrip(". ")
+    # "con.pdf" seria recusado pelo Windows; "con_" nao
+    if limpo.upper() in RESERVADOS_WINDOWS:
+        limpo += "_"
+    return limpo
+
+
+def numero_para_pasta(numero: str) -> str:
+    """`BR 10 2025 012345-6` -> `BR 10 2025 012345 6`.
+
+    As pastas do acervo usam espaco antes do digito verificador, nao hifen.
+    O formato com hifen e o canonico dos dados e do site.
+    """
+    m = NUMERO_RE.search(numero or "")
+    if not m:
+        raise NomeInvalido(f"numero de pedido invalido: {numero!r}")
+    return f"BR {m.group('esp')} {m.group('ano')} {m.group('seq')} {m.group('dv')}"
+
+
+def nome_pasta_patente(pid: int, numero: str) -> str:
+    """`61. BR 10 2025 012345 6` -- o padrao que PASTA_RE reconhece."""
+    return f"{int(pid)}. {numero_para_pasta(numero)}"
+
+
+def nome_arquivo_patente(
+    pid: int,
+    categoria: str,
+    numero: str,
+    titulo: str,
+    extensao: str,
+    pasta: Path | str | None = None,
+) -> str:
+    """`61. Engenharias - BR 10 2025 012345 6 - Titulo curto.pdf`.
+
+    Mesmo padrao que ARQUIVO_RE ja reconhece, para que o build continue
+    extraindo a area e o titulo do nome como faz com as 60 pastas atuais.
+
+    Se `pasta` for dada, o titulo e encurtado ate o caminho absoluto caber em
+    CAMINHO_MAX. Um caminho longo demais falharia na hora de gravar, com um
+    erro do sistema que nao diz qual foi o problema.
+    """
+    ext = extensao if extensao.startswith(".") else f".{extensao}"
+    if _FORA_DO_PERMITIDO.sub("", ext.lstrip(".")) != ext.lstrip("."):
+        raise NomeInvalido(f"extensao invalida: {extensao!r}")
+
+    prefixo = f"{int(pid)}. {nome_seguro(categoria, 40)} - {numero_para_pasta(numero)} - "
+
+    limite = TITULO_MAX_NO_NOME
+    while True:
+        nome = prefixo + nome_seguro(titulo, limite) + ext
+        nome = nome.rstrip(". ") if not nome.endswith(ext) else nome
+        if pasta is None:
+            break
+        if len(str(Path(pasta) / nome)) <= CAMINHO_MAX:
+            break
+        limite -= 10
+        if limite < 10:
+            # sem titulo nenhum o nome ainda serve: o build tira o titulo do
+            # texto do PDF, e o completo esta no patente.json
+            nome = prefixo.rstrip(" -") + ext
+            if len(str(Path(pasta) / nome)) > CAMINHO_MAX:
+                raise NomeInvalido(
+                    "o caminho da pasta do acervo e longo demais para gravar "
+                    "os arquivos desta patente. Mova o acervo para uma pasta "
+                    "mais perto da raiz do disco."
+                )
+            break
+    return nome
