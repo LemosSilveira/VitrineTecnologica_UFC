@@ -11,12 +11,20 @@ mesmas etapas numa janela, nao num terminal.
 from __future__ import annotations
 
 import re
+import shutil
 from collections import Counter
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable
 
-from .acervo import TIPOS, arquivos_da_pasta, carrega_categorias, lista_pastas
+from .acervo import (
+    TIPOS,
+    PatenteJsonInvalido,
+    arquivos_da_pasta,
+    carrega_categorias,
+    le_patente_json,
+    lista_pastas,
+)
 from .extracao import (
     faz_resumo,
     le_pagina1,
@@ -26,7 +34,7 @@ from .extracao import (
     secoes_do_pdf,
 )
 from .imagens import gera_capas, gera_ficha
-from .io_seguro import write_if_changed
+from .io_seguro import dentro_de, write_if_changed
 from .nomes import (
     ARQUIVO_RE,
     PASTA_RE,
@@ -37,6 +45,7 @@ from .nomes import (
     slugify,
     so_letras,
 )
+from .pdf_seguro import PdfInvalido, higieniza, valida
 
 __all__ = ["Resultado", "roda_build", "processa", "serializa", "relatorio", "js_string"]
 
@@ -52,6 +61,8 @@ class Resultado:
     categorias: list[dict] = field(default_factory=list)
     capas_400: int = 0
     js_mudou: bool = False
+    ocultas: list[int] = field(default_factory=list)
+    assets_removidos: list[str] = field(default_factory=list)
 
 
 # --------------------------------------------------------------------------
@@ -148,6 +159,22 @@ def processa(
         res.erros.append(f"[{pid}] especie INPI desconhecida: BR {esp}.")
         return None
 
+    # ---- sobreposicao editada pelo painel ----
+    try:
+        sobre = le_patente_json(pasta, categoria_map)
+    except PatenteJsonInvalido as e:
+        res.erros.append(f"[{pid}] patente.json invalido: {e}")
+        return None
+
+    if sobre and sobre.oculta:
+        # A patente sai da vitrine INTEIRA: nao entra no patentes.js e a pasta
+        # dela em assets/patentes some na limpeza. Esconder so no cliente nao
+        # bastaria -- o dado nao pode ir para o ar (PRD 4.3).
+        res.ocultas.append(pid)
+        return None
+
+    editado = sobre.campos if sobre else {}
+
     # ---- arquivos ----
     arqs = arquivos_da_pasta(pasta)
     for f in arqs.outros:
@@ -155,23 +182,43 @@ def processa(
     for f in arqs.pdfs[1:] + arqs.imagens[1:]:
         res.ignorados.append(f"[{pid}] extra ignorado: `{f.name}`")
 
-    if not arqs.pdfs:
-        res.erros.append(f"[{pid}] sem PDF -- patente fora da vitrine.")
-        return None
     if not arqs.imagens:
         res.erros.append(f"[{pid}] sem imagem de capa -- patente fora da vitrine.")
         return None
 
-    pdf_src, img_src = arqs.pdfs[0], arqs.imagens[0]
-    res.bytes_origem += pdf_src.stat().st_size + img_src.stat().st_size
+    # Sem PDF so vale com o conteudo minimo vindo do patente.json (PRD 4.4):
+    # sem ele nao ha titulo, area nem texto para montar o card.
+    sem_pdf = not arqs.pdfs
+    if sem_pdf:
+        minimos = ("titulo", "categoria")
+        falta = [c for c in minimos if not editado.get(c)]
+        if not (editado.get("secoes") or {}).get("oQueE"):
+            falta.append("secoes.oQueE")
+        if falta:
+            res.erros.append(
+                f"[{pid}] sem PDF e sem `{'`, `'.join(falta)}` no patente.json "
+                "-- patente fora da vitrine."
+            )
+            return None
+        res.avisos.append(
+            f"[{pid}] sem PDF: a vitrine nao tera o botao de download nem a "
+            "imagem da ficha."
+        )
+
+    pdf_src = arqs.pdfs[0] if arqs.pdfs else None
+    img_src = arqs.imagens[0]
+    res.bytes_origem += img_src.stat().st_size
+    if pdf_src:
+        res.bytes_origem += pdf_src.stat().st_size
 
     # ---- categoria e titulo pelo nome do arquivo ----
     categoria_bruta = ""
     titulo_arquivo = ""
-    mm = ARQUIVO_RE.match(normaliza_espacos(pdf_src.stem))
-    if mm:
-        categoria_bruta = mm.group("cat").strip(" -")
-        titulo_arquivo = mm.group("titulo").strip()
+    if pdf_src:
+        mm = ARQUIVO_RE.match(normaliza_espacos(pdf_src.stem))
+        if mm:
+            categoria_bruta = mm.group("cat").strip(" -")
+            titulo_arquivo = mm.group("titulo").strip()
     if not categoria_bruta:  # ultima tentativa: nome da imagem
         mi = ARQUIVO_RE.match(normaliza_espacos(img_src.stem))
         if mi:
@@ -182,21 +229,31 @@ def processa(
     titulo_arquivo = titulo_arquivo.strip("_").strip()
 
     categoria = categoria_map.get(chave(categoria_bruta))
+    if "categoria" in editado:
+        categoria = editado["categoria"]
     if categoria is None:
         res.erros.append(
             f"[{pid}] categoria fora do mapa: `{categoria_bruta or '(vazia)'}` "
-            f"(arquivo: `{pdf_src.name}`). Adicione em dados/categorias.json."
+            f"(arquivo: `{(pdf_src or img_src).name}`). "
+            "Adicione em dados/categorias.json."
         )
         return None
 
     # ---- conteudo do PDF ----
-    titulo_pdf, texto, n_paginas = le_pagina1(pdf_src)
-    if n_paginas != 1:
-        res.avisos.append(f"[{pid}] o PDF tem {n_paginas} paginas; usando a primeira.")
+    titulo_pdf, texto, bruto = "", "", {}
+    if pdf_src:
+        try:
+            info = valida(pdf_src)
+        except PdfInvalido as e:
+            res.erros.append(f"[{pid}] {e} (arquivo: `{pdf_src.name}`)")
+            return None
+        for a in info.avisos:
+            res.avisos.append(f"[{pid}] {a}")
 
-    bruto, avisos_sec = secoes_do_pdf(texto)
-    for a in avisos_sec:
-        res.avisos.append(f"[{pid}] {a}")
+        titulo_pdf, texto, _ = le_pagina1(pdf_src)
+        bruto, avisos_sec = secoes_do_pdf(texto)
+        for a in avisos_sec:
+            res.avisos.append(f"[{pid}] {a}")
 
     # Titulo canonico: o do PDF (caixa correta -- corrige o MAIUSCULAS da 52).
     # Excecao: quando o nome do arquivo CONTEM o titulo do PDF, o PDF foi
@@ -210,14 +267,17 @@ def processa(
                 f"[{pid}] titulo do PDF truncado (`{titulo_pdf}`); "
                 f"usando o do arquivo (`{titulo_arquivo}`)."
             )
-    if not titulo:
-        res.erros.append(f"[{pid}] sem titulo no PDF nem no nome do arquivo.")
-        return None
-    if titulo.isupper():
+    if titulo and titulo.isupper():
         titulo = titulo.capitalize()
         res.avisos.append(
             f"[{pid}] titulo estava em MAIUSCULAS; convertido para caixa de frase."
         )
+    # O que a equipe corrigiu no painel vence o que saiu do PDF.
+    if "titulo" in editado:
+        titulo = editado["titulo"]
+    if not titulo:
+        res.erros.append(f"[{pid}] sem titulo no PDF nem no nome do arquivo.")
+        return None
 
     secoes = {
         "oQueE": limpa_paragrafo(bruto["oQueE"]) if bruto.get("oQueE") else None,
@@ -228,10 +288,21 @@ def processa(
     }
     if not secoes["diferenciais"]:
         secoes["diferenciais"] = None
+    # Merge campo a campo: uma secao ausente no patente.json continua vindo
+    # do PDF, e uma secao gravada como null foi apagada de proposito.
+    for campo, valor in (editado.get("secoes") or {}).items():
+        secoes[campo] = valor
 
     trl = parse_trl(bruto.get("_trl", "") or "")
-    if trl is None:
+    if "trl" in editado:
+        trl = dict(editado["trl"]) if editado["trl"] else None
+    if trl is None and pdf_src and "trl" not in editado:
         res.avisos.append(f"[{pid}] TRL nao encontrado.")
+    if trl is not None:
+        # `texto` e sempre recalculado, nunca lido do patente.json (PRD 4.3)
+        trl = parse_trl(
+            f"TRL {trl['min']}-{trl['max']}" + (" estimado" if trl["estimado"] else "")
+        )
 
     resumo = faz_resumo(secoes["oQueE"]) if secoes["oQueE"] else faz_resumo(titulo)
 
@@ -240,13 +311,33 @@ def processa(
     destino = out_root / "assets" / "patentes" / slug
     destino.mkdir(parents=True, exist_ok=True)
 
-    capas, dims, b1 = gera_capas(img_src, destino)
-    fichas, b2 = gera_ficha(pdf_src, destino)
-    write_if_changed(destino / "ficha.pdf", pdf_src.read_bytes())
-    b3 = (destino / "ficha.pdf").stat().st_size
-    res.bytes_saida += b1 + b2 + b3
+    capas, dims, bytes_saida = gera_capas(img_src, destino)
 
     base = f"assets/patentes/{slug}"
+    imagens = {
+        "capa400": f"{base}/{capas['capa400']}",
+        "capa800": f"{base}/{capas['capa800']}",
+        "ficha600": None,
+        "ficha1620": None,
+        "dimensoesCapa": dims,
+    }
+    caminho_pdf = None
+
+    if pdf_src:
+        # A ficha em imagem sai do PDF ORIGINAL: higienizar mexe na estrutura
+        # do arquivo, e renderizar do original mantem a saida estavel.
+        fichas, b2 = gera_ficha(pdf_src, destino)
+        imagens["ficha600"] = f"{base}/{fichas['ficha600']}"
+        imagens["ficha1620"] = f"{base}/{fichas['ficha1620']}"
+
+        # O PDF publicado nunca e copia byte a byte do original (achado A4):
+        # vai sem JavaScript, sem anexos e sem os metadados de quem o gerou.
+        write_if_changed(destino / "ficha.pdf", higieniza(pdf_src))
+        bytes_saida += b2 + (destino / "ficha.pdf").stat().st_size
+        caminho_pdf = f"{base}/ficha.pdf"
+
+    res.bytes_saida += bytes_saida
+
     return {
         "id": pid,
         "slug": slug,
@@ -258,14 +349,8 @@ def processa(
         "resumo": resumo,
         "secoes": secoes,
         "trl": trl,
-        "imagens": {
-            "capa400": f"{base}/{capas['capa400']}",
-            "capa800": f"{base}/{capas['capa800']}",
-            "ficha600": f"{base}/{fichas['ficha600']}",
-            "ficha1620": f"{base}/{fichas['ficha1620']}",
-            "dimensoesCapa": dims,
-        },
-        "pdf": f"{base}/ficha.pdf",
+        "imagens": imagens,
+        "pdf": caminho_pdf,
     }
 
 
@@ -292,6 +377,13 @@ def relatorio(res: Resultado, categorias: list[dict], src: Path, capas_400: int)
     A(f"- **Erros:** {len(res.erros)}")
     A(f"- **Avisos:** {len(res.avisos)}")
     A(f"- **Arquivos ignorados:** {len(res.ignorados)}")
+    # As duas linhas abaixo so aparecem quando ha o que contar: sem elas o
+    # relatorio das 60 patentes continua identico ao de antes da Fase 2.
+    if res.ocultas:
+        A(f"- **Ocultas (fora da vitrine):** {len(res.ocultas)} "
+          f"({', '.join(str(i) for i in sorted(res.ocultas))})")
+    if res.assets_removidos:
+        A(f"- **Pastas de assets removidas:** {len(res.assets_removidos)}")
     A("")
     A("## Peso")
     A("")
@@ -403,8 +495,17 @@ def roda_build(
         for n in sorted(cont, key=lambda s: sem_acento(s).lower())
     ]
 
-    js = serializa(res.patentes, res.categorias)
-    res.js_mudou = write_if_changed(out / "js" / "data" / "patentes.js", js.encode("utf-8"))
+    if res.erros:
+        # Com erro, a vitrine anterior fica de pe. Reescrever o patentes.js
+        # publicaria uma vitrine incompleta -- as patentes que falharam
+        # sumiriam do site sem ninguem ter pedido (PRD 6.2).
+        res.js_mudou = False
+    else:
+        js = serializa(res.patentes, res.categorias)
+        res.js_mudou = write_if_changed(
+            out / "js" / "data" / "patentes.js", js.encode("utf-8")
+        )
+        res.assets_removidos = limpa_assets_orfaos(out, res.patentes)
 
     res.capas_400 = sum(
         (out / p["imagens"]["capa400"]).stat().st_size
@@ -415,3 +516,30 @@ def roda_build(
     write_if_changed(out / "scripts" / "build_report.md", rel.encode("utf-8"))
 
     return res
+
+
+def limpa_assets_orfaos(out: Path, patentes: list[dict]) -> list[str]:
+    """Apaga as pastas de `assets/patentes/` que nao estao mais na vitrine.
+
+    Cobre de uma vez as patentes ocultas, as que foram para a lixeira e as
+    que mudaram de titulo (e portanto de slug): em vez de tentar adivinhar o
+    que saiu, compara com o que entrou.
+
+    So roda quando o build nao teve erro -- caso contrario apagaria os
+    assets de uma patente que ficou de fora por um problema temporario.
+    """
+    raiz = out / "assets" / "patentes"
+    if not raiz.is_dir():
+        return []
+
+    validos = {p["slug"] for p in patentes}
+    removidos: list[str] = []
+    for pasta in sorted(raiz.iterdir()):
+        if not pasta.is_dir() or pasta.name in validos:
+            continue
+        # cinto e suspensorio: nunca apagar fora de assets/patentes
+        if not dentro_de(raiz, pasta):
+            continue
+        shutil.rmtree(pasta)
+        removidos.append(pasta.name)
+    return removidos

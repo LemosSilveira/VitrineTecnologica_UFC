@@ -1,21 +1,29 @@
-"""Gera o snapshot de referencia da Fase 0.
+"""Gera o snapshot de referencia da vitrine.
 
-Serve de linha de base para a refatoracao das Fases 1 e 2: depois de mexer no
-build, `verificar_snapshot.py` compara a saida atual com o que foi congelado
-aqui e acusa qualquer divergencia byte a byte.
+Linha de base para detectar mudanca nao intencional na saida do build:
+`verificar_snapshot.py` compara a saida atual com o que foi congelado aqui e
+acusa qualquer divergencia byte a byte.
+
+A pasta se chama `snapshot-fase0` porque nasceu na Fase 0, mas o conteudo
+acompanha a ultima mudanca **intencional** de saida -- registrada no
+MANIFEST.md junto com o motivo. O historico do git guarda as versoes
+anteriores.
 
 Uso:
     python tests/fixtures/snapshot-fase0/gerar_snapshot.py
+    python tests/fixtures/snapshot-fase0/gerar_snapshot.py --fase 2 \\
+        --motivo "ficha.pdf passou a ser higienizado (PRD 5.4)"
 
 Grava, ao lado deste arquivo:
     patentes.js        copia de js/data/patentes.js
     build_report.md    copia de scripts/build_report.md
     assets-sha256.txt  SHA-256 de todos os arquivos de assets/patentes/**
-    MANIFEST.md        resumo legivel (data, contagens, hash dos dois .js/.md)
+    MANIFEST.md        resumo legivel (data, fase, motivo, contagens, hashes)
 """
 
 from __future__ import annotations
 
+import argparse
 import hashlib
 import shutil
 from datetime import datetime, timezone
@@ -53,6 +61,15 @@ def linhas_assets() -> list[str]:
 
 
 def main() -> int:
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--fase", default="0", help="fase do PRD que esta saida reflete")
+    ap.add_argument(
+        "--motivo",
+        default="linha de base inicial, antes da refatoracao do build",
+        help="por que a saida mudou desde o snapshot anterior",
+    )
+    args = ap.parse_args()
+
     for destino, origem in ARQUIVOS.items():
         if not origem.exists():
             print(f"ERRO: nao encontrei {origem}")
@@ -66,13 +83,15 @@ def main() -> int:
 
     agora = datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds")
     manifesto = [
-        "# Snapshot de referencia — Fase 0",
+        f"# Snapshot de referencia — Fase {args.fase}",
         "",
         f"Gerado em {agora} por `gerar_snapshot.py`.",
         "",
-        "Linha de base da vitrine **antes** da refatoracao do build",
-        "(PRD secao 14, Fase 0). As Fases 1 e 2 so passam se",
-        "`verificar_snapshot.py` nao acusar diferenca.",
+        "Linha de base da saida do build. Qualquer divergencia apontada por",
+        "`verificar_snapshot.py` e mudanca **nao** intencional, ate que se",
+        "prove o contrario.",
+        "",
+        f"**Motivo desta versao:** {args.motivo}",
         "",
         "| Item | Valor |",
         "|---|---|",
@@ -81,9 +100,15 @@ def main() -> int:
         f"| Arquivos em `assets/patentes/**` | {len(linhas)} |",
         f"| Pastas de patente | {sum(1 for p in ASSETS.iterdir() if p.is_dir())} |",
         "",
-        "> A Fase 2 troca a copia byte a byte do PDF por uma versao",
-        "> higienizada (PRD 5.4). Os hashes de `ficha.pdf` mudam **uma vez**;",
-        "> `verificar_snapshot.py --ignorar-pdf` compara todo o resto.",
+        "## Como regravar",
+        "",
+        "Somente quando a mudanca de saida for **deliberada**, com o motivo",
+        "no commit:",
+        "",
+        "```bash",
+        "python tests/fixtures/snapshot-fase0/gerar_snapshot.py \\",
+        '    --fase 3 --motivo "por que a saida mudou"',
+        "```",
         "",
     ]
     (AQUI / "MANIFEST.md").write_text(

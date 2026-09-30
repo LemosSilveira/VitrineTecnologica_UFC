@@ -17,12 +17,21 @@ from __future__ import annotations
 
 import re
 
-from .nomes import chave, normaliza_espacos
+from .nomes import (
+    ARQUIVO_RE,
+    chave,
+    normaliza_espacos,
+    normaliza_numero,
+    so_letras,
+)
 
 __all__ = [
     "SECOES",
     "TRL_RE",
     "RESUMO_MAX",
+    "PDF",
+    "NOME_ARQUIVO",
+    "NAO_ENCONTRADO",
     "le_pagina1",
     "titulo_do_pdf",
     "secoes_do_pdf",
@@ -30,6 +39,8 @@ __all__ = [
     "limpa_diferenciais",
     "faz_resumo",
     "parse_trl",
+    "ler_ficha",
+    "ler_texto",
 ]
 
 # Cabecalhos das secoes da ficha, na ordem em que aparecem no template.
@@ -209,3 +220,114 @@ def parse_trl(trecho: str) -> dict | None:
     if estimado:
         texto += " (estimado)"
     return {"min": lo, "max": hi, "estimado": estimado, "texto": texto}
+
+
+# --------------------------------------------------------------------------
+# Preenchimento automatico do formulario do painel (PRD 6.2)
+# --------------------------------------------------------------------------
+
+PDF = "pdf"
+NOME_ARQUIVO = "nome_arquivo"
+NAO_ENCONTRADO = "nao_encontrado"
+
+
+def _campo(valor, origem: str) -> dict:
+    """Um campo do formulario com a procedencia do que foi preenchido.
+
+    A interface mostra "✦ do PDF" ou "✦ do nome do arquivo" ao lado do campo,
+    e sinaliza o que nao achou para a pessoa preencher a mao. Sem a origem, a
+    equipe nao teria como saber o que conferir (PRD 7.4).
+    """
+    vazio = valor is None or valor == "" or valor == []
+    return {"valor": valor, "origem": NAO_ENCONTRADO if vazio else origem}
+
+
+def _secoes_com_origem(bruto: dict, origem: str) -> dict:
+    return {
+        "oQueE": _campo(limpa_paragrafo(bruto.get("oQueE") or "") or None, origem),
+        "problema": _campo(limpa_paragrafo(bruto.get("problema") or "") or None, origem),
+        "exemploDeUso": _campo(
+            limpa_paragrafo(bruto.get("exemploDeUso") or "") or None, origem
+        ),
+        "diferenciais": _campo(
+            limpa_diferenciais(bruto.get("diferenciais") or "") or None, origem
+        ),
+        "beneficio": _campo(limpa_paragrafo(bruto.get("beneficio") or "") or None, origem),
+    }
+
+
+def ler_texto(texto: str) -> dict:
+    """Extrai os campos da ficha de um texto colado.
+
+    Alternativa para quem tem o conteudo mas nao o arquivo -- copiou da tela
+    do leitor de PDF, por exemplo. Sem o arquivo nao ha nome de arquivo, e
+    portanto nao ha como deduzir a area tecnologica.
+    """
+    texto = texto or ""
+    bruto, _ = secoes_do_pdf(texto)
+    trl = parse_trl(bruto.get("_trl", "") or "")
+    return {
+        "numero": _campo(normaliza_numero(texto), PDF),
+        "categoria": _campo(None, NAO_ENCONTRADO),
+        "titulo": _campo(None, NAO_ENCONTRADO),
+        "secoes": _secoes_com_origem(bruto, PDF),
+        "trl": _campo(trl, PDF),
+    }
+
+
+def ler_ficha(caminho_pdf, categorias: dict[str, str] | None = None) -> dict:
+    """Extrai os campos da ficha de um PDF, com a origem de cada um.
+
+    Reaproveita a mesma extracao do build, mais duas deducoes que o build
+    tirava do nome da pasta e que aqui nao existem ainda:
+
+    - **numero** do pedido, procurado no texto do PDF e, se nao achar, no
+      nome do arquivo;
+    - **area tecnologica**, pelo nome do arquivo e pelo mapa de categorias.
+
+    Quem chama precisa ter validado o PDF antes (`pdf_seguro.valida`).
+    """
+    from pathlib import Path
+
+    caminho = Path(caminho_pdf)
+    nome = normaliza_espacos(caminho.stem)
+
+    titulo_pdf, texto, n_paginas = le_pagina1(caminho)
+    bruto, _ = secoes_do_pdf(texto)
+
+    # ---- numero: PDF primeiro, nome do arquivo como reserva ----
+    numero, origem_numero = normaliza_numero(texto), PDF
+    if not numero:
+        numero, origem_numero = normaliza_numero(nome), NOME_ARQUIVO
+
+    # ---- categoria e titulo pelo nome do arquivo ----
+    categoria = None
+    titulo_arquivo = ""
+    m = ARQUIVO_RE.match(nome)
+    if m:
+        bruta = m.group("cat").strip(" -")
+        titulo_arquivo = re.sub(r"pdf$", "", m.group("titulo").strip()).strip()
+        titulo_arquivo = titulo_arquivo.strip("_").strip()
+        if categorias:
+            categoria = categorias.get(chave(bruta))
+
+    # ---- titulo: mesma regra do build ----
+    titulo, origem_titulo = titulo_pdf, PDF
+    if not titulo:
+        titulo, origem_titulo = titulo_arquivo, NOME_ARQUIVO
+    elif titulo_arquivo:
+        a, b = so_letras(titulo_pdf), so_letras(titulo_arquivo)
+        if a != b and a in b:
+            # PDF truncado no design: o nome do arquivo e mais completo
+            titulo, origem_titulo = titulo_arquivo, NOME_ARQUIVO
+    if titulo and titulo.isupper():
+        titulo = titulo.capitalize()
+
+    return {
+        "numero": _campo(numero, origem_numero),
+        "categoria": _campo(categoria, NOME_ARQUIVO),
+        "titulo": _campo(titulo or None, origem_titulo),
+        "secoes": _secoes_com_origem(bruto, PDF),
+        "trl": _campo(parse_trl(bruto.get("_trl", "") or ""), PDF),
+        "paginas": n_paginas,
+    }

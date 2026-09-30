@@ -12,7 +12,7 @@
 
 | | Antes | Depois |
 |---|---|---|
-| PDFs + imagens de origem | 235.4 MB | 134.9 MB |
+| PDFs + imagens de origem | 235.4 MB | 134.2 MB |
 
 - Soma das `capa-400.webp`: **1.7 MB** (meta do PRD: < 4 MB) OK
 
