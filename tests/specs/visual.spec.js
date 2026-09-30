@@ -61,10 +61,15 @@ test.describe("Visual", () => {
     await expect(page.locator(".grade .card")).toHaveCount(60);
 
     /* A pagina inteira com as 60 capas da uma referencia de ~9 MB, pesada
-       demais para versionar. Duas fileiras cobrem o htmlCard igual, e o
-       resto da pagina (hero, sobre, rodape) continua na captura. */
-    await page.addStyleTag({
-      content: ".grade .card:nth-child(n+9) { display: none; }",
+       demais para versionar. Duas fileiras cobrem o RENDER.card igual, e o
+       resto da pagina (hero, sobre, rodape) continua na captura.
+
+       Esconde pelo CSSOM, nao com addStyleTag: a CSP do site nao permite
+       <style> inline, e o proprio Playwright e bloqueado por ela. */
+    await page.evaluate(() => {
+      document.querySelectorAll(".grade .card").forEach((c, i) => {
+        if (i >= 8) c.style.display = "none";
+      });
     });
     await pronta(page);
     await expect(page).toHaveScreenshot("home.png", { fullPage: true });

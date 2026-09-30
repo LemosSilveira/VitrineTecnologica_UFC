@@ -77,6 +77,39 @@ async function semViolacoesAxe(page, { excluir = [] } = {}) {
   expect(graves.length, `Violacoes serious/critical:\n${resumo}`).toBe(0);
 }
 
+/**
+ * Espera a rolagem parar.
+ *
+ * O `html` do site tem `scroll-behavior: smooth`, e a previa da ficha fecha
+ * em qualquer evento de scroll. Rolar ate um card e passar o mouse em
+ * seguida faz a previa abrir aos 350ms e fechar logo depois, com a rolagem
+ * suave ainda em curso -- algo que nao acontece no uso real, em que a
+ * distancia entre um card e o vizinho e curta.
+ */
+async function esperaRolagemParar(page) {
+  /* Exige TRES leituras iguais em sequencia. Com duas, a espera terminava
+     cedo: chamado logo depois de scrollIntoViewIfNeeded, o navegador ainda
+     nao tinha comecado a animacao, e as duas primeiras amostras eram
+     identicas por isso -- nao por a rolagem ter acabado. */
+    let anterior = null;
+    let iguais = 0;
+    for (let i = 0; i < 60 && iguais < 3; i++) {
+      await page.waitForTimeout(100);
+      const y = await page.evaluate(() => window.scrollY);
+      iguais = y === anterior ? iguais + 1 : 0;
+      anterior = y;
+    }
+    expect(iguais, "a rolagem nao parou em 6s").toBeGreaterThanOrEqual(3);
+}
+
+/** Rola ate o card, espera a rolagem terminar e passa o mouse. */
+async function passaOMouseNoCard(page, seletor) {
+  const card = page.locator(seletor);
+  await card.scrollIntoViewIfNeeded();
+  await esperaRolagemParar(page);
+  await card.hover();
+}
+
 /** Espera o contador animado chegar ao valor final (dura ate 1,2s). */
 async function valorDoContador(page, chave) {
   const el = page.locator(`[data-numero="${chave}"]`);
@@ -92,4 +125,6 @@ module.exports = {
   semRolagemHorizontal,
   semViolacoesAxe,
   valorDoContador,
+  esperaRolagemParar,
+  passaOMouseNoCard,
 };

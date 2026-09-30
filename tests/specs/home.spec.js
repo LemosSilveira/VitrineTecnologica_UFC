@@ -11,6 +11,7 @@ const {
   vigiaConsole,
   semRolagemHorizontal,
   valorDoContador,
+  esperaRolagemParar,
 } = require("./_ajuda");
 
 const cards = (page) => page.locator(".grade .card");
@@ -77,14 +78,18 @@ test.describe("Home", () => {
       const busca = page.getByRole("searchbox");
 
       await busca.fill("camarao");
+      /* Espera o debounce de 150ms: a patente 1 e "Camarão em Pó Natural" e
+         tambem e o primeiro card da grade sem filtro, entao conferir o
+         titulo passaria antes de o filtro rodar. */
+      await expect(cards(page)).not.toHaveCount(ESPERADO.patentes);
       await expect(cards(page).first().locator(".card__titulo")).toContainText(
         /camar[aã]o/i
       );
       const semAcento = await cards(page).count();
+      expect(semAcento).toBeGreaterThan(0);
 
       await busca.fill("CAMARÃO");
       await expect(cards(page)).toHaveCount(semAcento);
-      expect(semAcento).toBeGreaterThan(0);
     });
 
     test("encontra pelo numero, com e sem hifen", async ({ page }) => {
@@ -325,21 +330,10 @@ test.describe("Home", () => {
     test("abre pelo foco do teclado e fecha com Esc", async ({ page }) => {
       await page.goto("/index.html");
 
-      /* O card precisa estar na tela ANTES do foco. Com o card fora da
-         viewport, o foco dispara a rolagem suave do `html` (base.css), que
-         ainda esta emitindo eventos de scroll quando a previa abre aos
-         350ms -- e o handler de scroll a fecha em seguida. Tabulando de um
-         card para o vizinho, como faz uma pessoa de verdade, a rolagem e
-         curta e termina bem antes disso. */
+      /* O card precisa estar na tela ANTES do foco: ver o comentario de
+         esperaRolagemParar em _ajuda.js. */
       await cards(page).first().scrollIntoViewIfNeeded();
-      await expect
-        .poll(async () => {
-          const a = await page.evaluate(() => window.scrollY);
-          await page.waitForTimeout(120);
-          const b = await page.evaluate(() => window.scrollY);
-          return a === b;
-        })
-        .toBe(true);
+      await esperaRolagemParar(page);
 
       await cards(page).first().locator(".card__link").focus();
 

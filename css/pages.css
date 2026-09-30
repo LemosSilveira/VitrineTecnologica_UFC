@@ -491,6 +491,13 @@
   padding-block: var(--s-8);
 }
 
+/* Patente sem PDF: nao ha card de documento, e o texto ocupa a largura
+   toda em vez de deixar 1/3 da pagina vazio (PRD 6.4). O `--measure` do
+   paragrafo continua limitando a linha a um comprimento legivel. */
+.patente-corpo--sem-doc {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .ficha-secao + .ficha-secao {
   margin-top: var(--s-7);
 }

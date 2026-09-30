@@ -705,6 +705,22 @@
   background: var(--c-brand-50);
 }
 
+/* Patente sem PDF: nao existe imagem da ficha, entao a previa mostra a capa
+   (quadrada) e o resumo no lugar. A largura do painel nao muda, para que a
+   posicao calculada em home.js continue valendo. */
+.previa--sem-ficha .previa__img {
+  aspect-ratio: 1;
+  object-position: center;
+}
+
+.previa__resumo {
+  margin: 0;
+  padding: var(--s-4) var(--s-4) 0;
+  font-size: var(--fs-caption);
+  line-height: 1.5;
+  color: var(--c-text-muted);
+}
+
 .previa__rodape {
   display: flex;
   align-items: center;
