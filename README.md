@@ -47,8 +47,56 @@ O script:
 2. extrai o texto da ficha com PyMuPDF e separa as seções
    (*O que é? · Problema que resolve · Exemplo de uso · Diferenciais
    competitivos · Benefício principal · TRL*);
-3. gera as imagens otimizadas em WebP e copia o PDF original;
-4. escreve `js/data/patentes.js` e `scripts/build_report.md`.
+3. aplica o `patente.json` da pasta, se houver (ver abaixo);
+4. gera as imagens otimizadas em WebP e publica uma versão **higienizada**
+   do PDF;
+5. escreve `js/data/patentes.js` e `scripts/build_report.md`.
+
+O `patentes.js` só é reescrito se o build terminar **sem erros** — com erro,
+a vitrine anterior fica de pé e o relatório diz o que aconteceu.
+
+### O PDF publicado não é o original
+
+`ficha.pdf` é uma versão higienizada: sai sem JavaScript, sem ações
+automáticas, sem anexos e sem metadados. As 60 fichas do acervo traziam
+`author`, `creator` e IDs internos da ferramenta que as gerou — nada disso
+vai ao ar. **O original no acervo continua intacto.**
+
+### Corrigir uma patente sem mexer no PDF
+
+Um arquivo `patente.json` dentro da pasta da patente sobrepõe o que foi
+extraído da ficha, campo a campo:
+
+```json
+{
+  "versao": 1,
+  "oculta": false,
+  "campos": {
+    "titulo": "Título corrigido",
+    "categoria": "Engenharias",
+    "secoes": { "oQueE": "...", "diferenciais": ["..."] },
+    "trl": { "min": 5, "max": 6, "estimado": true }
+  }
+}
+```
+
+- A prioridade é **`patente.json` › texto do PDF › nome do arquivo**. Campo
+  ausente continua vindo do PDF; campo em `null` foi apagado de propósito.
+- `numero`, `ano`, `tipo` e `id` vêm **sempre** do nome da pasta. Número
+  errado se resolve com patente nova, antiga para a lixeira.
+- `oculta: true` tira a patente da vitrine **e** apaga os assets dela — o
+  PDF não fica acessível por URL direta.
+- Campo desconhecido é **erro**, não algo ignorado em silêncio: um `titluo`
+  com erro de digitação passaria despercebido para sempre.
+
+### Lixeira e patente sem PDF
+
+- Pastas que começam com `_` ou `.` são ignoradas. Excluir é mover a pasta
+  para `_lixeira`: nada é apagado de verdade.
+- Uma patente **sem PDF** entra na vitrine se o `patente.json` trouxer
+  `titulo`, `categoria` e `secoes.oQueE`. Ela fica sem botão de download e
+  sem imagem da ficha (`pdf`, `ficha600` e `ficha1620` em `null`), e o site
+  trata esses nulos.
 
 **A pasta de origem é somente leitura** — o script nunca renomeia, move ou
 apaga nada. E o build é **idempotente**: rodar duas vezes não altera nenhum
@@ -81,9 +129,10 @@ código em vez de duplicá-lo:
 |---|---|
 | `nomes.py` | normalização de texto, slug e os regex de pasta/arquivo |
 | `io_seguro.py` | escrita atômica, `write_if_changed`, confinamento de caminho |
-| `extracao.py` | leitura das fichas em PDF (título, seções, TRL) |
+| `extracao.py` | leitura das fichas em PDF (título, seções, TRL, `ler_ficha`) |
+| `pdf_seguro.py` | validação e higienização de PDF |
 | `imagens.py` | capas e render da ficha em WebP |
-| `acervo.py` | leitura das pastas originais e de `dados/categorias.json` |
+| `acervo.py` | pastas originais, `patente.json` e `dados/categorias.json` |
 | `build.py` | o pipeline completo, a serialização e o relatório |
 
 ```python
@@ -114,6 +163,13 @@ As pastas originais têm várias inconsistências, todas tratadas no script:
 
 O site é estático: basta subir a pasta inteira (sem `tests/` e `scripts/`, se
 preferir). Confira dois pontos:
+
+> O `.htaccess` traz uma **Content-Security-Policy sem `'unsafe-inline'`**.
+> Isso só é possível porque o site não tem nenhum `<script>` nem `<style>`
+> inline: os estilos calculados (posição da prévia, mosaicos, nome da view
+> transition) são aplicados pelo CSSOM, que a CSP libera. Ao acrescentar
+> qualquer coisa ao HTML, mantenha essa regra — `tests/specs/csp.spec.js`
+> falha se ela for quebrada.
 
 1. **`CONFIG.basePath`** em `js/config.js` — hoje é `"/"` (raiz de domínio).
    Se o site for para uma **subpasta** (ex.: GitHub Pages em
@@ -197,11 +253,13 @@ Sai com código ≠ 0 em qualquer divergência byte a byte.
 │   ├── tokens.css          Cores, tipografia, espaçamento, sombras, easing
 │   ├── base.css            Reset, @font-face, tipografia, utilitários
 │   ├── components.css      Header, rodapé, card, prévia, chips, TRL, lightbox
-│   └── pages.css           Home, detalhe e 404
+│   ├── pages.css           Home, detalhe e 404
+│   └── erro.css            Só a 404 (caminho absoluto do logo)
 ├── js/
 │   ├── config.js           CONFIG global (URLs, e-mail, basePath)
 │   ├── data/patentes.js    GERADO — window.PATENTES / window.CATEGORIAS
 │   ├── ui.js               Header, reveal, contadores, ícones, utilidades
+│   ├── render.js           Card, TRL e seções — compartilhado com o painel
 │   ├── home.js             Busca, filtros, grade, prévia no hover
 │   ├── patente.js          Detalhe, TRL, lightbox, navegação
 │   └── erro.js             404
