@@ -17,6 +17,21 @@ const { URL } = require("url");
 const RAIZ = path.resolve(__dirname, "..");
 const PORTA = Number(process.argv[2] || process.env.PORTA || 4173);
 
+/* A CSP e lida do proprio .htaccess em vez de copiada para ca: uma copia
+   divergiria no primeiro ajuste, e os testes passariam a validar uma
+   politica que o servidor de producao nao aplica. */
+function cspDoHtaccess() {
+  try {
+    const txt = fs.readFileSync(path.join(RAIZ, ".htaccess"), "utf8");
+    const m = txt.match(/Header\s+set\s+Content-Security-Policy\s+"([^"]+)"/i);
+    return m ? m[1] : null;
+  } catch {
+    return null;
+  }
+}
+
+const CSP = cspDoHtaccess();
+
 const MIME = {
   ".html": "text/html; charset=utf-8",
   ".css": "text/css; charset=utf-8",
@@ -57,10 +72,12 @@ function responde404(res) {
       res.end("404");
       return;
     }
-    res.writeHead(404, {
+    const cab = {
       "content-type": MIME[".html"],
       "x-content-type-options": "nosniff",
-    });
+    };
+    if (CSP) cab["content-security-policy"] = CSP;
+    res.writeHead(404, cab);
     res.end(buf);
   });
 }
@@ -85,14 +102,16 @@ const servidor = http.createServer((req, res) => {
       return;
     }
     const ext = path.extname(alvo).toLowerCase();
-    res.writeHead(200, {
+    const cab = {
       "content-type": MIME[ext] || "application/octet-stream",
       "content-length": st.size,
       // espelha o .htaccess: nada de sniffing de tipo
       "x-content-type-options": "nosniff",
       // os testes precisam ver sempre o arquivo do disco
       "cache-control": "no-store",
-    });
+    };
+    if (CSP && ext === ".html") cab["content-security-policy"] = CSP;
+    res.writeHead(200, cab);
     if (req.method === "HEAD") {
       res.end();
       return;

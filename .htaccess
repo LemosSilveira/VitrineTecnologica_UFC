@@ -34,14 +34,43 @@ ErrorDocument 404 /404.html
   ExpiresByType application/pdf           "access plus 30 days"
 </IfModule>
 
-# ---- Seguranca basica ----
+# ---- Seguranca ----
 <IfModule mod_headers.c>
   Header set X-Content-Type-Options "nosniff"
   Header set Referrer-Policy "strict-origin-when-cross-origin"
+
+  # Content-Security-Policy
+  #
+  # Sem 'unsafe-inline' em lugar nenhum: o site nao tem <script> nem <style>
+  # inline, e os estilos calculados (posicao da previa, mosaicos, nome da
+  # view transition) sao aplicados pelo CSSOM, que a CSP libera. Por isso
+  # esta politica de fato barra um <script> injetado, em vez de so parecer
+  # que barra.
+  #
+  # img-src permite data: por causa da previa do painel, que monta as
+  # imagens em data: URL -- o site publico nao usa.
+  Header set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'"
+
+  Header set X-Frame-Options "DENY"
+  Header set Permissions-Policy "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+
   <FilesMatch "\.(woff2)$">
     Header set Access-Control-Allow-Origin "*"
   </FilesMatch>
 </IfModule>
+
+# ---- Defesa em profundidade ----
+# O pacote de publicacao e montado por lista de permissoes e nao inclui nada
+# disto. Estas regras existem para o caso de alguem subir o repositorio
+# inteiro por engano: o painel, o acervo e os backups nao podem ficar
+# acessiveis pela web nem por um minuto.
+RedirectMatch 404 ^/(admin|scripts|tests|dados|node_modules|\.git)(/|$)
+RedirectMatch 404 \.(py|md|json|log|spec|ps1|bat|lock|yml|yaml|ini)$
+
+# Arquivos ocultos (.env, .gitignore, .htpasswd...)
+<FilesMatch "^\.">
+  Require all denied
+</FilesMatch>
 
 # Nao listar o conteudo das pastas
 Options -Indexes

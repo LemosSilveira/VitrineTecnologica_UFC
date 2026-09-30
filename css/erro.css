@@ -1,0 +1,20 @@
+/* ============================================================
+   erro.css — o que so a 404.html precisa.
+
+   Existe por dois motivos:
+
+   1. O logo e aplicado como mascara CSS, e na 404 o caminho da mascara
+      precisa ser ABSOLUTO: a pagina pode ser servida em qualquer
+      profundidade de URL (/patente/xyz/abc), onde um caminho relativo
+      apontaria para o lugar errado.
+   2. Antes isso vivia num <style> dentro da 404.html. Um <style> inline
+      obriga a CSP a permitir style-src 'unsafe-inline', que e justamente
+      o que o .htaccess deixou de conceder (PRD 6.6).
+
+   Se o site for para uma subpasta, ajuste o caminho abaixo junto com
+   CONFIG.basePath em js/config.js.
+   ============================================================ */
+.logo-ufcinova {
+  -webkit-mask-image: url("/assets/img/logo-ufcinova.svg");
+  mask-image: url("/assets/img/logo-ufcinova.svg");
+}
