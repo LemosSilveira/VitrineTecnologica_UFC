@@ -1,0 +1,37 @@
+# ============================================================
+# Dependencias de execucao do Painel da Vitrine
+#
+# Instalar SEMPRE com verificacao de hash:
+#     pip install --require-hashes -r admin/requirements.txt
+#
+# Sem --require-hashes, uma dependencia comprometida no PyPI entraria no
+# executavel que a equipe da UFC Inova roda (modelo de ameacas T9).
+#
+# GERADO para AMD64 / Windows, Python 3.14. Wheels com codigo compilado
+# (pymupdf, pillow) sao especificos de versao do Python e de plataforma:
+# trocar qualquer um dos dois exige regerar este arquivo.
+#
+# Para regerar:
+#     python admin/gera_requirements.py
+# ============================================================
+
+bottle==0.13.4 \
+    --hash=sha256:045684fbd2764eac9cdeb824861d1551d113e8b683d8d26e296898d3dd99a12e
+cffi==2.1.1 \
+    --hash=sha256:3222ba5d678f80a030e6afbcc33dc1ae5cb45facabb61cee2c7016b8432fde48
+clr-loader==0.3.1 \
+    --hash=sha256:cbad189de20d202a7d621956b0fc38049e13c9bf7ca2923441eff725cd121aa1
+pillow==12.3.0 \
+    --hash=sha256:fdafc9cce40277e0f7a0feabce0ee50dd2fa1800f3b38015e51296b5e814048d
+proxy-tools==0.1.0 \
+    --hash=sha256:ccb3751f529c047e2d8a58440d86b205303cf0fe8146f784d1cbcd94f0a28010
+pycparser==3.0 \
+    --hash=sha256:b727414169a36b7d524c1c3e31839a521725078d7b2ff038656844266160a992
+pymupdf==1.28.2 \
+    --hash=sha256:ebd244918798502d7b4504c90410d1711a4d7675a32584ca30f1bab419ecbffe
+pythonnet==3.2.0 \
+    --hash=sha256:c8c7946d291156ffc1d5f22c001a63c6776947ce3c64da800ccea8181ddb1abe
+pywebview==5.4 \
+    --hash=sha256:0559c47db543556498dd38604a2a0479896c320f86c9b23499b8e580b58b699d
+typing-extensions==4.16.0 \
+    --hash=sha256:481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8
