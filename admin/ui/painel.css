@@ -735,6 +735,7 @@ body.painel {
    Seletor de TRL (PRD 7.4) — reaproveita a barra .trl do site
    ============================================================ */
 .trl-editor .trl__barra {
+  height: 24px;
   gap: 3px;
 }
 
@@ -1188,6 +1189,7 @@ body.painel {
   position: relative;
   display: grid;
   place-items: center;
+  min-height: 280px;
   max-height: 60vh;
   overflow: hidden;
   background: var(--c-bg);
@@ -1330,6 +1332,102 @@ body.painel {
   .coluna-previa {
     position: static;
   }
+}
+
+/* ============================================================
+   Espacamento utilitario (Fase 5)
+
+   So estes dois casos pontuais: o resto do layout usa `gap` do proprio
+   flex/grid. Existem para nao escrever `style="margin-top: ..."` no
+   HTML montado por string (mostraBarraLeitura) -- a CSP da janela tem
+   `style-src 'self'` sem `'unsafe-inline'`, e bloqueia esse atributo.
+   ============================================================ */
+.mt-3 {
+  margin-top: var(--s-3);
+}
+
+.mt-4 {
+  margin-top: var(--s-4);
+}
+
+.campo__ajuda--espaco {
+  margin-top: var(--s-3);
+}
+
+/* ============================================================
+   Checkbox de linha unica ("Mostrar na vitrine", "Conferi...") — Fase 5
+   ============================================================ */
+.campo-check {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  font-size: var(--fs-strong);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.campo-check input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--c-brand);
+}
+
+/* seta reaproveitada de "chevron-up" para apontar para baixo, no editor de
+   diferenciais (PRD 7.4) */
+.girado-180 {
+  transform: rotate(180deg);
+}
+
+/* ============================================================
+   Previa estatica do formulario (abas Card / Hover / Pagina — PRD 7.5)
+
+   `.previa` (components.css) e o balao FLUTUANTE que aparece no hover do
+   site: posicao fixa e escondido abaixo de 1024px. Aqui a previa mora dentro
+   da coluna da direita, sempre visivel, entao o invólucro e outro -- mas o
+   conteudo de dentro (`.previa__img`, `.previa__rodape`, `.trl-chip`) e
+   exatamente o mesmo, para a prova visual ficar identica a do site.
+   ============================================================ */
+.previa-card-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.previa-painel {
+  overflow: hidden;
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-lg);
+  background: var(--c-surface);
+  box-shadow: var(--sh-1);
+}
+
+.previa-painel--sem-ficha .previa__img {
+  aspect-ratio: 1;
+  object-position: center;
+}
+
+.previa-pagina__topo {
+  display: flex;
+  gap: var(--s-4);
+  align-items: flex-start;
+  margin-bottom: var(--s-4);
+}
+
+.previa-pagina__capa {
+  flex: none;
+  width: 96px;
+  height: 96px;
+  border-radius: var(--r-sm);
+  object-fit: cover;
+  background: var(--c-brand-50);
+}
+
+.previa-pagina__topo h3 {
+  margin: 2px 0;
+  font-size: var(--fs-h3);
+}
+
+.previa-pagina__corpo .ficha-secao {
+  margin-top: var(--s-4);
 }
 
 /* ============================================================

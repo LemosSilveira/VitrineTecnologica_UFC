@@ -195,10 +195,15 @@ class Api:
             "ocultas": 0,
             "naLixeira": 0,
             "areas": 0,
+            "listaAreas": [],
         }
         if pronto:
             resumo = self._resumo_do_acervo()
             dados.update(resumo)
+            # a tela "Nova patente" precisa da lista para o select de area, e
+            # nao tem id para chamar `obter()` (que ja devolve a lista, mas so
+            # faz sentido para quem esta editando uma patente existente)
+            dados["listaAreas"] = sorted(set(self._categorias().values()))
         return _ok(dados)
 
     @_protegido

@@ -479,13 +479,15 @@
     nova: {
       titulo: "Nova patente",
       monta: function () {
-        return emConstrucao("O cadastro de patente", 5);
+        return window.TELA_EDITAR.monta(null);
       },
     },
     editar: {
       titulo: "Editar patente",
-      monta: function () {
-        return emConstrucao("A edição de patente", 5);
+      monta: function (args) {
+        var id = parseInt(args[0], 10);
+        if (!id) return emConstrucao("A edição de patente", 5);
+        return window.TELA_EDITAR.monta(id);
       },
     },
     publicar: {
@@ -670,6 +672,13 @@
     chipDeStatus: chipDeStatus,
     estado: estado,
     recarrega: recarrega,
+    /* Atualiza contagens e o cache de patentes SEM redesenhar a tela atual.
+       `recarrega()` termina em `desenha()`, o que e certo para quem chama a
+       partir da lista -- mas apagaria um formulario de edicao em andamento
+       (tokens, rascunho, previa) se chamado dali. */
+    atualizaContadores: function () {
+      return carregaEstado().then(carregaPatentes);
+    },
     vaiPara: vaiPara,
     desenha: desenha,
   };

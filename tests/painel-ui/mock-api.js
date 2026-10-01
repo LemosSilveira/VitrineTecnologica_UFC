@@ -127,6 +127,7 @@
           ocultas: 0,
           naLixeira: 0,
           areas: 0,
+          listaAreas: [],
         });
       }
       return ok({
@@ -140,6 +141,7 @@
         ocultas: 1,
         naLixeira: 2,
         areas: AREAS.length,
+        listaAreas: AREAS,
         naoPublicadas: 3,
       });
     },

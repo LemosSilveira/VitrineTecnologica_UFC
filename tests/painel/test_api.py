@@ -83,6 +83,7 @@ class TestEstadoEConfiguracao:
         assert dados["configurado"] is True
         assert dados["naVitrine"] == 1
         assert dados["areas"] == 10
+        assert "Alimentos" in dados["listaAreas"]
         assert dados["usuario"]
 
     def test_configurar(self, ambiente, dialogos_falsos):
