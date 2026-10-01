@@ -110,7 +110,14 @@ const servidor = http.createServer((req, res) => {
       // os testes precisam ver sempre o arquivo do disco
       "cache-control": "no-store",
     };
-    if (CSP && ext === ".html") cab["content-security-policy"] = CSP;
+    /* A CSP do .htaccess vale para o SITE. O painel tem a propria, na <meta>
+       do admin/ui/index.html, e em producao e servido pelo servidor interno do
+       pywebview, que nao manda header nenhum. Impor as duas aqui criaria uma
+       politica-interseccao que nao existe em lugar nenhum. */
+    const doPainel = url.pathname.startsWith("/admin/");
+    if (CSP && ext === ".html" && !doPainel) {
+      cab["content-security-policy"] = CSP;
+    }
     res.writeHead(200, cab);
     if (req.method === "HEAD") {
       res.end();

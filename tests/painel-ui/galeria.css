@@ -1,0 +1,166 @@
+/* Estilo SO da pagina de galeria (ferramenta de revisao, nao produto). */
+.galeria {
+  background: var(--c-bg);
+}
+
+.galeria__topo {
+  display: flex;
+  align-items: center;
+  gap: var(--s-5);
+  padding: var(--s-6) var(--s-7);
+  background: var(--c-surface);
+  border-bottom: 1px solid var(--c-border);
+  color: var(--c-brand);
+}
+
+.galeria__topo .logo-ufcinova {
+  width: 132px;
+  flex: none;
+}
+
+.galeria__topo h1 {
+  margin: var(--s-1) 0 0;
+  font-size: var(--fs-h2);
+  color: var(--c-text);
+}
+
+.galeria__nota {
+  margin: var(--s-2) 0 0;
+  color: var(--c-text-muted);
+}
+
+.galeria__main {
+  max-width: 1200px;
+  margin-inline: auto;
+  padding: var(--s-7) var(--s-6) var(--s-10);
+}
+
+.galeria__secao + .galeria__secao {
+  margin-top: var(--s-9);
+  padding-top: var(--s-7);
+  border-top: 1px solid var(--c-border);
+}
+
+.galeria__secao > h2 {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  margin: 0 0 var(--s-2);
+  font-size: var(--fs-h3);
+}
+
+.galeria__secao > h2::before {
+  content: "";
+  flex: none;
+  width: 8px;
+  height: 8px;
+  background: var(--c-brand);
+}
+
+.galeria__secao code {
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--c-brand-50);
+  font-size: 0.9em;
+}
+
+.galeria__ajuda {
+  max-width: 76ch;
+  margin: var(--s-3) 0 var(--s-4);
+  font-size: var(--fs-caption);
+  color: var(--c-text-muted);
+}
+
+.galeria__grade2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-5);
+  align-items: start;
+}
+
+/* ---- amostras de cor ---- */
+.galeria__cores {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: var(--s-4);
+}
+
+.amostra {
+  overflow: hidden;
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+  background: var(--c-surface);
+}
+
+.amostra__faixa {
+  display: grid;
+  place-items: center;
+  height: 72px;
+  font-size: var(--fs-caption);
+  font-weight: 600;
+}
+
+.amostra__corpo {
+  padding: var(--s-3);
+}
+
+.amostra__nome {
+  font-family: var(--ff-title);
+  font-size: var(--fs-strong);
+}
+
+.amostra__hex {
+  font-size: var(--fs-caption);
+  color: var(--c-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.amostra__uso {
+  margin: var(--s-2) 0 0;
+  font-size: var(--fs-caption);
+  line-height: 1.4;
+  color: var(--c-text-muted);
+}
+
+.amostra__contraste {
+  display: inline-block;
+  margin-top: var(--s-2);
+  padding: 1px var(--s-2);
+  border-radius: 4px;
+  background: var(--c-brand-50);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--c-brand);
+}
+
+.amostra__contraste.is-fraco {
+  background: var(--c-danger-100);
+  color: var(--c-danger-700);
+}
+
+/* Classes utilitarias para nao usar atributo style (a CSP bloqueia). */
+.galeria__espaco {
+  margin-top: var(--s-3);
+}
+
+.checagem__texto {
+  margin: 0;
+}
+
+/* ---- toasts na galeria: estaticos, nao fixos ---- */
+.galeria__toasts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  max-width: 460px;
+}
+
+.galeria__toasts .toast {
+  animation: none;
+}
+
+.galeria__modal-demo .modal {
+  position: static;
+  display: block;
+  max-width: 520px;
+}

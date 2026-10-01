@@ -1,0 +1,1323 @@
+/* ============================================================
+   painel.css — SO o que o site nao tem.
+
+   Botao, chip, badge, segmentado, busca, card, previa, TRL, logo e todos os
+   tokens de cor, tipografia, espacamento, raio, sombra e movimento vem de
+   site/css/*.css. Aqui ficam apenas os componentes de ferramenta de
+   trabalho: layout do painel, formulario, tabela, zona de soltar, toast,
+   etapas do build e confirmacao destrutiva (PRD 7.4).
+
+   Regra: **nenhum valor de cor, espaco ou tempo escrito a mao** -- tudo sai
+   de var(--...). A unica excecao esta logo abaixo, e e a cor de erro.
+   ============================================================ */
+
+/* ============================================================
+   Cor de erro (excecao controlada -- PRD 7.3)
+
+   Escolha do usuario: #ED455A. Ela nao entra em css/tokens.css de proposito:
+   o site publico continua com a paleta de matiz unica (roxo + zinc) descrita
+   no README, e esta cor vale SO no painel.
+
+   A escala existe porque #ED455A puro rende 3,41:1 sobre o fundo e 3,75:1
+   contra branco: passa no minimo de 3:1 exigido para componente de interface,
+   mas fica abaixo dos 4,5:1 de texto normal. Usar o tom base como texto de
+   mensagem reprovaria no axe (color-contrast, serious). Entao o base fica nos
+   usos graficos e o texto usa a variacao escura da MESMA matiz -- HSL 352,5°
+   e saturacao 82,4% nos dois, so a luminosidade muda.
+   ============================================================ */
+:root {
+  --c-danger: #ed455a; /* 3,41:1 no fundo — borda, icone, barra, anel de foco */
+  --c-danger-700: #d1142c; /* 4,97:1 — TEXTO de erro e botao destrutivo */
+  --c-danger-800: #a71023; /* 6,97:1 — hover/pressed do botao destrutivo */
+  --c-danger-100: #fcdee2; /* fundo de badge de erro */
+  --c-danger-50: #fef1f3; /* fundo da caixa de resumo de erros */
+  --c-danger-a12: rgb(237 69 90 / 0.12); /* anel de foco do campo invalido */
+  --c-danger-a24: rgb(237 69 90 / 0.24);
+
+  /* Medidas do painel */
+  --lateral-w: 232px;
+  --topo-h: 64px;
+  --campo-h: 44px; /* alvo de toque confortavel, tambem no mouse */
+}
+
+/* ============================================================
+   Layout: cabecalho fixo + barra lateral + conteudo
+   ============================================================ */
+body.painel {
+  display: grid;
+  grid-template-columns: var(--lateral-w) minmax(0, 1fr);
+  grid-template-rows: var(--topo-h) minmax(0, 1fr);
+  grid-template-areas:
+    "topo topo"
+    "lateral conteudo";
+  /* Altura fixa e overflow escondido: quem rola e SO a area de conteudo.
+     Com min-height, a barra lateral crescia junto com a lista e o contador
+     de alteracoes nao publicadas saia da tela -- justamente o que ele
+     precisa nao fazer. */
+  height: 100vh;
+  overflow: hidden;
+  /* a janela tem no minimo 1100x720; abaixo disso o layout so rola */
+  min-width: 980px;
+  background: var(--c-bg);
+}
+
+/* ---- cabecalho ---- */
+.painel-topo {
+  grid-area: topo;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  padding-inline: var(--s-5);
+  background: var(--c-surface);
+  border-bottom: 1px solid var(--c-border);
+}
+
+.painel-topo__marca {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  color: var(--c-brand);
+}
+
+.painel-topo__marca .logo-ufcinova {
+  width: 108px;
+}
+
+.painel-topo__sep {
+  width: 1px;
+  height: 24px;
+  background: var(--c-border-strong);
+}
+
+.painel-topo__titulo {
+  margin: 0;
+  font-family: var(--ff-title);
+  font-size: 1.125rem;
+  font-weight: 400;
+  color: var(--c-text);
+  letter-spacing: 0.01em;
+}
+
+.painel-topo__lado {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+}
+
+.painel-topo__usuario {
+  font-size: var(--fs-caption);
+  color: var(--c-text-muted);
+}
+
+.painel-selo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  background: var(--c-brand-100);
+  color: var(--c-brand);
+}
+
+.painel-selo__ponto {
+  width: 8px;
+  height: 8px;
+  background: var(--c-brand);
+}
+
+/* ---- barra lateral ---- */
+.painel-lateral {
+  grid-area: lateral;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--s-4);
+  padding: var(--s-4) 0 var(--s-4);
+  background: var(--c-surface);
+  border-right: 1px solid var(--c-border);
+}
+
+.painel-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.painel-menu__item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-3) var(--s-5);
+  font-size: var(--fs-strong);
+  font-weight: 500;
+  color: var(--c-text);
+  text-decoration: none;
+  transition: background var(--dur-1) var(--ease-out),
+    color var(--dur-1) var(--ease-out);
+}
+
+.painel-menu__item:hover {
+  background: var(--c-brand-50);
+  color: var(--c-brand);
+}
+
+/* O marcador quadrado de 8px e o motivo grafico do site: o "pingo" do i do
+   logo, o mesmo dos mosaicos e dos marcadores de secao. */
+.painel-menu__marca {
+  position: absolute;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  background: var(--c-brand);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity var(--dur-1) var(--ease-out),
+    transform var(--dur-1) var(--ease-out);
+}
+
+/* Primeira execucao: so Configurar e alcancavel. Deixar os outros com
+   aparencia normal faria a pessoa clicar e ser jogada de volta, sem entender
+   por que. */
+.painel-menu__item[aria-disabled="true"] {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.painel-menu__item[aria-current="page"] {
+  background: var(--c-brand-50);
+  color: var(--c-brand);
+  font-weight: 600;
+}
+
+.painel-menu__item[aria-current="page"] .painel-menu__marca {
+  opacity: 1;
+  transform: translateX(8px);
+}
+
+.painel-menu__icone {
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+  color: currentColor;
+}
+
+.painel-menu__icone svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* `display: block` numa classe vence o `[hidden] { display: none }` do
+   navegador: sem esta regra, o contador aparece zerado na primeira execucao. */
+.painel-pendentes[hidden] {
+  display: none;
+}
+
+.painel-pendentes {
+  display: block;
+  margin-inline: var(--s-4);
+  padding: var(--s-3) var(--s-4);
+  border: 1px dashed var(--c-brand-a24);
+  border-radius: var(--r-sm);
+  background: var(--c-brand-50);
+  color: var(--c-brand);
+  font-size: var(--fs-caption);
+  line-height: 1.35;
+  text-decoration: none;
+  transition: border-color var(--dur-1) var(--ease-out);
+}
+
+.painel-pendentes:hover {
+  border-color: var(--c-brand);
+  border-style: solid;
+}
+
+.painel-pendentes strong {
+  display: block;
+  font-family: var(--ff-title);
+  font-size: 1.25rem;
+  font-weight: 400;
+}
+
+/* ---- conteudo ---- */
+.painel-conteudo {
+  grid-area: conteudo;
+  min-width: 0;
+  padding: var(--s-6) var(--s-6) var(--s-9);
+  overflow-y: auto;
+}
+
+.painel-largura {
+  max-width: 1200px;
+  margin-inline: auto;
+}
+
+/* troca de tela: fade + subida curta (PRD 7.6) */
+.painel-tela {
+  animation: painel-entra var(--dur-2) var(--ease-out);
+}
+
+@keyframes painel-entra {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+.painel-sem-js {
+  grid-area: conteudo;
+  padding: var(--s-6);
+}
+
+/* ============================================================
+   Cabecalho de tela
+   ============================================================ */
+.tela-topo {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--s-5);
+  margin-bottom: var(--s-6);
+}
+
+.tela-topo h2 {
+  margin: 0;
+  font-size: var(--fs-h2);
+}
+
+.tela-topo__texto {
+  margin: var(--s-2) 0 0;
+  max-width: 62ch;
+  color: var(--c-text-muted);
+}
+
+.tela-numeros {
+  display: flex;
+  gap: var(--s-6);
+  margin: var(--s-5) 0 0;
+}
+
+.tela-numeros div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tela-numeros dt {
+  order: 2;
+  font-size: var(--fs-caption);
+  color: var(--c-text-muted);
+}
+
+.tela-numeros dd {
+  order: 1;
+  margin: 0;
+  font-family: var(--ff-title);
+  font-size: 1.75rem;
+  line-height: 1;
+  color: var(--c-brand);
+}
+
+/* ============================================================
+   Campo de formulario (PRD 7.4)
+   ============================================================ */
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  margin-bottom: var(--s-5);
+}
+
+.campo__rotulo {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-3);
+  font-size: var(--fs-strong);
+  font-weight: 600;
+}
+
+.campo__obrigatorio {
+  color: var(--c-brand);
+}
+
+.campo__contador {
+  font-variant-numeric: tabular-nums;
+  font-size: var(--fs-caption);
+  font-weight: 400;
+  color: var(--c-text-subtle);
+}
+
+.campo__contador.is-perto {
+  color: var(--c-text-muted);
+}
+
+.campo__contador.is-acima {
+  color: var(--c-danger-700);
+  font-weight: 600;
+}
+
+.campo input[type="text"],
+.campo input[type="search"],
+.campo select,
+.campo textarea {
+  width: 100%;
+  min-height: var(--campo-h);
+  padding: var(--s-3);
+  border: 1px solid var(--c-border-strong);
+  border-radius: var(--r-sm);
+  background: var(--c-surface);
+  color: var(--c-text);
+  font: inherit;
+  transition: border-color var(--dur-1) var(--ease-out),
+    box-shadow var(--dur-1) var(--ease-out),
+    background var(--dur-2) var(--ease-out);
+}
+
+.campo textarea {
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.campo input:focus-visible,
+.campo select:focus-visible,
+.campo textarea:focus-visible {
+  outline: none;
+  border-color: var(--c-brand);
+  box-shadow: 0 0 0 3px var(--c-brand-a12);
+}
+
+.campo__ajuda {
+  font-size: var(--fs-caption);
+  color: var(--c-text-muted);
+}
+
+/* ---- erro no campo ---- */
+.campo__erro {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-2);
+  font-size: var(--fs-caption);
+  font-weight: 500;
+  /* TEXTO usa o tom escuro: 4,97:1. O tom base reprovaria aqui. */
+  color: var(--c-danger-700);
+}
+
+.campo__erro svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin-top: 1px;
+  color: var(--c-danger);
+}
+
+.campo [aria-invalid="true"] {
+  /* 2px de borda e o icone no texto: o erro nunca depende so da cor */
+  border-width: 2px;
+  border-color: var(--c-danger);
+}
+
+.campo [aria-invalid="true"]:focus-visible {
+  border-color: var(--c-danger);
+  box-shadow: 0 0 0 3px var(--c-danger-a24);
+}
+
+/* ---- preenchido automaticamente (PRD 7.4) ---- */
+.campo.is-do-pdf input,
+.campo.is-do-pdf textarea,
+.campo.is-do-pdf select {
+  background: var(--c-brand-50);
+}
+
+.campo__fonte {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px var(--s-2);
+  border-radius: var(--r-sm);
+  background: var(--c-brand-100);
+  color: var(--c-brand);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* "Nao encontramos no PDF": borda tracejada, sem cor de erro -- nao e erro,
+   e um campo que a pessoa precisa preencher. */
+.campo.is-nao-encontrado input,
+.campo.is-nao-encontrado textarea,
+.campo.is-nao-encontrado select {
+  border-style: dashed;
+  border-color: var(--c-border-strong);
+}
+
+/* o fundo pisca uma vez, mostrando O QUE foi preenchido (PRD 7.6) */
+@keyframes campo-preenchido {
+  from {
+    background: var(--c-brand-100);
+  }
+}
+
+.campo.is-piscando input,
+.campo.is-piscando textarea,
+.campo.is-piscando select {
+  animation: campo-preenchido var(--dur-4) var(--ease-out) var(--atraso, 0ms) both;
+}
+
+/* ============================================================
+   Resumo de erros do formulario (PRD 7.4)
+   ============================================================ */
+.resumo-erros {
+  margin-bottom: var(--s-5);
+  padding: var(--s-4) var(--s-5);
+  border-left: 4px solid var(--c-danger);
+  border-radius: var(--r-sm);
+  background: var(--c-danger-50);
+}
+
+.resumo-erros h3 {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin: 0 0 var(--s-3);
+  font-size: var(--fs-strong);
+  color: var(--c-danger-700);
+}
+
+.resumo-erros h3 svg {
+  width: 18px;
+  height: 18px;
+  color: var(--c-danger);
+}
+
+.resumo-erros ul {
+  margin: 0;
+  padding-left: var(--s-5);
+  font-size: var(--fs-strong);
+}
+
+.resumo-erros a {
+  color: var(--c-danger-700);
+}
+
+/* ============================================================
+   Zona de soltar (PRD 7.4)
+   ============================================================ */
+.dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-3);
+  width: 100%;
+  min-height: 160px;
+  padding: var(--s-5);
+  border: 2px dashed var(--c-brand-a24);
+  border-radius: var(--r-lg);
+  background: var(--c-brand-50);
+  color: var(--c-text);
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color var(--dur-1) var(--ease-out),
+    background var(--dur-1) var(--ease-out),
+    transform var(--dur-1) var(--ease-out);
+}
+
+.dropzone:hover {
+  border-color: var(--c-brand);
+}
+
+.dropzone:focus-visible {
+  outline: 2px solid var(--c-brand);
+  outline-offset: 2px;
+}
+
+.dropzone.is-arrastando {
+  border-style: solid;
+  border-color: var(--c-brand);
+  background: var(--c-brand-100);
+  transform: scale(1.01);
+}
+
+/* `UI.hidrataIcones` SUBSTITUI o elemento pelo SVG e passa a classe adiante,
+   entao o seletor precisa valer para o proprio elemento -- nao para um `svg`
+   descendente, que nao existe. Sem isso o icone sai em tamanho natural e
+   ocupa a zona de soltar inteira. */
+.dropzone__icone {
+  width: 32px;
+  height: 32px;
+  color: var(--c-brand);
+}
+
+.dropzone__texto {
+  max-width: 44ch;
+  line-height: 1.5;
+}
+
+.dropzone__texto kbd {
+  padding: 1px 6px;
+  border: 1px solid var(--c-border-strong);
+  border-radius: 4px;
+  background: var(--c-surface);
+  font-family: inherit;
+  font-size: var(--fs-caption);
+  font-weight: 600;
+}
+
+/* ---- arquivo aceito: vira cartao compacto ---- */
+.arquivo {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  padding: var(--s-3);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+  background: var(--c-surface);
+}
+
+.arquivo__mini {
+  flex: none;
+  width: 48px;
+  height: 62px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-sm);
+  background: var(--c-brand-50);
+  object-fit: cover;
+}
+
+.arquivo__info {
+  min-width: 0;
+  flex: 1;
+}
+
+.arquivo__nome {
+  overflow: hidden;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.arquivo__meta {
+  font-size: var(--fs-caption);
+  color: var(--c-text-muted);
+}
+
+.arquivo__acoes {
+  display: flex;
+  gap: var(--s-2);
+}
+
+/* ---- progresso indeterminado ---- */
+.barra {
+  position: relative;
+  width: 100%;
+  height: 4px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--c-brand-100);
+}
+
+.barra::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  width: 40%;
+  background: var(--c-brand);
+  animation: barra-anda 1.1s var(--ease-in-out) infinite;
+}
+
+@keyframes barra-anda {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(250%);
+  }
+}
+
+/* ============================================================
+   Editor de diferenciais (PRD 7.4)
+   ============================================================ */
+.diferenciais-editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+.diferencial {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.diferencial input {
+  flex: 1;
+}
+
+.diferencial__botoes {
+  display: flex;
+  gap: 2px;
+}
+
+.botao-icone {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--c-border-strong);
+  border-radius: var(--r-sm);
+  background: var(--c-surface);
+  color: var(--c-text-muted);
+  cursor: pointer;
+  transition: color var(--dur-1) var(--ease-out),
+    border-color var(--dur-1) var(--ease-out);
+}
+
+.botao-icone:hover {
+  color: var(--c-brand);
+  border-color: var(--c-brand);
+}
+
+.botao-icone:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.botao-icone svg {
+  width: 16px;
+  height: 16px;
+}
+
+.botao-icone--remover:hover {
+  color: var(--c-danger-700);
+  border-color: var(--c-danger);
+}
+
+/* ============================================================
+   Seletor de TRL (PRD 7.4) — reaproveita a barra .trl do site
+   ============================================================ */
+.trl-editor .trl__barra {
+  gap: 3px;
+}
+
+.trl-seg {
+  flex: 1;
+  height: 100%;
+  padding: 0;
+  border: none;
+  background: var(--c-border);
+  cursor: pointer;
+  transition: background var(--dur-1) var(--ease-out);
+}
+
+.trl-seg:hover {
+  background: var(--c-brand-a24);
+}
+
+.trl-seg.is-ativo {
+  background: var(--c-brand);
+}
+
+.trl-seg:focus-visible {
+  outline: 2px solid var(--c-brand);
+  outline-offset: 2px;
+}
+
+.trl-editor__alternativa {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--s-4);
+  margin-top: var(--s-4);
+}
+
+.trl-editor__alternativa .campo {
+  margin-bottom: 0;
+}
+
+.trl-editor__alternativa select {
+  width: auto;
+  min-width: 72px;
+}
+
+/* ============================================================
+   Caixa branca de conteudo
+   ============================================================ */
+.painel-caixa {
+  padding: var(--s-5);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+  background: var(--c-surface);
+  box-shadow: var(--sh-1);
+}
+
+.painel-caixa + .painel-caixa {
+  margin-top: var(--s-5);
+}
+
+.painel-caixa__titulo {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  margin: 0 0 var(--s-4);
+  font-size: var(--fs-h3);
+}
+
+/* o quadradinho de 8px como marcador de secao, igual ao do site */
+.painel-caixa__titulo::before {
+  content: "";
+  flex: none;
+  width: 8px;
+  height: 8px;
+  background: var(--c-brand);
+}
+
+/* ============================================================
+   Tabela de patentes (PRD 7.4)
+   ============================================================ */
+.tabela-envolve {
+  overflow-x: auto;
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+  background: var(--c-surface);
+}
+
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-strong);
+}
+
+.tabela th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: var(--s-3) var(--s-4);
+  border-bottom: 1px solid var(--c-border);
+  background: var(--c-surface);
+  color: var(--c-text-muted);
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.tabela td {
+  height: 64px;
+  padding: var(--s-2) var(--s-3);
+  border-bottom: 1px solid var(--c-border);
+  vertical-align: middle;
+}
+
+/* Colunas de largura fixa nas pontas: sem isso a coluna de acoes e a
+   primeira a ser espremida, e o botao "Editar" sai da area visivel. */
+.tabela__col-mini {
+  width: 64px;
+}
+
+.tabela__col-id {
+  width: 48px;
+}
+
+.tabela__col-acoes {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.tabela tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.tabela tbody tr {
+  transition: background var(--dur-1) var(--ease-out);
+}
+
+.tabela tbody tr:hover {
+  background: var(--c-brand-50);
+}
+
+.tabela__mini {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-sm);
+  background: var(--c-brand-50);
+  object-fit: cover;
+}
+
+.tabela__id {
+  font-variant-numeric: tabular-nums;
+  color: var(--c-text-subtle);
+}
+
+.tabela__titulo {
+  display: block;
+  max-width: 34ch;
+  overflow: hidden;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* A busca da tela de patentes e o componente `.busca` do site, entao NAO
+   pode ficar dentro de um `.campo`: as regras de `.campo input` sobrescrevem
+   o padding que abre espaco para o icone, e ele fica por cima do texto. */
+.painel-busca {
+  margin-bottom: var(--s-5);
+}
+
+.tabela__numero {
+  font-size: var(--fs-caption);
+  color: var(--c-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.tabela__acoes {
+  display: flex;
+  gap: var(--s-2);
+  justify-content: flex-end;
+}
+
+/* ============================================================
+   Status (PRD 7.4) — sempre com texto, nunca so com a cor
+   ============================================================ */
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: 4px var(--s-3);
+  border: 1px solid transparent;
+  border-radius: var(--r-sm);
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-chip svg {
+  width: 14px;
+  height: 14px;
+}
+
+.status-chip--publicada {
+  background: var(--c-brand-100);
+  color: var(--c-brand);
+}
+
+.status-chip--oculta {
+  border-color: var(--c-border-strong);
+  color: var(--c-text-muted);
+}
+
+.status-chip--pendente {
+  border-style: dashed;
+  border-color: var(--c-brand);
+  color: var(--c-brand);
+}
+
+.status-chip--problema {
+  border-color: var(--c-danger);
+  color: var(--c-danger-700);
+}
+
+/* ============================================================
+   Aviso (toast) — PRD 7.4
+   ============================================================ */
+.toasts {
+  position: fixed;
+  right: var(--s-5);
+  bottom: var(--s-5);
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  max-width: 420px;
+}
+
+.toast {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-3);
+  padding: var(--s-4);
+  border-radius: var(--r-md);
+  background: var(--c-brand-900);
+  color: var(--c-on-dark);
+  box-shadow: var(--sh-3);
+  animation: toast-entra var(--dur-2) var(--ease-out);
+}
+
+.toast.is-saindo {
+  animation: toast-sai var(--dur-1) var(--ease-out) forwards;
+}
+
+.toast svg {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+}
+
+.toast__corpo {
+  flex: 1;
+  font-size: var(--fs-strong);
+  line-height: 1.4;
+}
+
+.toast__acoes {
+  display: flex;
+  gap: var(--s-3);
+  margin-top: var(--s-3);
+}
+
+.toast__fechar {
+  flex: none;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--c-on-dark-muted);
+  cursor: pointer;
+}
+
+.toast__fechar:hover {
+  color: var(--c-on-dark);
+}
+
+/* O erro tem borda propria e fica na tela ate ser fechado. A borda de 4px e
+   o icone garantem que ele se distinga do sucesso sem depender da cor. */
+.toast--erro {
+  border-left: 4px solid var(--c-danger);
+}
+
+.toast--erro svg {
+  color: var(--c-danger);
+}
+
+@keyframes toast-entra {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+@keyframes toast-sai {
+  to {
+    opacity: 0;
+  }
+}
+
+/* ============================================================
+   Etapas do build (PRD 7.4)
+   ============================================================ */
+.etapas {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.etapa {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  font-size: var(--fs-strong);
+  color: var(--c-text-subtle);
+}
+
+.etapa__marca {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--c-border-strong);
+}
+
+.etapa__marca svg {
+  width: 14px;
+  height: 14px;
+}
+
+.etapa.is-fazendo {
+  color: var(--c-text);
+  font-weight: 600;
+}
+
+.etapa.is-fazendo .etapa__marca {
+  border-color: var(--c-brand);
+  background: var(--c-brand);
+  animation: etapa-pulsa 900ms var(--ease-in-out) infinite;
+}
+
+.etapa.is-ok {
+  color: var(--c-text);
+}
+
+.etapa.is-ok .etapa__marca {
+  border-color: var(--c-brand);
+  color: var(--c-brand);
+}
+
+.etapa.is-erro {
+  color: var(--c-danger-700);
+  font-weight: 600;
+}
+
+.etapa.is-erro .etapa__marca {
+  border-color: var(--c-danger);
+}
+
+/* O tom base so no icone, nao herdado como cor de texto: ele serve para
+   componente grafico (3:1) e nao para texto (4,5:1). */
+.etapa.is-erro .etapa__marca svg {
+  color: var(--c-danger);
+}
+
+@keyframes etapa-pulsa {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+/* ============================================================
+   Modal (<dialog>) — confirmacao destrutiva e recorte
+   ============================================================ */
+.modal {
+  width: min(520px, calc(100vw - var(--s-8)));
+  padding: 0;
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-lg);
+  background: var(--c-surface);
+  color: var(--c-text);
+  box-shadow: var(--sh-3);
+}
+
+.modal--largo {
+  width: min(720px, calc(100vw - var(--s-8)));
+}
+
+.modal::backdrop {
+  background: rgb(46 3 80 / 0.5);
+}
+
+.modal__corpo {
+  padding: var(--s-5);
+}
+
+.modal__titulo {
+  margin: 0 0 var(--s-3);
+  font-size: var(--fs-h3);
+}
+
+.modal__texto {
+  margin: 0 0 var(--s-4);
+  color: var(--c-text-muted);
+}
+
+.modal__acoes {
+  display: flex;
+  gap: var(--s-3);
+  justify-content: flex-end;
+  padding: var(--s-4) var(--s-5);
+  border-top: 1px solid var(--c-border);
+  background: var(--c-bg);
+}
+
+/* ---- botao destrutivo ----
+   Fundo no tom escuro (5,46:1 com branco), nao no base (3,75:1). */
+.botao--perigo {
+  background: var(--c-danger-700);
+  color: #fff;
+  border-color: var(--c-danger-700);
+}
+
+.botao--perigo:hover:not(:disabled) {
+  background: var(--c-danger-800);
+  border-color: var(--c-danger-800);
+}
+
+.botao--perigo:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* ---- recorte 1:1 ---- */
+.recorte {
+  position: relative;
+  display: grid;
+  place-items: center;
+  max-height: 60vh;
+  overflow: hidden;
+  background: var(--c-bg);
+}
+
+.recorte img {
+  max-width: 100%;
+  max-height: 60vh;
+  user-select: none;
+}
+
+.recorte__moldura {
+  position: absolute;
+  border: 2px solid var(--c-on-dark);
+  box-shadow: 0 0 0 9999px rgb(46 3 80 / 0.45);
+  cursor: move;
+}
+
+.recorte__alca {
+  position: absolute;
+  right: -6px;
+  bottom: -6px;
+  width: 12px;
+  height: 12px;
+  background: var(--c-on-dark);
+  cursor: nwse-resize;
+}
+
+/* ============================================================
+   Barra de acoes fixa no rodape do formulario
+   ============================================================ */
+.acoes-fixas {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  gap: var(--s-3);
+  justify-content: flex-end;
+  margin-top: var(--s-6);
+  padding: var(--s-4) 0;
+  border-top: 1px solid var(--c-border);
+  background: linear-gradient(to top, var(--c-bg) 70%, transparent);
+}
+
+/* ============================================================
+   Checklist (tela Publicar)
+   ============================================================ */
+.checklist {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.checagem {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-3);
+}
+
+.checagem__marca {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+
+.checagem__marca svg {
+  width: 14px;
+  height: 14px;
+}
+
+.checagem.is-ok .checagem__marca {
+  background: var(--c-brand-100);
+  color: var(--c-brand);
+}
+
+.checagem.is-erro .checagem__marca {
+  background: var(--c-danger-100);
+  color: var(--c-danger-700);
+}
+
+.checagem__detalhe {
+  margin: 2px 0 0;
+  font-size: var(--fs-caption);
+  color: var(--c-danger-700);
+}
+
+/* ============================================================
+   Vazio e carregando
+   ============================================================ */
+.painel-vazio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-4);
+  padding: var(--s-9) var(--s-5);
+  border: 1px dashed var(--c-border-strong);
+  border-radius: var(--r-md);
+  color: var(--c-text-muted);
+  text-align: center;
+}
+
+.painel-vazio svg {
+  width: 28px;
+  height: 28px;
+  color: var(--c-text-subtle);
+}
+
+/* ============================================================
+   Duas colunas (formulario + previa)
+   ============================================================ */
+.duas-colunas {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: var(--s-6);
+  align-items: start;
+}
+
+.coluna-previa {
+  position: sticky;
+  top: var(--s-5);
+}
+
+.coluna-previa__legenda {
+  margin: var(--s-3) 0 0;
+  font-size: var(--fs-caption);
+  color: var(--c-text-muted);
+  text-align: center;
+}
+
+@media (max-width: 1180px) {
+  .duas-colunas {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .coluna-previa {
+    position: static;
+  }
+}
+
+/* ============================================================
+   Movimento reduzido (PRD 7.6)
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .painel-tela,
+  .toast,
+  .campo.is-piscando input,
+  .campo.is-piscando textarea,
+  .campo.is-piscando select {
+    animation: none;
+  }
+  .etapa.is-fazendo .etapa__marca,
+  .barra::after {
+    animation: none;
+  }
+  .barra::after {
+    width: 100%;
+  }
+  .dropzone.is-arrastando {
+    transform: none;
+  }
+}

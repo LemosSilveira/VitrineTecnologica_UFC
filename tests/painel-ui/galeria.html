@@ -1,0 +1,235 @@
+<!doctype html>
+<!--
+  Galeria de componentes do painel — FERRAMENTA DE REVISAO, nao produto.
+
+  Fica em tests/ de proposito: `admin/ui/` leva so o que vai dentro do
+  executavel. Esta pagina existe para a revisao visual da Fase 4 (PRD 14) e
+  para conferir, num lugar so, que todo componente da secao 7.4 usa os tokens
+  do site e que o erro nunca depende apenas da cor.
+
+  Sem estilo inline em lugar nenhum: a CSP do site (aplicada pelo servidor de
+  testes) bloqueia, e foi ela que pegou os que havia aqui na primeira versao.
+
+  Abrir em: http://127.0.0.1:4173/tests/painel-ui/galeria.html
+-->
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Componentes do Painel — revisão visual</title>
+
+    <link rel="stylesheet" href="../../admin/ui/site/css/tokens.css" />
+    <link rel="stylesheet" href="../../admin/ui/site/css/base.css" />
+    <link rel="stylesheet" href="../../admin/ui/site/css/components.css" />
+    <link rel="stylesheet" href="../../admin/ui/site/css/pages.css" />
+    <link rel="stylesheet" href="../../admin/ui/painel.css" />
+    <link rel="stylesheet" href="galeria.css" />
+
+    <script src="../../admin/ui/site/js/ui.js" defer></script>
+    <script src="galeria.js" defer></script>
+  </head>
+
+  <body class="galeria">
+    <header class="galeria__topo">
+      <span class="logo-ufcinova" aria-hidden="true"></span>
+      <div>
+        <p class="eyebrow">Fase 4 · revisão visual</p>
+        <h1>Componentes do Painel</h1>
+        <p class="galeria__nota">
+          Tudo aqui usa os tokens e os componentes do site. O único valor novo é
+          a cor de erro.
+        </p>
+      </div>
+    </header>
+
+    <main class="galeria__main">
+      <!-- ============ COR DE ERRO ============ -->
+      <section class="galeria__secao" id="cor">
+        <h2>Cor de erro · <code>#ED455A</code> e variações</h2>
+        <p class="galeria__ajuda">
+          O tom base rende 3,41:1 sobre o fundo: passa no mínimo de 3:1 de
+          componente de interface, mas não nos 4,5:1 de texto. Por isso o texto
+          usa o tom escuro da mesma matiz (352,5°) — só a luminosidade muda.
+        </p>
+        <div class="galeria__cores" data-cores></div>
+      </section>
+
+      <!-- ============ CAMPOS ============ -->
+      <section class="galeria__secao" id="campos">
+        <h2>Campo</h2>
+        <div class="galeria__grade2">
+          <div class="painel-caixa">
+            <h3 class="painel-caixa__titulo">Estados normais</h3>
+
+            <div class="campo">
+              <label class="campo__rotulo" for="g-titulo">
+                <span>Título <span class="campo__obrigatorio" aria-hidden="true">*</span>
+                  <span class="visualmente-oculto">(obrigatório)</span></span>
+                <span class="campo__contador">37/160</span>
+              </label>
+              <textarea id="g-titulo" rows="2">Camarão em Pó Natural para Aplicações</textarea>
+              <p class="campo__ajuda">Como vai aparecer no card e na página.</p>
+            </div>
+
+            <div class="campo">
+              <label class="campo__rotulo" for="g-area"><span>Área tecnológica</span></label>
+              <select id="g-area">
+                <option>Alimentos</option>
+                <option>Engenharias</option>
+              </select>
+            </div>
+
+            <div class="campo is-do-pdf">
+              <label class="campo__rotulo" for="g-pdf">
+                <span>O que é? <span class="campo__obrigatorio" aria-hidden="true">*</span></span>
+                <span class="campo__fonte">✦ do PDF</span>
+              </label>
+              <textarea id="g-pdf" rows="3">Ingrediente obtido pela desidratação de camarão por spray-dryer.</textarea>
+            </div>
+
+            <div class="campo is-nao-encontrado">
+              <label class="campo__rotulo" for="g-nao"><span>Exemplo de uso</span></label>
+              <textarea id="g-nao" rows="2"></textarea>
+              <p class="campo__ajuda">Não encontramos no PDF. Preencha manualmente.</p>
+            </div>
+          </div>
+
+          <div class="painel-caixa">
+            <h3 class="painel-caixa__titulo">Erro no campo</h3>
+
+            <div class="campo">
+              <label class="campo__rotulo" for="g-erro">
+                <span>Título <span class="campo__obrigatorio" aria-hidden="true">*</span></span>
+                <span class="campo__contador is-acima">5/160</span>
+              </label>
+              <input id="g-erro" type="text" value="curto" aria-invalid="true"
+                     aria-describedby="g-erro-msg" />
+              <p class="campo__erro" id="g-erro-msg" data-icone-erro>
+                O título está muito curto: 5 caracteres, e o mínimo é 10.
+              </p>
+            </div>
+
+            <p class="galeria__ajuda">
+              Borda de 2 px, ícone e texto: o erro nunca depende só da cor.
+            </p>
+
+            <div class="resumo-erros" data-resumo-erros>
+              <h3>Confira 2 campos antes de salvar</h3>
+              <ul>
+                <li><a href="#g-erro">Título: muito curto</a></li>
+                <li><a href="#g-pdf">O que é?: é obrigatório</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ ARQUIVOS ============ -->
+      <section class="galeria__secao" id="arquivos">
+        <h2>Zona de soltar e arquivo aceito</h2>
+        <div class="galeria__grade2">
+          <div>
+            <button class="dropzone" type="button">
+              <span class="dropzone__icone" data-icone="file-text"></span>
+              <span class="dropzone__texto">
+                <strong>Arraste a ficha em PDF aqui</strong>, cole com
+                <kbd>Ctrl</kbd>+<kbd>V</kbd> ou clique para escolher o arquivo
+              </span>
+            </button>
+            <p class="galeria__ajuda">Ao arrastar por cima: borda sólida e fundo mais forte.</p>
+            <button class="dropzone is-arrastando" type="button">
+              <span class="dropzone__icone" data-icone="file-text"></span>
+              <span class="dropzone__texto"><strong>Solte para usar esta ficha</strong></span>
+            </button>
+          </div>
+
+          <div>
+            <div class="painel-caixa">
+              <h3 class="painel-caixa__titulo">Lendo a ficha</h3>
+              <div class="barra"></div>
+              <p class="campo__ajuda galeria__espaco">Lendo a ficha…</p>
+            </div>
+
+            <div class="painel-caixa">
+              <h3 class="painel-caixa__titulo">Arquivo aceito</h3>
+              <div class="arquivo">
+                <div class="arquivo__mini"></div>
+                <div class="arquivo__info">
+                  <p class="arquivo__nome">1. Alimentos - BR 10 2014 030019 8 - Camarão em Pó.pdf</p>
+                  <p class="arquivo__meta">3,3 MB · 1 página</p>
+                </div>
+                <div class="arquivo__acoes">
+                  <button class="botao botao--terciario" type="button">Trocar</button>
+                  <!-- O icone vai num <span> DENTRO do botao: `hidrataIcones`
+                       substitui o elemento marcado, e o botao sumiria. -->
+                  <button class="botao-icone botao-icone--remover" type="button"
+                          aria-label="Remover arquivo"><span data-icone="x"></span></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ DIFERENCIAIS E TRL ============ -->
+      <section class="galeria__secao" id="editores">
+        <h2>Editor de diferenciais e seletor de TRL</h2>
+        <div class="galeria__grade2">
+          <div class="painel-caixa">
+            <h3 class="painel-caixa__titulo">Diferenciais competitivos</h3>
+            <div class="diferenciais-editor" data-diferenciais></div>
+            <button class="botao botao--terciario galeria__espaco" type="button">
+              + Adicionar diferencial
+            </button>
+            <p class="campo__ajuda">Máximo de 8. Reordene com as setas.</p>
+          </div>
+
+          <div class="painel-caixa">
+            <h3 class="painel-caixa__titulo">Maturidade tecnológica</h3>
+            <div class="trl-editor" data-trl></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ TABELA E STATUS ============ -->
+      <section class="galeria__secao" id="tabela">
+        <h2>Tabela de patentes e status</h2>
+        <div class="tabela-envolve" data-tabela></div>
+        <p class="galeria__ajuda">
+          Todo status tem texto e ícone — nunca só a cor.
+        </p>
+      </section>
+
+      <!-- ============ ETAPAS E CHECKLIST ============ -->
+      <section class="galeria__secao" id="etapas">
+        <h2>Etapas do build e checklist de publicação</h2>
+        <div class="galeria__grade2">
+          <div class="painel-caixa">
+            <h3 class="painel-caixa__titulo">Atualizando a vitrine</h3>
+            <ul class="etapas" data-etapas></ul>
+          </div>
+          <div class="painel-caixa">
+            <h3 class="painel-caixa__titulo">Antes de publicar</h3>
+            <ul class="checklist" data-checklist></ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ AVISOS ============ -->
+      <section class="galeria__secao" id="avisos">
+        <h2>Avisos</h2>
+        <div class="galeria__toasts" data-toasts-demo></div>
+      </section>
+
+      <!-- ============ CONFIRMACAO DESTRUTIVA ============ -->
+      <section class="galeria__secao" id="modal">
+        <h2>Confirmação destrutiva</h2>
+        <p class="galeria__ajuda">
+          Exige digitar o número do pedido. O botão só libera quando o texto
+          bate — e usa o tom escuro da cor de erro, para o branco ter contraste.
+        </p>
+        <div class="galeria__modal-demo" data-modal-demo></div>
+      </section>
+    </main>
+  </body>
+</html>

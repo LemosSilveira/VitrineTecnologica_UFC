@@ -1,0 +1,128 @@
+<!doctype html>
+<!--
+  Painel da Vitrine de Patentes UFC — interface local.
+
+  Servida pelo servidor estatico interno do pywebview, preso em 127.0.0.1 e
+  somente leitura. A comunicacao com o Python NAO passa por HTTP: vai pela
+  ponte `window.pywebview.api`, dentro do processo.
+
+  A CSP abaixo nao concede 'unsafe-inline' nem 'unsafe-eval', e `connect-src`
+  e 'none': esta pagina nao faz nenhuma requisicao de rede. Se um texto vindo
+  de uma ficha conseguisse injetar um <script>, ele nao rodaria.
+-->
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Painel da Vitrine de Patentes</title>
+
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'"
+    />
+
+    <link rel="icon" href="site/assets/img/favicon.svg" type="image/svg+xml" />
+
+    <link rel="preload" as="font" type="font/woff2"
+          href="site/assets/fonts/UFCInova-Bold.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2"
+          href="site/assets/fonts/Metropolis-Regular.woff2" crossorigin />
+
+    <!-- Os quatro do site: tokens, base, componentes e paginas. O painel nao
+         redefine nenhuma cor nem nenhum componente que ja exista la. -->
+    <link rel="stylesheet" href="site/css/tokens.css" />
+    <link rel="stylesheet" href="site/css/base.css" />
+    <link rel="stylesheet" href="site/css/components.css" />
+    <link rel="stylesheet" href="site/css/pages.css" />
+    <!-- So o que o site nao tem -->
+    <link rel="stylesheet" href="painel.css" />
+
+    <script src="site/js/ui.js" defer></script>
+    <script src="site/js/render.js" defer></script>
+    <script src="api-cliente.js" defer></script>
+    <script src="painel.js" defer></script>
+  </head>
+
+  <body class="painel">
+    <!-- ================= CABECALHO ================= -->
+    <header class="painel-topo">
+      <div class="painel-topo__marca">
+        <span class="logo-ufcinova" aria-hidden="true"></span>
+        <span class="painel-topo__sep" aria-hidden="true"></span>
+        <h1 class="painel-topo__titulo">Painel da Vitrine</h1>
+      </div>
+
+      <div class="painel-topo__lado">
+        <!-- Deixa claro, o tempo todo, que e uma ferramenta interna: nada
+             daqui esta no ar antes de a pessoa gerar o pacote. -->
+        <span class="badge painel-selo">
+          <span class="painel-selo__ponto" aria-hidden="true"></span>
+          Local — só neste computador
+        </span>
+        <span class="painel-topo__usuario" data-usuario></span>
+      </div>
+    </header>
+
+    <!-- ================= BARRA LATERAL ================= -->
+    <nav class="painel-lateral" aria-label="Seções do painel">
+      <ul class="painel-menu" data-menu>
+        <li>
+          <a class="painel-menu__item" href="#/lista" data-rota="lista">
+            <span class="painel-menu__marca" aria-hidden="true"></span>
+            <span data-icone-painel="lista" class="painel-menu__icone"></span>
+            Patentes
+          </a>
+        </li>
+        <li>
+          <a class="painel-menu__item" href="#/nova" data-rota="nova">
+            <span class="painel-menu__marca" aria-hidden="true"></span>
+            <span data-icone-painel="mais" class="painel-menu__icone"></span>
+            Nova patente
+          </a>
+        </li>
+        <li>
+          <a class="painel-menu__item" href="#/publicar" data-rota="publicar">
+            <span class="painel-menu__marca" aria-hidden="true"></span>
+            <span data-icone-painel="publicar" class="painel-menu__icone"></span>
+            Publicar
+          </a>
+        </li>
+        <li>
+          <a class="painel-menu__item" href="#/historico" data-rota="historico">
+            <span class="painel-menu__marca" aria-hidden="true"></span>
+            <span data-icone-painel="relogio" class="painel-menu__icone"></span>
+            Histórico
+          </a>
+        </li>
+        <li>
+          <a class="painel-menu__item" href="#/configurar" data-rota="configurar">
+            <span class="painel-menu__marca" aria-hidden="true"></span>
+            <span data-icone-painel="engrenagem" class="painel-menu__icone"></span>
+            Configurar
+          </a>
+        </li>
+      </ul>
+
+      <!-- Rodape da barra: o contador de alteracoes ainda nao publicadas, que
+           leva direto a tela Publicar (PRD 7.2). -->
+      <a class="painel-pendentes" href="#/publicar" data-pendentes hidden>
+        <strong data-pendentes-n>0</strong>
+        <span data-pendentes-texto>alteração não publicada</span>
+      </a>
+    </nav>
+
+    <!-- ================= CONTEUDO ================= -->
+    <main class="painel-conteudo" id="conteudo" data-tela aria-live="polite">
+      <!-- preenchido por painel.js -->
+    </main>
+
+    <!-- Avisos (PRD 7.4). role e trocado para "alert" nos erros. -->
+    <div class="toasts" data-toasts role="status" aria-live="polite"></div>
+
+    <noscript>
+      <p class="painel-sem-js">
+        Este painel precisa de JavaScript para funcionar.
+      </p>
+    </noscript>
+  </body>
+</html>
