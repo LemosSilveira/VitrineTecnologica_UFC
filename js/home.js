@@ -1,6 +1,6 @@
 /* ============================================================
    home.js — busca, filtros, ordenacao, grade e previa no hover.
-   Depende de: config.js, data/patentes.js, ui.js
+   Depende de: config.js, data/patentes.js, ui.js, render.js
    ============================================================ */
 (function () {
   "use strict";
@@ -8,6 +8,7 @@
   var PATENTES = window.PATENTES || [];
   var CATEGORIAS = window.CATEGORIAS || [];
   var U = window.UI;
+  var R = window.RENDER;
 
   var grade = document.querySelector("[data-grade]");
   if (!grade) return;
@@ -122,70 +123,6 @@
   /* ---------------------------------------------------------
      Render
      --------------------------------------------------------- */
-  var SIZES =
-    "(max-width: 639px) calc(100vw - 32px), (max-width: 1023px) calc(50vw - 32px), " +
-    "(max-width: 1279px) calc(33.33vw - 32px), 296px";
-
-  function htmlCard(p, indice) {
-    var alt = "Imagem ilustrativa da tecnologia " + p.titulo;
-    // As 4 primeiras entram sem lazy e com prioridade (primeira dobra).
-    var prioridade = indice < 4;
-    return (
-      '<article class="card" data-id="' +
-      p.id +
-      '">' +
-      '<a class="card__link" href="patente.html?id=' +
-      p.id +
-      '" aria-describedby="card-' +
-      p.id +
-      '-meta">' +
-      '<div class="card__media">' +
-      '<img src="' +
-      p.imagens.capa400 +
-      '" srcset="' +
-      p.imagens.capa400 +
-      " 400w, " +
-      p.imagens.capa800 +
-      ' 800w" sizes="' +
-      SIZES +
-      '" width="' +
-      p.imagens.dimensoesCapa[0] +
-      '" height="' +
-      p.imagens.dimensoesCapa[1] +
-      '" alt="' +
-      U.esc(alt) +
-      '" decoding="async" ' +
-      (prioridade ? 'fetchpriority="high"' : 'loading="lazy"') +
-      ' style="view-transition-name: capa-' +
-      p.id +
-      '">' +
-      "</div>" +
-      '<div class="card__body">' +
-      '<p class="card__eyebrow">' +
-      U.esc(p.categoria) +
-      "</p>" +
-      '<h3 class="card__titulo">' +
-      U.esc(p.titulo) +
-      "</h3>" +
-      '<p class="card__resumo">' +
-      U.esc(p.resumo) +
-      "</p>" +
-      '<div class="card__meta" id="card-' +
-      p.id +
-      '-meta">' +
-      '<span class="badge">' +
-      p.tipo.sigla +
-      "</span>" +
-      '<span class="card__numero">' +
-      U.esc(p.numero) +
-      "</span>" +
-      U.icone("arrow-up-right", "card__arrow") +
-      "</div>" +
-      "</div>" +
-      "</a>" +
-      "</article>"
-    );
-  }
 
   function htmlVazio() {
     return (
@@ -206,8 +143,9 @@
     var lista = filtra();
 
     grade.innerHTML = lista.length
-      ? lista.map(htmlCard).join("")
+      ? lista.map(R.card).join("")
       : htmlVazio();
+    R.aplicaTransicoes(grade);
 
     // marca a capa como carregada para parar o shimmer
     Array.prototype.forEach.call(grade.querySelectorAll(".card__media"), function (m) {
@@ -464,6 +402,8 @@
   var previa = null;
   var previaImg = null;
   var previaTrl = null;
+  var previaResumo = null;
+  var previaCta = null;
   var timerAbre = null;
   var timerFecha = null;
   var alvoAtual = null;
@@ -483,13 +423,16 @@
     previa.setAttribute("role", "tooltip");
     previa.innerHTML =
       '<img class="previa__img" alt="" decoding="async">' +
+      '<p class="previa__resumo" data-previa-resumo hidden></p>' +
       '<div class="previa__rodape">' +
       '<span class="trl-chip" data-previa-trl></span>' +
-      '<span class="previa__cta">Clique para ver a ficha completa →</span>' +
+      '<span class="previa__cta" data-previa-cta>Clique para ver a ficha completa →</span>' +
       "</div>";
     document.body.appendChild(previa);
     previaImg = previa.querySelector(".previa__img");
     previaTrl = previa.querySelector("[data-previa-trl]");
+    previaResumo = previa.querySelector("[data-previa-resumo]");
+    previaCta = previa.querySelector("[data-previa-cta]");
 
     // manter aberta enquanto o ponteiro estiver sobre a propria previa
     previa.addEventListener("mouseenter", function () {
@@ -534,11 +477,24 @@
     if (!p) return;
 
     criaPrevia();
-    // carrega a ficha so na primeira vez que a previa daquela patente abre
+
+    /* Patente sem PDF nao tem imagem da ficha: cai para a capa e mostra o
+       resumo, que e a informacao que a ficha traria (PRD 6.4). */
+    var semFicha = !p.imagens.ficha600;
+    previa.classList.toggle("previa--sem-ficha", semFicha);
+    previaResumo.hidden = !semFicha;
+    if (semFicha) previaResumo.textContent = p.resumo;
+    previaCta.textContent = semFicha
+      ? "Clique para ver os detalhes →"
+      : "Clique para ver a ficha completa →";
+
+    // carrega a imagem so na primeira vez que a previa daquela patente abre
     if (previaImg.getAttribute("data-id") !== String(id)) {
       previaImg.setAttribute("data-id", String(id));
-      previaImg.src = p.imagens.ficha600;
-      previaImg.alt = "Prévia da ficha técnica: " + p.titulo;
+      previaImg.src = semFicha ? p.imagens.capa800 : p.imagens.ficha600;
+      previaImg.alt = semFicha
+        ? "Imagem ilustrativa da tecnologia " + p.titulo
+        : "Prévia da ficha técnica: " + p.titulo;
     }
     previaTrl.textContent = p.trl ? p.trl.texto.replace(" (estimado)", " · estimado") : "—";
     previaTrl.hidden = !p.trl;
@@ -668,35 +624,21 @@
      Mosaicos decorativos
      --------------------------------------------------------- */
   function montaMosaicos() {
-    U.montaMosaico(document.querySelector("[data-mosaico-hero]"), [
-      { x: 8, y: 6, t: 92, o: 1 },
-      { x: 52, y: 2, t: 56, o: 0.4 },
-      { x: 70, y: 30, t: 120, o: 0.15 },
-      { x: 14, y: 42, t: 64, o: 0.4, c: true },
-      { x: 44, y: 46, t: 150, o: 1 },
-      { x: 6, y: 72, t: 44, o: 0.15 },
-      { x: 60, y: 76, t: 78, o: 0.4, c: true },
-      { x: 30, y: 24, t: 36, o: 1 },
-    ]);
-
-    var rod = document.querySelector("[data-mosaico-rodape]");
-    if (rod) {
-      rod.innerHTML = [
-        { x: 4, y: 12, t: 70 },
-        { x: 22, y: 58, t: 40 },
-        { x: 48, y: 8, t: 96 },
-        { x: 72, y: 44, t: 56 },
-        { x: 88, y: 14, t: 120 },
-        { x: 62, y: 74, t: 34 },
-      ]
-        .map(function (p) {
-          return (
-            '<span style="left:' + p.x + "%;top:" + p.y + "%;width:" + p.t +
-            "px;height:" + p.t + 'px"></span>'
-          );
-        })
-        .join("");
-    }
+    U.montaMosaico(
+      document.querySelector("[data-mosaico-hero]"),
+      [
+        { x: 8, y: 6, t: 92, o: 1 },
+        { x: 52, y: 2, t: 56, o: 0.4 },
+        { x: 70, y: 30, t: 120, o: 0.15 },
+        { x: 14, y: 42, t: 64, o: 0.4, c: true },
+        { x: 44, y: 46, t: 150, o: 1 },
+        { x: 6, y: 72, t: 44, o: 0.15 },
+        { x: 60, y: 76, t: 78, o: 0.4, c: true },
+        { x: 30, y: 24, t: 36, o: 1 },
+      ],
+      true
+    );
+    U.montaMosaicoRodape();
   }
 
   /* ---------------------------------------------------------

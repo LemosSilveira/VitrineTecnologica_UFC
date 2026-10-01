@@ -246,34 +246,49 @@
      --------------------------------------------------------- */
   /**
    * Preenche um .mosaico com quadrados posicionados em %.
+   *
+   * Monta por DOM e aplica os estilos pelo CSSOM, em vez de montar uma
+   * string com style="" -- e o que permite a CSP do site dispensar
+   * style-src 'unsafe-inline' (PRD 6.6).
+   *
    * @param {Element} el
-   * @param {Array<{x:number,y:number,t:number,o:number,c?:boolean}>} pecas
+   * @param {Array<{x:number,y:number,t:number,o?:number,c?:boolean}>} pecas
    *        x/y em %, t = tamanho em px, o = opacidade, c = so contorno
+   * @param {boolean} [comAnimacao] escalona o animation-delay entre as pecas
    */
-  function montaMosaico(el, pecas) {
+  function montaMosaico(el, pecas, comAnimacao) {
     if (!el) return;
-    var html = pecas
-      .map(function (p, i) {
-        return (
-          '<span style="left:' +
-          p.x +
-          "%;top:" +
-          p.y +
-          "%;width:" +
-          p.t +
-          "px;height:" +
-          p.t +
-          "px;opacity:" +
-          p.o +
-          ";animation-delay:" +
-          (i * 0.7).toFixed(1) +
-          's"' +
-          (p.c ? " data-contorno" : "") +
-          "></span>"
-        );
-      })
-      .join("");
-    el.innerHTML = html;
+    el.textContent = "";
+    var frag = document.createDocumentFragment();
+    pecas.forEach(function (p, i) {
+      var span = document.createElement("span");
+      span.style.left = p.x + "%";
+      span.style.top = p.y + "%";
+      span.style.width = p.t + "px";
+      span.style.height = p.t + "px";
+      if (p.o != null) span.style.opacity = String(p.o);
+      if (comAnimacao) span.style.animationDelay = (i * 0.7).toFixed(1) + "s";
+      if (p.c) span.setAttribute("data-contorno", "");
+      frag.appendChild(span);
+    });
+    el.appendChild(frag);
+  }
+
+  /* Mosaico do rodape: as mesmas pecas na home e no detalhe. */
+  var PECAS_RODAPE = [
+    { x: 4, y: 12, t: 70 },
+    { x: 22, y: 58, t: 40 },
+    { x: 48, y: 8, t: 96 },
+    { x: 72, y: 44, t: 56 },
+    { x: 88, y: 14, t: 120 },
+    { x: 62, y: 74, t: 34 },
+  ];
+
+  function montaMosaicoRodape(raiz) {
+    montaMosaico(
+      (raiz || document).querySelector("[data-mosaico-rodape]"),
+      PECAS_RODAPE
+    );
   }
 
   window.UI = {
@@ -286,6 +301,7 @@
     contaAte: contaAte,
     iniciaContadores: iniciaContadores,
     montaMosaico: montaMosaico,
+    montaMosaicoRodape: montaMosaicoRodape,
     reduzido: reduzido,
     iniciar: function () {
       hidrataIcones(document);

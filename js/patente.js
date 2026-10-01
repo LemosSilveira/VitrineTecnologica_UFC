@@ -1,6 +1,6 @@
 /* ============================================================
    patente.js — pagina de detalhe (patente.html?id=N)
-   Depende de: config.js, data/patentes.js, ui.js
+   Depende de: config.js, data/patentes.js, ui.js, render.js
    ============================================================ */
 (function () {
   "use strict";
@@ -8,6 +8,7 @@
   var PATENTES = window.PATENTES || [];
   var CONFIG = window.CONFIG || {};
   var U = window.UI;
+  var R = window.RENDER;
 
   /* ---------------------------------------------------------
      Resolve o ?id=
@@ -72,63 +73,8 @@
   }
 
   /* ---------------------------------------------------------
-     Medidor de TRL
-     --------------------------------------------------------- */
-  function htmlTrl(trl) {
-    if (!trl) return "";
-    var segs = "";
-    for (var n = 1; n <= 9; n++) {
-      var ativo = n >= trl.min && n <= trl.max;
-      segs += '<span class="trl__seg' + (ativo ? " is-ativo" : "") + '"></span>';
-    }
-    var descricao =
-      "Technology Readiness Level, de 1 (ideia) a 9 (produto no mercado).";
-    return (
-      '<div class="trl">' +
-      '<div class="trl__barra" role="img" title="' +
-      U.esc(descricao) +
-      '" aria-label="Maturidade tecnológica ' +
-      U.esc(trl.texto) +
-      ". " +
-      U.esc(descricao) +
-      '">' +
-      segs +
-      "</div>" +
-      '<p class="trl__rotulo">Maturidade tecnológica: <strong>' +
-      U.esc(trl.texto) +
-      "</strong></p>" +
-      "</div>"
-    );
-  }
-
-  /* ---------------------------------------------------------
      Corpo da patente
      --------------------------------------------------------- */
-  function htmlSecao(titulo, conteudo) {
-    if (!conteudo) return "";
-    return (
-      '<section class="ficha-secao"><h2>' +
-      U.esc(titulo) +
-      "</h2><p>" +
-      U.esc(conteudo) +
-      "</p></section>"
-    );
-  }
-
-  function htmlDiferenciais(itens) {
-    if (!itens || !itens.length) return "";
-    return (
-      '<section class="ficha-secao"><h2>Diferenciais competitivos</h2>' +
-      '<ul class="diferenciais">' +
-      itens
-        .map(function (d) {
-          return "<li>" + U.icone("check") + "<span>" + U.esc(d) + "</span></li>";
-        })
-        .join("") +
-      "</ul></section>"
-    );
-  }
-
   var s = patente.secoes || {};
   var temTexto = !!(
     s.oQueE ||
@@ -138,61 +84,73 @@
     s.beneficio
   );
 
+  /* Patente sem PDF nao tem imagem da ficha nem documento para baixar
+     (PRD 4.4 / 6.4): o card "Documento oficial" some e a coluna de texto
+     passa a ocupar a largura toda. */
+  var temPdf = !!patente.pdf;
+  var temFicha = !!patente.imagens.ficha1620;
+
   var corpoEsquerda = temTexto
-    ? htmlSecao("O que é?", s.oQueE) +
-      htmlSecao("Problema que resolve", s.problema) +
-      htmlSecao("Exemplo de uso", s.exemploDeUso) +
-      htmlDiferenciais(s.diferenciais) +
-      htmlSecao("Benefício principal", s.beneficio)
-    : // sem texto extraido: mostra a ficha em imagem grande no lugar
+    ? R.secao("O que é?", s.oQueE) +
+      R.secao("Problema que resolve", s.problema) +
+      R.secao("Exemplo de uso", s.exemploDeUso) +
+      R.diferenciais(s.diferenciais) +
+      R.secao("Benefício principal", s.beneficio)
+    : temFicha
+    ? // sem texto extraido: mostra a ficha em imagem grande no lugar
       '<section class="ficha-secao"><h2>Ficha técnica</h2>' +
       '<img class="ficha-imagem" src="' +
       patente.imagens.ficha1620 +
       '" alt="Ficha técnica da patente ' +
       U.esc(patente.numero) +
-      '" loading="lazy" decoding="async"></section>';
+      '" loading="lazy" decoding="async"></section>'
+    : // nem texto nem ficha: so o resumo, para a pagina nao ficar vazia
+      R.secao("Sobre esta tecnologia", patente.resumo);
 
   /* ---- coluna do documento ---- */
-  var nomePdf = "ficha-" + patente.numero.replace(/\s/g, "-") + ".pdf";
+  var colunaDoc = "";
+  if (temPdf) {
+    var nomePdf = "ficha-" + patente.numero.replace(/\s/g, "-") + ".pdf";
 
-  var btnInteresse = "";
-  if (CONFIG.contatoEmail) {
-    var assunto = "Interesse na patente " + patente.numero + " — " + patente.titulo;
-    btnInteresse =
-      '<a class="botao botao--terciario botao--bloco" href="mailto:' +
-      encodeURIComponent(CONFIG.contatoEmail) +
-      "?subject=" +
-      encodeURIComponent(assunto) +
+    var btnInteresse = "";
+    if (CONFIG.contatoEmail) {
+      var assunto = "Interesse na patente " + patente.numero + " — " + patente.titulo;
+      btnInteresse =
+        '<a class="botao botao--terciario botao--bloco" href="mailto:' +
+        encodeURIComponent(CONFIG.contatoEmail) +
+        "?subject=" +
+        encodeURIComponent(assunto) +
+        '">' +
+        U.icone("mail") +
+        "Tenho interesse</a>";
+    }
+
+    colunaDoc =
+      '<aside class="doc">' +
+      '<h2 class="doc__titulo">Documento oficial</h2>' +
+      '<button class="doc__thumb" type="button" data-abre-lightbox ' +
+      'aria-label="Ver a ficha técnica em tela cheia">' +
+      '<img src="' +
+      patente.imagens.ficha600 +
+      '" alt="Ficha técnica da patente ' +
+      U.esc(patente.numero) +
+      '" loading="lazy" decoding="async">' +
+      "</button>" +
+      '<div class="doc__acoes">' +
+      '<button class="botao botao--primario botao--bloco" type="button" data-abre-lightbox>' +
+      U.icone("maximize-2") +
+      "Ver ficha em tela cheia</button>" +
+      '<a class="botao botao--secundario botao--bloco" href="' +
+      patente.pdf +
+      '" download="' +
+      U.esc(nomePdf) +
       '">' +
-      U.icone("mail") +
-      "Tenho interesse</a>";
+      U.icone("download") +
+      "Baixar PDF</a>" +
+      btnInteresse +
+      "</div>" +
+      "</aside>";
   }
-
-  var colunaDoc =
-    '<aside class="doc">' +
-    '<h2 class="doc__titulo">Documento oficial</h2>' +
-    '<button class="doc__thumb" type="button" data-abre-lightbox ' +
-    'aria-label="Ver a ficha técnica em tela cheia">' +
-    '<img src="' +
-    patente.imagens.ficha600 +
-    '" alt="Ficha técnica da patente ' +
-    U.esc(patente.numero) +
-    '" loading="lazy" decoding="async">' +
-    "</button>" +
-    '<div class="doc__acoes">' +
-    '<button class="botao botao--primario botao--bloco" type="button" data-abre-lightbox>' +
-    U.icone("maximize-2") +
-    "Ver ficha em tela cheia</button>" +
-    '<a class="botao botao--secundario botao--bloco" href="' +
-    patente.pdf +
-    '" download="' +
-    U.esc(nomePdf) +
-    '">' +
-    U.icone("download") +
-    "Baixar PDF</a>" +
-    btnInteresse +
-    "</div>" +
-    "</aside>";
 
   /* ---- monta tudo ---- */
   var elPatente = document.querySelector("[data-patente]");
@@ -216,7 +174,7 @@
     patente.ano +
     "</span>" +
     "</div>" +
-    htmlTrl(patente.trl) +
+    R.trl(patente.trl) +
     "</div>" +
     '<img class="patente-topo__capa" src="' +
     patente.imagens.capa800 +
@@ -226,19 +184,20 @@
     patente.imagens.dimensoesCapa[1] +
     '" alt="Imagem ilustrativa da tecnologia ' +
     U.esc(patente.titulo) +
-    '" fetchpriority="high" decoding="async" ' +
-    'style="view-transition-name: capa-' +
+    '" fetchpriority="high" decoding="async" data-vt="capa-' +
     patente.id +
     '">' +
     "</header>" +
-    '<div class="patente-corpo">' +
+    '<div class="patente-corpo' +
+    (temPdf ? "" : " patente-corpo--sem-doc") +
+    '">' +
     "<div>" +
     corpoEsquerda +
     "</div>" +
-    '<div class="patente-corpo__doc">' +
-    colunaDoc +
-    "</div>" +
+    (temPdf ? '<div class="patente-corpo__doc">' + colunaDoc + "</div>" : "") +
     "</div>";
+
+  R.aplicaTransicoes(elPatente);
 
   /* ---------------------------------------------------------
      Anterior / proxima (circular)
@@ -287,6 +246,11 @@
     sec.hidden = false;
     document.querySelector("[data-relacionadas-titulo]").textContent =
       "Outras patentes em " + patente.categoria;
+
+    /* Card mais enxuto que o da grade da home: sem resumo e sem transicao
+       de capa (o nome da view transition tem de ser unico na pagina, e a
+       capa do topo do detalhe ja usa `capa-<id>`). Por isso NAO passa por
+       RENDER.card -- sao dois componentes parecidos, nao o mesmo. */
     document.querySelector("[data-relacionadas-grade]").innerHTML = relacionadas
       .map(function (p) {
         return (
@@ -336,7 +300,14 @@
   /* ---------------------------------------------------------
      Lightbox
      --------------------------------------------------------- */
-  var dlg = document.querySelector("[data-lightbox]");
+  /* Sem imagem da ficha nao ha o que ampliar: o lightbox nao e montado
+     (PRD 6.4) e o <dialog> sai do DOM, para nao virar um elemento
+     interativo vazio para leitores de tela. */
+  var dlg = temFicha ? document.querySelector("[data-lightbox]") : null;
+  if (!temFicha) {
+    var dlgOcioso = document.querySelector("[data-lightbox]");
+    if (dlgOcioso) dlgOcioso.remove();
+  }
   var dlgImg = dlg ? dlg.querySelector(".lightbox__img") : null;
   var gatilho = null;
 
@@ -400,24 +371,7 @@
   /* ---------------------------------------------------------
      Mosaico do rodape
      --------------------------------------------------------- */
-  var rod = document.querySelector("[data-mosaico-rodape]");
-  if (rod) {
-    rod.innerHTML = [
-      { x: 4, y: 12, t: 70 },
-      { x: 22, y: 58, t: 40 },
-      { x: 48, y: 8, t: 96 },
-      { x: 72, y: 44, t: 56 },
-      { x: 88, y: 14, t: 120 },
-      { x: 62, y: 74, t: 34 },
-    ]
-      .map(function (p) {
-        return (
-          '<span style="left:' + p.x + "%;top:" + p.y + "%;width:" + p.t +
-          "px;height:" + p.t + 'px"></span>'
-        );
-      })
-      .join("");
-  }
+  U.montaMosaicoRodape();
 
   /* ---------------------------------------------------------
      Inicio

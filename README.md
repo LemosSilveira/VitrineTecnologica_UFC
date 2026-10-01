@@ -47,8 +47,56 @@ O script:
 2. extrai o texto da ficha com PyMuPDF e separa as seções
    (*O que é? · Problema que resolve · Exemplo de uso · Diferenciais
    competitivos · Benefício principal · TRL*);
-3. gera as imagens otimizadas em WebP e copia o PDF original;
-4. escreve `js/data/patentes.js` e `scripts/build_report.md`.
+3. aplica o `patente.json` da pasta, se houver (ver abaixo);
+4. gera as imagens otimizadas em WebP e publica uma versão **higienizada**
+   do PDF;
+5. escreve `js/data/patentes.js` e `scripts/build_report.md`.
+
+O `patentes.js` só é reescrito se o build terminar **sem erros** — com erro,
+a vitrine anterior fica de pé e o relatório diz o que aconteceu.
+
+### O PDF publicado não é o original
+
+`ficha.pdf` é uma versão higienizada: sai sem JavaScript, sem ações
+automáticas, sem anexos e sem metadados. As 60 fichas do acervo traziam
+`author`, `creator` e IDs internos da ferramenta que as gerou — nada disso
+vai ao ar. **O original no acervo continua intacto.**
+
+### Corrigir uma patente sem mexer no PDF
+
+Um arquivo `patente.json` dentro da pasta da patente sobrepõe o que foi
+extraído da ficha, campo a campo:
+
+```json
+{
+  "versao": 1,
+  "oculta": false,
+  "campos": {
+    "titulo": "Título corrigido",
+    "categoria": "Engenharias",
+    "secoes": { "oQueE": "...", "diferenciais": ["..."] },
+    "trl": { "min": 5, "max": 6, "estimado": true }
+  }
+}
+```
+
+- A prioridade é **`patente.json` › texto do PDF › nome do arquivo**. Campo
+  ausente continua vindo do PDF; campo em `null` foi apagado de propósito.
+- `numero`, `ano`, `tipo` e `id` vêm **sempre** do nome da pasta. Número
+  errado se resolve com patente nova, antiga para a lixeira.
+- `oculta: true` tira a patente da vitrine **e** apaga os assets dela — o
+  PDF não fica acessível por URL direta.
+- Campo desconhecido é **erro**, não algo ignorado em silêncio: um `titluo`
+  com erro de digitação passaria despercebido para sempre.
+
+### Lixeira e patente sem PDF
+
+- Pastas que começam com `_` ou `.` são ignoradas. Excluir é mover a pasta
+  para `_lixeira`: nada é apagado de verdade.
+- Uma patente **sem PDF** entra na vitrine se o `patente.json` trouxer
+  `titulo`, `categoria` e `secoes.oQueE`. Ela fica sem botão de download e
+  sem imagem da ficha (`pdf`, `ficha600` e `ficha1620` em `null`), e o site
+  trata esses nulos.
 
 **A pasta de origem é somente leitura** — o script nunca renomeia, move ou
 apaga nada. E o build é **idempotente**: rodar duas vezes não altera nenhum
@@ -67,9 +115,30 @@ Confira sempre o `scripts/build_report.md` depois de rodar.
    os contadores do hero e a navegação anterior/próxima saem todos de
    `window.PATENTES`.
 
-A **categoria** precisa estar no mapa `CATEGORIA_MAP` do script. Se aparecer
+A **categoria** precisa estar no mapa `dados/categorias.json`. Se aparecer
 uma categoria desconhecida, o build **falha com mensagem clara** em vez de
 inventar uma área nova — se a categoria for legítima, adicione-a ao mapa.
+
+### Onde a lógica mora
+
+`scripts/build_patentes.py` é só a casca de linha de comando. O pipeline
+está em **`scripts/vitrine_core/`**, para que o painel local importe o mesmo
+código em vez de duplicá-lo:
+
+| Módulo | Responsabilidade |
+|---|---|
+| `nomes.py` | normalização de texto, slug e os regex de pasta/arquivo |
+| `io_seguro.py` | escrita atômica, `write_if_changed`, confinamento de caminho |
+| `extracao.py` | leitura das fichas em PDF (título, seções, TRL, `ler_ficha`) |
+| `pdf_seguro.py` | validação e higienização de PDF |
+| `imagens.py` | capas e render da ficha em WebP |
+| `acervo.py` | pastas originais, `patente.json` e `dados/categorias.json` |
+| `build.py` | o pipeline completo, a serialização e o relatório |
+
+```python
+from vitrine_core.build import roda_build
+res = roda_build(Path("<acervo>"), Path("."))
+```
 
 ### O que o build resolve sozinho
 
@@ -95,6 +164,13 @@ As pastas originais têm várias inconsistências, todas tratadas no script:
 O site é estático: basta subir a pasta inteira (sem `tests/` e `scripts/`, se
 preferir). Confira dois pontos:
 
+> O `.htaccess` traz uma **Content-Security-Policy sem `'unsafe-inline'`**.
+> Isso só é possível porque o site não tem nenhum `<script>` nem `<style>`
+> inline: os estilos calculados (posição da prévia, mosaicos, nome da view
+> transition) são aplicados pelo CSSOM, que a CSP libera. Ao acrescentar
+> qualquer coisa ao HTML, mantenha essa regra — `tests/specs/csp.spec.js`
+> falha se ela for quebrada.
+
 1. **`CONFIG.basePath`** em `js/config.js` — hoje é `"/"` (raiz de domínio).
    Se o site for para uma **subpasta** (ex.: GitHub Pages em
    `/vitrine-patentes/`), troque para `"/vitrine-patentes/"`. A 404 usa esse
@@ -116,26 +192,65 @@ quebrariam o CSS, as fontes e o logo.
 ```bash
 cd tests
 npm install
-npx playwright install chromium firefox webkit
+npx playwright install chromium
 
-npm test                              # tudo
-npx playwright test --project=chromium-desktop   # só um motor
-npx playwright show-report
+npm test                 # tudo, nos dois viewports
+npm run test:desktop     # só 1440×900
+npm run report           # relatório HTML da última execução
 ```
 
 Cobre: renderização das 60 patentes, busca (com e sem acento, por número),
 filtros por área e tipo, ordenação, estado na URL, prévia da ficha no hover
 (posição, teclado, `Esc`), as 60 páginas de detalhe, lightbox, navegação
 circular, redirecionamento para a 404, `prefers-reduced-motion`, ausência de
-rolagem horizontal em 360/768/1440 e **axe-core sem violações
-serious/critical**.
+rolagem horizontal e **axe-core sem violações serious/critical**.
 
-Roda em **Chromium, Firefox e WebKit**, nos viewports 1440×900 e 390×844.
-Os screenshots de revisão ficam em `tests/screenshots/`.
+Roda em **Chromium**, nos viewports 1440×900 e 390×844. Nenhum spec depende do
+motor: voltar a incluir Firefox e WebKit é acrescentar dois `projects` em
+`tests/playwright.config.js`.
 
-Alguns testes são pulados por limitação de plataforma, sempre com o motivo no
-código — por exemplo, o WebKit não percorre links com `Tab` enquanto o acesso
-completo por teclado do sistema está desligado.
+Há também **referências visuais** (`tests/specs/visual.spec.js-snapshots/`) da
+home, do hero, do card, da prévia, de 3 detalhes e da 404, com tolerância de
+0,1% dos pixels. Elas existem para garantir que refatorar a renderização não
+mude um pixel.
+
+Detalhes em [`tests/README.md`](tests/README.md).
+
+### Testes do `vitrine_core`
+
+```bash
+pip install pytest
+python -m pytest tests/core
+```
+
+Cobre as funções puras do pipeline (normalização, slug, seções da ficha,
+TRL, resumo, escape de JS, escrita atômica, `categorias.json`) e a
+**paridade com o build legado**: enquanto `tests/core/test_build.py` passar,
+a extração do pacote não mudou comportamento nenhum.
+
+### Testes do painel
+
+```bash
+python -m pytest tests/painel tests/seguranca
+```
+
+Cobre a configuração, o histórico, os backups, a validação dos campos, a
+quarentena de arquivos, o armazenamento no acervo, o pacote de publicação e os
+fluxos da `Api` de ponta a ponta — mais a suíte de segurança: arquivos
+maliciosos, caminhos hostis, nomes de arquivo, integridade e a **superfície da
+`Api`**, que precisa continuar sendo exatamente a tabela 5.3 do PRD.
+
+### Snapshot do build
+
+`tests/fixtures/snapshot-fase0/` congela `js/data/patentes.js`,
+`scripts/build_report.md` e os hashes dos 300 arquivos de `assets/patentes/**`
+de antes da refatoração do build.
+
+```bash
+python tests/fixtures/snapshot-fase0/verificar_snapshot.py
+```
+
+Sai com código ≠ 0 em qualquer divergência byte a byte.
 
 ---
 
@@ -150,11 +265,13 @@ completo por teclado do sistema está desligado.
 │   ├── tokens.css          Cores, tipografia, espaçamento, sombras, easing
 │   ├── base.css            Reset, @font-face, tipografia, utilitários
 │   ├── components.css      Header, rodapé, card, prévia, chips, TRL, lightbox
-│   └── pages.css           Home, detalhe e 404
+│   ├── pages.css           Home, detalhe e 404
+│   └── erro.css            Só a 404 (caminho absoluto do logo)
 ├── js/
 │   ├── config.js           CONFIG global (URLs, e-mail, basePath)
 │   ├── data/patentes.js    GERADO — window.PATENTES / window.CATEGORIAS
 │   ├── ui.js               Header, reveal, contadores, ícones, utilidades
+│   ├── render.js           Card, TRL e seções — compartilhado com o painel
 │   ├── home.js             Busca, filtros, grade, prévia no hover
 │   ├── patente.js          Detalhe, TRL, lightbox, navegação
 │   └── erro.js             404
@@ -162,13 +279,72 @@ completo por teclado do sistema está desligado.
 │   ├── fonts/              UFCInova-Bold + Metropolis (5 pesos), woff2
 │   ├── img/                logo, favicon, og-image
 │   └── patentes/<slug>/    capa-400/800.webp, ficha-600/1620.webp, ficha.pdf
+├── admin/                  NUNCA publicado — o painel local
+│   ├── painel/             config, auditoria, backup, validação,
+│   │                       armazenamento, prévia, publicação, api
+│   └── requirements*.txt   Dependências fixadas com hash
+├── dados/
+│   └── categorias.json     Mapa das áreas tecnológicas (lido pelo build)
 ├── scripts/
-│   ├── build_patentes.py   Pipeline de dados
+│   ├── build_patentes.py   CLI do build
+│   ├── vitrine_core/       Pipeline de dados (importado também pelo painel)
 │   ├── fonts_to_woff2.py   Conversão das fontes
 │   ├── gerar_og.js         Gera a og-image a partir de og_template.html
 │   └── build_report.md     GERADO — relatório do build
-└── tests/                  Playwright + axe
+└── tests/
+    ├── server.js           Servidor estático que serve a 404.html
+    ├── conftest.py         Ambiente de mentira (site, acervo, APPDATA)
+    ├── specs/              Playwright + axe (site)
+    ├── core/               pytest (vitrine_core)
+    ├── painel/             pytest (painel)
+    ├── seguranca/          pytest (modelo de ameaças da seção 5)
+    └── fixtures/
+        ├── build_legado.py       Cópia do build de antes da refatoração
+        └── snapshot-fase0/       Linha de base byte a byte da vitrine
 ```
+
+---
+
+## Painel local
+
+Aplicativo de janela única que a equipe da UFC Inova abre com dois cliques
+para cadastrar, editar e publicar patentes sem terminal. O código fica em
+`admin/` e **nunca é publicado**.
+
+```bash
+pip install --require-hashes -r admin/requirements.txt
+```
+
+### Modelo de segurança (resumo)
+
+- **Não há login, e por isso o painel não fica acessível pela rede.** A
+  fronteira de segurança é a conta do Windows de quem usa o computador.
+- **Sem API HTTP.** A interface fala com o Python pela ponte interna do
+  pywebview, dentro do processo — nenhum site aberto no navegador da pessoa
+  alcança o painel.
+- **O Python não confia na interface.** Toda validação é refeita no backend; a
+  do formulário serve só para dar retorno imediato e pode ter sido alterada
+  pelo DevTools.
+- **Superfície mínima.** O pywebview expõe todo método público da classe
+  passada em `js_api`, então `admin/painel/api.py` tem apenas os 20 métodos da
+  tabela 5.3 do PRD. Um teste falha se aparecer um a mais.
+- **Quarentena.** Todo arquivo recebido é gravado com nome fixo em
+  `%LOCALAPPDATA%` e validado antes de chegar ao acervo. O nome que veio de
+  fora nunca é usado.
+- **Nada é apagado.** Excluir move a pasta para `_lixeira`; toda alteração faz
+  backup antes; IDs nunca são reaproveitados.
+- **Pacote por lista de permissões.** O `.zip` de publicação leva só os
+  arquivos públicos — não uma lista de exclusões, que deixaria um arquivo novo
+  entrar por padrão.
+
+### Onde o painel guarda as coisas
+
+| Pasta | Conteúdo |
+|---|---|
+| `%APPDATA%\PainelVitrine\` | `config.json`, `auditoria.log`, `backups\` — **não pode ser perdido** |
+| `%LOCALAPPDATA%\PainelVitrine\` | `quarentena\`, `pacotes\`, `painel.lock`, `painel.log` — descartável |
+
+Nada é gravado dentro do repositório da vitrine.
 
 ---
 

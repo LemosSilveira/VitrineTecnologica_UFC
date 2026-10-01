@@ -49,18 +49,13 @@
     <link rel="stylesheet" href="/css/base.css" />
     <link rel="stylesheet" href="/css/components.css" />
     <link rel="stylesheet" href="/css/pages.css" />
+    <!-- Caminho absoluto do logo. Estava num <style> aqui; saiu para um
+         arquivo para que a CSP possa dispensar style-src 'unsafe-inline'. -->
+    <link rel="stylesheet" href="/css/erro.css" />
 
     <script src="/js/config.js"></script>
     <script src="/js/ui.js" defer></script>
     <script src="/js/erro.js" defer></script>
-
-    <style>
-      /* O logo e carregado por mascara; na 404 o caminho precisa ser absoluto. */
-      .logo-ufcinova {
-        -webkit-mask-image: url("/assets/img/logo-ufcinova.svg");
-        mask-image: url("/assets/img/logo-ufcinova.svg");
-      }
-    </style>
   </head>
 
   <body class="erro">

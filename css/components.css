@@ -705,6 +705,22 @@
   background: var(--c-brand-50);
 }
 
+/* Patente sem PDF: nao existe imagem da ficha, entao a previa mostra a capa
+   (quadrada) e o resumo no lugar. A largura do painel nao muda, para que a
+   posicao calculada em home.js continue valendo. */
+.previa--sem-ficha .previa__img {
+  aspect-ratio: 1;
+  object-position: center;
+}
+
+.previa__resumo {
+  margin: 0;
+  padding: var(--s-4) var(--s-4) 0;
+  font-size: var(--fs-caption);
+  line-height: 1.5;
+  color: var(--c-text-muted);
+}
+
 .previa__rodape {
   display: flex;
   align-items: center;
@@ -852,7 +868,10 @@
   min-height: 44px;
   padding: var(--s-2) var(--s-4);
   border-radius: var(--r-sm);
-  background: rgb(255 255 255 / 0.12);
+  /* Roxo escuro, nao branco translucido: no celular a ficha ocupa toda a
+     largura e os botoes ficam sobre a parte clara da imagem, onde texto
+     branco sobre 12% de branco nao tem contraste. */
+  background: rgb(46 3 80 / 0.88);
   color: #fff;
   font-size: var(--fs-strong);
   font-weight: 600;
@@ -862,7 +881,7 @@
 }
 
 .lightbox__btn:hover {
-  background: rgb(255 255 255 / 0.24);
+  background: rgb(71 5 122 / 0.95);
 }
 
 .lightbox__btn:focus-visible {

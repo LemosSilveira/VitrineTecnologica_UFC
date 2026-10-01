@@ -1,0 +1,19 @@
+{
+  "name": "vitrine-patentes-testes",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Testes de regressao (Playwright + axe) da Vitrine de Patentes UFC",
+  "scripts": {
+    "test": "playwright test",
+    "test:desktop": "playwright test --project=chromium-desktop",
+    "test:mobile": "playwright test --project=chromium-mobile",
+    "test:visual": "playwright test --project=chromium-desktop visual",
+    "visual:atualizar": "playwright test --project=chromium-desktop visual --update-snapshots",
+    "report": "playwright show-report",
+    "servir": "node server.js"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.10.1",
+    "@playwright/test": "^1.50.0"
+  }
+}
