@@ -39,6 +39,15 @@ const TELAS = [
     titulo: "T1 — Patentes",
   },
   {
+    arquivo: "02b-patentes-detalhes.png",
+    url: "/admin/ui/index.html#/lista",
+    titulo: "T1 — com os detalhes abertos",
+    antes: async (page) => {
+      await page.click("[data-detalhes]");
+      await page.waitForTimeout(250);
+    },
+  },
+  {
     arquivo: "03-patentes-busca.png",
     url: "/admin/ui/index.html#/lista",
     titulo: "T1 — busca por área",

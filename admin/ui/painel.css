@@ -293,10 +293,43 @@ body.painel {
   color: var(--c-text-muted);
 }
 
+.tela-topo__acoes {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+.detalhes-botao {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.detalhes-botao__seta {
+  width: 16px;
+  height: 16px;
+  transition: transform var(--dur-1) var(--ease-out);
+}
+
+.detalhes-botao[aria-expanded="true"] .detalhes-botao__seta {
+  transform: rotate(180deg);
+}
+
+/* Mesma armadilha do contador da barra lateral: `display: flex` numa classe
+   vence o `[hidden] { display: none }` do navegador, e o bloco apareceria
+   mesmo recolhido. */
+.tela-numeros[hidden] {
+  display: none;
+}
+
 .tela-numeros {
   display: flex;
   gap: var(--s-6);
-  margin: var(--s-5) 0 0;
+  margin: 0 0 var(--s-5);
+  padding: var(--s-4) var(--s-5);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+  background: var(--c-surface);
 }
 
 .tela-numeros div {
@@ -1303,6 +1336,9 @@ body.painel {
    Movimento reduzido (PRD 7.6)
    ============================================================ */
 @media (prefers-reduced-motion: reduce) {
+  .detalhes-botao__seta {
+    transition: none;
+  }
   .painel-tela,
   .toast,
   .campo.is-piscando input,

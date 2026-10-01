@@ -28,6 +28,12 @@
     info: null, // resposta de API.estado()
     patentes: null, // cache da ultima listagem
     sujo: false, // ha rascunho nao salvo na tela atual?
+    /* As contagens ficam recolhidas por padrao. A tela inicial e para
+       ENCONTRAR uma patente; o resumo numerico e consulta ocasional, e
+       ocupava a primeira dobra todo dia por causa de uma pergunta que se faz
+       de vez em quando. Fica no estado, e nao local da funcao, para o
+       recolhimento sobreviver a cada redesenho da tela. */
+    numerosAbertos: false,
   };
 
   /* ---------------------------------------------------------
@@ -239,17 +245,45 @@
   function telaLista() {
     var frag = document.createDocumentFragment();
 
+    var info = estado.info || {};
+
+    /* Disclosure acessivel: o botao controla a regiao por aria-controls e
+       anuncia o estado por aria-expanded, para quem usa leitor de tela saber
+       que ha conteudo recolhido ali. */
+    var botaoDetalhes = h(
+      "button",
+      {
+        class: "botao botao--terciario detalhes-botao",
+        type: "button",
+        "aria-expanded": String(estado.numerosAbertos),
+        "aria-controls": "numeros-do-acervo",
+        "data-detalhes": "",
+      },
+      [
+        h("span", { texto: "Detalhes" }),
+        h("span", { class: "detalhes-botao__seta", "data-icone-painel": "seta-baixo" }),
+      ]
+    );
+
     frag.appendChild(
       telaTopo(
         "Patentes",
         null,
-        h("a", { class: "botao botao--primario", href: "#/nova" }, ["+ Nova patente"])
+        h("div", { class: "tela-topo__acoes" }, [
+          botaoDetalhes,
+          h("a", { class: "botao botao--primario", href: "#/nova" }, ["+ Nova patente"]),
+        ])
       )
     );
 
-    var info = estado.info || {};
-    frag.appendChild(
-      h("dl", { class: "tela-numeros" }, [
+    var numeros = h(
+      "dl",
+      {
+        class: "tela-numeros",
+        id: "numeros-do-acervo",
+        hidden: estado.numerosAbertos ? null : "",
+      },
+      [
         h("div", {}, [
           h("dt", { texto: "Na vitrine" }),
           h("dd", { texto: String(info.naVitrine || 0) }),
@@ -266,8 +300,15 @@
           h("dt", { texto: "Áreas" }),
           h("dd", { texto: String(info.areas || 0) }),
         ]),
-      ])
+      ]
     );
+    frag.appendChild(numeros);
+
+    botaoDetalhes.addEventListener("click", function () {
+      estado.numerosAbertos = !estado.numerosAbertos;
+      numeros.hidden = !estado.numerosAbertos;
+      botaoDetalhes.setAttribute("aria-expanded", String(estado.numerosAbertos));
+    });
 
     var busca = h("div", { class: "busca" }, [
       h("span", { class: "busca__icone", html: U.icone("search") }),
