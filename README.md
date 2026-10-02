@@ -104,10 +104,26 @@ preferir). Confira dois pontos:
      (além de MIME types, cache e compressão).
    - **GitHub Pages / Netlify**: usam `/404.html` automaticamente.
    - **Nginx**: `error_page 404 /404.html;`
+   - **Vercel**: serve `404.html` da raiz automaticamente, com status 404.
 
 A 404 usa **caminhos absolutos** de propósito: ela pode ser servida em
 qualquer profundidade de URL (`/patente/xyz/abc`), e caminhos relativos
 quebrariam o CSS, as fontes e o logo.
+
+### Vercel
+
+Deploy direto do GitHub, sem passo de build:
+
+1. Import do repositório em vercel.com (**Add New → Project**).
+2. **Framework Preset**: Other · **Build Command**: vazio · **Output
+   Directory**: `.` · **Install Command**: vazio.
+3. Cabeçalhos de segurança e cache (CSP, HSTS, `X-Frame-Options` etc. —
+   equivalentes ao `.htaccess`, que a Vercel ignora) ficam em `vercel.json`.
+4. Arquivos internos (`scripts/`, `tests/`, `README.md`, `skills-lock.json`,
+   `.htaccess`, `*.py`) são excluídos do deploy via `.vercelignore`.
+5. Use o deploy pelo GitHub, não a CLI (`vercel deploy`): a pasta tem PDFs e
+   imagens suficientes para passar do limite de 100 MB da CLI no plano
+   Hobby.
 
 ---
 
