@@ -1,0 +1,12 @@
+# Ferramentas e documentação internas — não publicar
+scripts/
+tests/
+README.md
+skills-lock.json
+.htaccess
+PRD-*.md
+*.py
+*.log
+node_modules/
+.vscode/
+.claude/
