@@ -1,6 +1,6 @@
 # Vitrine de Patentes UFC
 
-Site estático que apresenta as **60 patentes** da Universidade Federal do Ceará
+Site estático que apresenta as **93 patentes** da Universidade Federal do Ceará
 disponíveis para licenciamento, com identidade da **UFC Inova**.
 
 HTML + CSS + JavaScript puro, sem framework e sem dependência externa em runtime.
@@ -30,46 +30,86 @@ python -m http.server 4173
 
 ## Como atualizar os dados (rodar o build)
 
-O array de patentes **nunca** é editado à mão: ele é gerado a partir da pasta
-original com as fichas.
+O array de patentes **nunca** é editado à mão: ele é gerado a partir de uma ou
+mais pastas de origem com as fichas. `--src` pode repetir para combinar vários
+lotes num mesmo build:
 
 ```bash
 pip install pymupdf pillow
 
 python scripts/build_patentes.py \
   --src "C:\Users\Usuario\Documents\50 Patentes Observatório-20260924T152758Z-1-001\50 Patentes Observatório" \
+  --src "C:\Users\Usuario\Documents\comparação de patentes\patente 3" \
   --out .
 ```
 
 O script:
 
-1. lê cada subpasta `N. BR XX AAAA NNNNNN D` (o número antes do ponto é o ID);
+1. lê cada subpasta de patente — com prefixo de ID (`N. BR XX AAAA NNNNNN D`)
+   ou sem ele (`BR XX AAAA NNNNNN D`, usado em lotes novos; ver registro de
+   IDs abaixo);
 2. extrai o texto da ficha com PyMuPDF e separa as seções
    (*O que é? · Problema que resolve · Exemplo de uso · Diferenciais
    competitivos · Benefício principal · TRL*);
 3. gera as imagens otimizadas em WebP e copia o PDF original;
-4. escreve `js/data/patentes.js` e `scripts/build_report.md`.
+4. escreve `js/data/patentes.js`, `dados/ids_patentes.json` e
+   `scripts/build_report.md` — **só se o build terminar sem erros**. Com
+   erro, nada desses três arquivos é tocado; o relatório sai em
+   `scripts/build_report_FALHOU.md` para diagnóstico.
 
-**A pasta de origem é somente leitura** — o script nunca renomeia, move ou
-apaga nada. E o build é **idempotente**: rodar duas vezes não altera nenhum
-byte (arquivos só são reescritos quando o conteúdo muda).
+**As pastas de origem são somente leitura** — o script nunca renomeia, move
+ou apaga nada nelas. E o build é **idempotente**: rodar duas vezes não altera
+nenhum byte (arquivos só são reescritos quando o conteúdo muda).
 
 O script termina com código ≠ 0 se houver **erro** (não se houver só avisos).
-Confira sempre o `scripts/build_report.md` depois de rodar.
+Confira sempre o relatório depois de rodar.
 
-### Como adicionar uma patente nova
+### Registro permanente de IDs (`dados/ids_patentes.json`)
 
-1. Crie uma subpasta na pasta de origem seguindo o padrão
-   `61. BR 10 2026 001234 5`.
-2. Coloque dentro **um PDF** (a ficha técnica) e **uma imagem** de capa.
-   O nome do PDF deve seguir `N. Categoria - BR XX AAAA NNNNNN D - Título.pdf`.
-3. Rode o build de novo. Nada mais precisa ser tocado: a grade, os filtros,
-   os contadores do hero e a navegação anterior/próxima saem todos de
-   `window.PATENTES`.
+O ID de cada patente define a URL (`patente.html?id=N`) e por isso **nunca
+pode mudar** depois de publicado. Esse arquivo mapeia `numero INPI -> ID` e é
+a fonte da verdade:
 
-A **categoria** precisa estar no mapa `CATEGORIA_MAP` do script. Se aparecer
-uma categoria desconhecida, o build **falha com mensagem clara** em vez de
-inventar uma área nova — se a categoria for legítima, adicione-a ao mapa.
+- pasta **com prefixo** (`19. BR ...`): o ID é o do prefixo. Se o número já
+  estiver no registro com outro ID, o build falha.
+- pasta **sem prefixo** (lote novo): o ID vem do registro; se o número ainda
+  não está lá, recebe `maior ID do registro + 1`. Com várias pastas novas no
+  mesmo build, a atribuição segue a ordem do número BR (espécie, ano,
+  sequencial) — determinística, não depende da ordem de leitura do disco.
+- o mesmo número BR em duas pastas diferentes (até de origens diferentes) é
+  **erro**.
+
+Nunca edite esse arquivo à mão, exceto para corrigir um erro de digitação —
+e, nesse caso, só depois de confirmar que o ID antigo não foi publicado.
+
+### Lista de exclusão (`dados/excluir.json`)
+
+Opcional. Lista números BR que devem ficar de fora do site nesta rodada,
+sem perder o ID reservado no registro — útil para segurar uma ficha com
+problema de conteúdo até vir uma versão corrigida:
+
+```json
+{ "versao": 1, "numeros": ["BR 10 2016 030476-8"] }
+```
+
+A patente some de `window.PATENTES` e aparece no relatório como "excluído por
+decisão", mas o ID continua reservado para ela (nunca é reaproveitado).
+
+### Como inserir um lote novo de patentes
+
+1. Confirme que cada subpasta do lote traz **um PDF** (ficha técnica) e
+   **uma imagem** de capa — e nada mais que o build deva usar.
+   `.docx`/`.xlsx` e outros arquivos extras são ignorados automaticamente e
+   aparecem no relatório.
+2. As subpastas podem ou não ter o prefixo numérico; sem prefixo, o ID é
+   atribuído automaticamente pelo registro (ver acima).
+3. Rode o build apontando `--src` para a pasta antiga **e** para a pasta do
+   lote novo (pode repetir `--src` para quantas pastas precisar).
+4. Confira o relatório: 0 erros, os avisos esperados, e a seção "IDs
+   atribuídos neste build" com os números do lote novo.
+5. A **categoria** de cada patente precisa estar no mapa `CATEGORIA_MAP` do
+   script. Categoria desconhecida faz o build falhar com mensagem clara em
+   vez de inventar uma área nova — se for legítima, adicione-a ao mapa.
 
 ### O que o build resolve sozinho
 
@@ -87,6 +127,9 @@ As pastas originais têm várias inconsistências, todas tratadas no script:
 | Arquivo extra `.docx` | id 29 | ignorado e registrado no relatório |
 | `_` no fim da pasta, espaço duplo | ids 13, 18, 21, 22, 30… | normalizados |
 | Número com e sem hífen | vários | normalizado para `BR 10 2018 069181-3` |
+| Pasta sem prefixo de ID | lote "patente 3" (ids 61-93) | ID vem do registro `dados/ids_patentes.json` |
+| Dígito verificador grafado como letra "O" | id 62 | normalizado para `0` (pasta e nome do arquivo) |
+| Título do PDF com palavra quebrada no meio pelo layout | id 87 | usa o título do nome do arquivo |
 
 ---
 
@@ -129,6 +172,19 @@ Deploy direto do GitHub, sem passo de build:
 
 ## Testes
 
+### Pipeline de dados (Python)
+
+```bash
+pip install pytest
+python -m pytest scripts/tests/
+```
+
+Cobre `normaliza_numero_bruto`, a escolha de título (truncado / palavra
+partida / MAIÚSCULAS), a atribuição de IDs pelo registro, a detecção de
+número duplicado entre pastas e a regra de não gravar nada quando há erro.
+
+### Site (Playwright)
+
 ```bash
 cd tests
 npm install
@@ -139,7 +195,7 @@ npx playwright test --project=chromium-desktop   # só um motor
 npx playwright show-report
 ```
 
-Cobre: renderização das 60 patentes, busca (com e sem acento, por número),
+Cobre: renderização das 93 patentes, busca (com e sem acento, por número),
 filtros por área e tipo, ordenação, estado na URL, prévia da ficha no hover
 (posição, teclado, `Esc`), as 60 páginas de detalhe, lightbox, navegação
 circular, redirecionamento para a 404, `prefers-reduced-motion`, ausência de
@@ -178,11 +234,15 @@ completo por teclado do sistema está desligado.
 │   ├── fonts/              UFCInova-Bold + Metropolis (5 pesos), woff2
 │   ├── img/                logo, favicon, og-image
 │   └── patentes/<slug>/    capa-400/800.webp, ficha-600/1620.webp, ficha.pdf
+├── dados/
+│   ├── ids_patentes.json   GERADO — registro permanente numero -> ID
+│   └── excluir.json        Lista opcional de numeros fora do site
 ├── scripts/
 │   ├── build_patentes.py   Pipeline de dados
 │   ├── fonts_to_woff2.py   Conversão das fontes
 │   ├── gerar_og.js         Gera a og-image a partir de og_template.html
-│   └── build_report.md     GERADO — relatório do build
+│   ├── build_report.md     GERADO — relatório do build (só sem erros)
+│   └── tests/              Testes unitários do pipeline (pytest)
 └── tests/                  Playwright + axe
 ```
 
