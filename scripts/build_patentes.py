@@ -2,20 +2,25 @@
 # -*- coding: utf-8 -*-
 """Pipeline de dados da Vitrine de Patentes UFC.
 
-Le a pasta de origem com as 60 subpastas de patentes (1 PDF + 1 imagem cada),
-extrai o conteudo das fichas tecnicas, otimiza as imagens e gera:
+Le uma ou mais pastas de origem (uma subpasta por patente, com 1 PDF + 1
+imagem cada), extrai o conteudo das fichas tecnicas, otimiza as imagens e
+gera:
 
-  js/data/patentes.js     window.PATENTES / window.CATEGORIAS
-  assets/patentes/<slug>/ capa-400.webp, capa-800.webp,
-                          ficha-600.webp, ficha-1620.webp, ficha.pdf
-  scripts/build_report.md relatorio do build
+  js/data/patentes.js       window.PATENTES / window.CATEGORIAS
+  assets/patentes/<slug>/   capa-400.webp, capa-800.webp,
+                            ficha-600.webp, ficha-1620.webp, ficha.pdf
+  dados/ids_patentes.json   registro permanente numero INPI -> ID
+  scripts/build_report.md  relatorio do build
 
 Uso:
-    python scripts/build_patentes.py --src "<pasta de origem>" --out .
+    python scripts/build_patentes.py --src "<pasta 1>" --src "<pasta 2>" --out .
 
-O script SO LE a pasta de origem: nunca renomeia, move ou apaga os originais.
-E idempotente -- arquivos de saida so sao reescritos quando o conteudo muda,
-entao rodar duas vezes nao altera nenhum byte nem mtime.
+O script SO LE as pastas de origem: nunca renomeia, move ou apaga os
+originais. E idempotente -- arquivos de saida so sao reescritos quando o
+conteudo muda, entao rodar duas vezes nao altera nenhum byte nem mtime.
+
+So grava patentes.js, o registro de IDs e o relatorio normal quando o build
+termina sem erros. Com erro, grava so scripts/build_report_FALHOU.md.
 
 Dependencias: pip install pymupdf pillow
 """
@@ -23,6 +28,7 @@ from __future__ import annotations
 
 import argparse
 import io
+import json
 import re
 import sys
 import unicodedata
@@ -79,9 +85,10 @@ SECOES = [
     ("_trl", "Nível de maturidade"),
 ]
 
-# Nome da pasta: "19. BR 10 2022 019303 7" (com "_" final em algumas).
+# Nome da pasta: "19. BR 10 2022 019303 7" (com "_" final em algumas) ou,
+# em lotes novos, sem o prefixo de ID: "BR 10 2015 029772 6".
 PASTA_RE = re.compile(
-    r"^(?P<id>\d+)\s*\.\s*(?P<pais>BR)\s*(?P<esp>\d{2})\s*(?P<ano>\d{4})\s*"
+    r"^(?:(?P<id>\d+)\s*\.\s*)?(?P<pais>BR)\s*(?P<esp>\d{2})\s*(?P<ano>\d{4})\s*"
     r"(?P<seq>\d{6})[\s\-]*(?P<dv>\d)\s*_?\s*$",
     re.IGNORECASE,
 )
@@ -91,6 +98,13 @@ PASTA_RE = re.compile(
 ARQUIVO_RE = re.compile(
     r"^(?:\d+\s*[.\-]\s*)?\s*(?P<cat>.+?)\s*-?\s*"
     r"BR\s*\d{2}\s*\d{4}\s*\d{6}[\s\-]*\d\s*-?\s*(?P<titulo>.*)$",
+    re.IGNORECASE,
+)
+
+# Numero BR com o digito verificador grafado como letra "O" em vez de zero
+# (PRD P2). So casa o digito verificador, nunca outras letras da string.
+NUMERO_BR_RE = re.compile(
+    r"(?P<pre>BR\s*\d{2}\s*\d{4}\s*\d{6}[\s\-]*)(?P<dv>[0-9Oo])",
     re.IGNORECASE,
 )
 
@@ -105,6 +119,12 @@ WEBP_FICHA_SM_Q = 80
 CAPA_LARGURAS = (400, 800)
 FICHA_ZOOM = 2.0  # 810x1012.5pt -> 1620x2025 px
 FICHA_SM_LARGURA = 600
+
+ID_REGISTRO_VERSAO = 1
+ID_REGISTRO_OBS = (
+    "ID permanente de cada patente (numero INPI normalizado -> id). "
+    "Nunca reutilizar nem renumerar."
+)
 
 
 # --------------------------------------------------------------------------
@@ -143,6 +163,18 @@ def normaliza_espacos(s: str) -> str:
     return re.sub(r"\s+", " ", s).strip()
 
 
+def normaliza_numero_bruto(s: str) -> str:
+    """Troca a letra O/o pelo digito 0 quando ocupa o digito verificador
+    de um numero BR (PRD P2). Nao toca em nenhum outro O/o da string."""
+
+    def repl(m: re.Match) -> str:
+        dv = m.group("dv")
+        dv0 = "0" if dv.upper() == "O" else dv
+        return m.group("pre") + dv0
+
+    return NUMERO_BR_RE.sub(repl, s)
+
+
 def write_if_changed(path: Path, data: bytes) -> bool:
     """Escreve so se o conteudo mudou. Garante idempotencia (mtime estavel)."""
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -165,6 +197,35 @@ def js_string(s: str) -> str:
         .replace("</", "<\\/")  # nao fecha um <script> por acidente
     )
     return f'"{out}"'
+
+
+# --------------------------------------------------------------------------
+# Registro de IDs e lista de exclusao
+# --------------------------------------------------------------------------
+
+def carrega_registro(path: Path) -> dict[str, int]:
+    if not path.exists():
+        return {}
+    dados = json.loads(path.read_text(encoding="utf-8"))
+    return {str(k): int(v) for k, v in dados.get("ids", {}).items()}
+
+
+def grava_registro(path: Path, registro: dict[str, int]) -> bool:
+    ids_ordenados = dict(sorted(registro.items(), key=lambda kv: kv[1]))
+    dados = {
+        "versao": ID_REGISTRO_VERSAO,
+        "observacao": ID_REGISTRO_OBS,
+        "ids": ids_ordenados,
+    }
+    texto = json.dumps(dados, ensure_ascii=False, indent=2) + "\n"
+    return write_if_changed(path, texto.encode("utf-8"))
+
+
+def carrega_excluir(path: Path) -> set[str]:
+    if not path.exists():
+        return set()
+    dados = json.loads(path.read_text(encoding="utf-8"))
+    return {str(n) for n in dados.get("numeros", [])}
 
 
 # --------------------------------------------------------------------------
@@ -312,6 +373,43 @@ def parse_trl(trecho: str) -> dict | None:
     return {"min": lo, "max": hi, "estimado": estimado, "texto": texto}
 
 
+def escolhe_titulo(titulo_pdf: str, titulo_arquivo: str, pid: int, res: "Resultado") -> str:
+    """Decide entre o titulo do PDF e o do nome do arquivo (PRD 3.4)."""
+    titulo = titulo_pdf or titulo_arquivo
+
+    # Titulo do PDF truncado (so tem o INICIO do titulo do arquivo): usa o
+    # do arquivo, que e mais completo (caso da patente 4).
+    if titulo_pdf and titulo_arquivo:
+        a, b = so_letras(titulo_pdf), so_letras(titulo_arquivo)
+        if a != b and a in b:
+            titulo = titulo_arquivo
+            res.avisos.append(
+                f"[{pid}] titulo do PDF truncado (`{titulo_pdf}`); "
+                f"usando o do arquivo (`{titulo_arquivo}`)."
+            )
+
+    # Titulo do PDF com uma palavra quebrada no meio por layout do Canva:
+    # mesmo texto do arquivo se ignorarmos so os espacos (diferenca de caixa
+    # continua valendo, por isso o do arquivo em MAIUSCULAS nao entra aqui).
+    if (
+        titulo_pdf
+        and titulo_arquivo
+        and titulo != titulo_arquivo
+        and titulo.replace(" ", "") == titulo_arquivo.replace(" ", "")
+    ):
+        titulo = titulo_arquivo
+        res.avisos.append(
+            f"[{pid}] titulo do PDF com palavra partida; usando o do arquivo."
+        )
+
+    if titulo.isupper():
+        titulo = titulo.capitalize()
+        res.avisos.append(
+            f"[{pid}] titulo estava em MAIUSCULAS; convertido para caixa de frase."
+        )
+    return titulo
+
+
 # --------------------------------------------------------------------------
 # Imagens
 # --------------------------------------------------------------------------
@@ -383,37 +481,108 @@ class Resultado:
     erros: list[str] = field(default_factory=list)
     avisos: list[str] = field(default_factory=list)
     ignorados: list[str] = field(default_factory=list)
+    excluidos: list[str] = field(default_factory=list)
+    contagem_origem: Counter = field(default_factory=Counter)
     bytes_origem: int = 0
     bytes_saida: int = 0
 
 
+@dataclass
+class EntradaPasta:
+    pasta: Path
+    src_root: Path
+    numero: str
+    esp: str
+    ano: str
+    seq: str
+    dv: str
+    prefixo_id: int | None
+    corrigido_o: bool
+
+
 # --------------------------------------------------------------------------
-# Processamento de uma pasta
+# Reconhecimento das pastas e atribuicao de IDs
 # --------------------------------------------------------------------------
 
-def processa(pasta: Path, out_root: Path, res: Resultado) -> dict | None:
+def monta_entrada(pasta: Path, src_root: Path, res: Resultado) -> EntradaPasta | None:
     nome = normaliza_espacos(pasta.name)
-    m = PASTA_RE.match(nome)
+    nome_norm = normaliza_numero_bruto(nome)
+    m = PASTA_RE.match(nome_norm)
     if not m:
         res.erros.append(f"`{pasta.name}`: nome de pasta fora do padrao esperado.")
         return None
 
-    pid = int(m.group("id"))
+    prefixo_id = int(m.group("id")) if m.group("id") else None
     esp, ano, seq, dv = m.group("esp"), m.group("ano"), m.group("seq"), m.group("dv")
     numero = f"BR {esp} {ano} {seq}-{dv}"
+    return EntradaPasta(pasta, src_root, numero, esp, ano, seq, dv, prefixo_id, nome != nome_norm)
 
-    tipo = TIPOS.get(esp)
-    if tipo is None:
-        res.erros.append(f"[{pid}] especie INPI desconhecida: BR {esp}.")
-        return None
 
-    # ---- arquivos ----
+def filtra_duplicados(entradas: list[EntradaPasta], res: Resultado) -> list[EntradaPasta]:
+    """Mesmo numero BR em duas pastas diferentes e erro (PRD 3.1)."""
+    vistos: dict[str, Path] = {}
+    unicos: list[EntradaPasta] = []
+    for e in entradas:
+        if e.numero in vistos:
+            res.erros.append(
+                f"numero duplicado em `{vistos[e.numero]}` e `{e.pasta}`."
+            )
+            continue
+        vistos[e.numero] = e.pasta
+        unicos.append(e)
+    return unicos
+
+
+def atribui_ids(
+    entradas: list[EntradaPasta], registro_inicial: dict[str, int], res: Resultado
+) -> dict[str, int]:
+    """Resolve o ID de cada entrada contra o registro permanente (PRD 3.2)."""
+    registro = dict(registro_inicial)
+
+    for e in entradas:
+        if e.prefixo_id is None:
+            continue
+        existente = registro.get(e.numero)
+        if existente is not None and existente != e.prefixo_id:
+            res.erros.append(
+                f"[{e.prefixo_id}] numero {e.numero} ja esta registrado com id "
+                f"{existente} (pasta `{e.pasta.name}`)."
+            )
+        else:
+            registro[e.numero] = e.prefixo_id
+
+    novas = sorted({e.numero for e in entradas if e.prefixo_id is None} - registro.keys())
+    proximo = max(registro.values(), default=0) + 1
+    for numero in novas:
+        registro[numero] = proximo
+        proximo += 1
+
+    return registro
+
+
+# --------------------------------------------------------------------------
+# Processamento dos arquivos de uma pasta
+# --------------------------------------------------------------------------
+
+def arquivos_da_pasta(pasta: Path) -> tuple[list[Path], list[Path], list[Path]]:
+    """So PDF e imagem contam como fonte (PRD 1); o resto e ignorado."""
     pdfs = sorted(f for f in pasta.iterdir() if f.is_file() and f.suffix.lower() == ".pdf")
     imgs = sorted(f for f in pasta.iterdir() if f.is_file() and f.suffix.lower() in IMG_EXTS)
     outros = sorted(
         f for f in pasta.iterdir()
         if f.is_file() and f.suffix.lower() != ".pdf" and f.suffix.lower() not in IMG_EXTS
     )
+    return pdfs, imgs, outros
+
+
+def processa_arquivos(e: EntradaPasta, pid: int, out_root: Path, res: Resultado) -> dict | None:
+    pasta = e.pasta
+    tipo = TIPOS.get(e.esp)
+    if tipo is None:
+        res.erros.append(f"[{pid}] especie INPI desconhecida: BR {e.esp}.")
+        return None
+
+    pdfs, imgs, outros = arquivos_da_pasta(pasta)
     for f in outros:
         res.ignorados.append(f"[{pid}] ignorado: `{f.name}`")
     for f in pdfs[1:] + imgs[1:]:
@@ -432,12 +601,14 @@ def processa(pasta: Path, out_root: Path, res: Resultado) -> dict | None:
     # ---- categoria e titulo pelo nome do arquivo ----
     categoria_bruta = ""
     titulo_arquivo = ""
-    mm = ARQUIVO_RE.match(normaliza_espacos(pdf_src.stem))
+    stem_norm = normaliza_numero_bruto(normaliza_espacos(pdf_src.stem))
+    mm = ARQUIVO_RE.match(stem_norm)
     if mm:
         categoria_bruta = mm.group("cat").strip(" -")
         titulo_arquivo = mm.group("titulo").strip()
     if not categoria_bruta:  # ultima tentativa: nome da imagem
-        mi = ARQUIVO_RE.match(normaliza_espacos(img_src.stem))
+        img_stem_norm = normaliza_numero_bruto(normaliza_espacos(img_src.stem))
+        mi = ARQUIVO_RE.match(img_stem_norm)
         if mi:
             categoria_bruta = mi.group("cat").strip(" -")
 
@@ -466,24 +637,10 @@ def processa(pasta: Path, out_root: Path, res: Resultado) -> dict | None:
     for a in avisos_sec:
         res.avisos.append(f"[{pid}] {a}")
 
-    # Titulo canonico: o do PDF (caixa correta -- corrige o MAIUSCULAS da 52).
-    # Excecao: quando o nome do arquivo CONTEM o titulo do PDF, o PDF foi
-    # truncado no design (caso da 4) e o nome do arquivo e mais completo.
-    titulo = titulo_pdf or titulo_arquivo
-    if titulo_pdf and titulo_arquivo:
-        a, b = so_letras(titulo_pdf), so_letras(titulo_arquivo)
-        if a != b and a in b:
-            titulo = titulo_arquivo
-            res.avisos.append(
-                f"[{pid}] titulo do PDF truncado (`{titulo_pdf}`); "
-                f"usando o do arquivo (`{titulo_arquivo}`)."
-            )
+    titulo = escolhe_titulo(titulo_pdf, titulo_arquivo, pid, res)
     if not titulo:
         res.erros.append(f"[{pid}] sem titulo no PDF nem no nome do arquivo.")
         return None
-    if titulo.isupper():
-        titulo = titulo.capitalize()
-        res.avisos.append(f"[{pid}] titulo estava em MAIUSCULAS; convertido para caixa de frase.")
 
     secoes = {
         "oQueE": limpa_paragrafo(bruto["oQueE"]) if bruto.get("oQueE") else None,
@@ -516,8 +673,8 @@ def processa(pasta: Path, out_root: Path, res: Resultado) -> dict | None:
     return {
         "id": pid,
         "slug": slug,
-        "numero": numero,
-        "ano": int(ano),
+        "numero": e.numero,
+        "ano": int(e.ano),
         "tipo": tipo,
         "categoria": categoria,
         "titulo": titulo,
@@ -587,7 +744,13 @@ def mb(n: int) -> str:
     return f"{n / 1024 / 1024:.1f} MB"
 
 
-def relatorio(res: Resultado, categorias: list[dict], src: Path, capas_400: int) -> str:
+def relatorio(
+    res: Resultado,
+    categorias: list[dict],
+    srcs: list[Path],
+    capas_400: int,
+    atribuidos_neste_build: dict[str, int],
+) -> str:
     tipos = Counter(p["tipo"]["sigla"] for p in res.patentes)
     anos = Counter(p["ano"] for p in res.patentes)
     L: list[str] = []
@@ -597,11 +760,18 @@ def relatorio(res: Resultado, categorias: list[dict], src: Path, capas_400: int)
     A("")
     A("> Gerado por `scripts/build_patentes.py`. Nao editar a mao.")
     A("")
-    A(f"- **Pasta de origem:** `{src}`")
     A(f"- **Patentes processadas:** {len(res.patentes)}")
     A(f"- **Erros:** {len(res.erros)}")
     A(f"- **Avisos:** {len(res.avisos)}")
     A(f"- **Arquivos ignorados:** {len(res.ignorados)}")
+    A(f"- **Excluidos por decisao:** {len(res.excluidos)}")
+    A("")
+    A("## Pastas de origem")
+    A("")
+    A("| Pasta | Patentes |")
+    A("|---|---|")
+    for src in srcs:
+        A(f"| `{src}` | {res.contagem_origem.get(str(src), 0)} |")
     A("")
     A("## Peso")
     A("")
@@ -635,6 +805,35 @@ def relatorio(res: Resultado, categorias: list[dict], src: Path, capas_400: int)
         A(f"| {ano} | {anos[ano]} |")
     A("")
 
+    A("## IDs atribuidos neste build")
+    A("")
+    if atribuidos_neste_build:
+        A("| Numero | ID |")
+        A("|---|---|")
+        for numero, idd in sorted(atribuidos_neste_build.items(), key=lambda kv: kv[1]):
+            A(f"| `{numero}` | {idd} |")
+    else:
+        A("Nenhum (nenhum numero novo neste build).")
+    A("")
+
+    A("## Fichas com texto identico")
+    A("")
+    grupos: dict[str, list[dict]] = {}
+    for p in res.patentes:
+        chave_secoes = json.dumps(p["secoes"], sort_keys=True, ensure_ascii=False)
+        grupos.setdefault(chave_secoes, []).append(p)
+    teve_grupo = False
+    for membros in grupos.values():
+        if len(membros) > 1:
+            teve_grupo = True
+            ids = ", ".join(str(m["id"]) for m in membros)
+            A(f"- IDs {ids} tem as mesmas secoes (oQueE/problema/exemploDeUso/diferenciais/beneficio):")
+            for m in membros:
+                A(f"  - [{m['id']}] {m['titulo']}")
+    if not teve_grupo:
+        A("Nenhuma.")
+    A("")
+
     A("## Erros")
     A("")
     if res.erros:
@@ -662,6 +861,15 @@ def relatorio(res: Resultado, categorias: list[dict], src: Path, capas_400: int)
         A("Nenhum.")
     A("")
 
+    A("## Excluidos por decisao")
+    A("")
+    if res.excluidos:
+        for x in res.excluidos:
+            A(f"- {x}")
+    else:
+        A("Nenhum.")
+    A("")
+
     A("## Inventario")
     A("")
     A("| ID | Numero | Tipo | Categoria | TRL | Titulo |")
@@ -679,27 +887,66 @@ def relatorio(res: Resultado, categorias: list[dict], src: Path, capas_400: int)
 # --------------------------------------------------------------------------
 
 def main() -> int:
+    # Console do Windows roda em cp1252 por padrao: acentos e o "tau" do
+    # titulo da patente 12 quebrariam o print sem isso (os arquivos de
+    # saida ja usam utf-8 explicito via write_if_changed).
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
     ap = argparse.ArgumentParser(description="Gera os dados da Vitrine de Patentes UFC.")
-    ap.add_argument("--src", required=True, help="pasta de origem com as subpastas das patentes")
+    ap.add_argument(
+        "--src",
+        required=True,
+        action="append",
+        help="pasta de origem com as subpastas das patentes (pode repetir)",
+    )
     ap.add_argument("--out", default=".", help="raiz do site (padrao: diretorio atual)")
     args = ap.parse_args()
 
-    src = Path(args.src).expanduser()
+    srcs = [Path(s).expanduser() for s in args.src]
     out = Path(args.out).expanduser().resolve()
-    if not src.is_dir():
-        print(f"ERRO: pasta de origem nao encontrada: {src}", file=sys.stderr)
-        return 2
+    for s in srcs:
+        if not s.is_dir():
+            print(f"ERRO: pasta de origem nao encontrada: {s}", file=sys.stderr)
+            return 2
 
     res = Resultado()
-    pastas = sorted(
-        (d for d in src.iterdir() if d.is_dir()),
-        key=lambda p: int(m.group(1)) if (m := re.match(r"^(\d+)", p.name)) else 10**6,
-    )
-    print(f"Processando {len(pastas)} pastas de `{src}`...")
-    for d in pastas:
-        p = processa(d, out, res)
+
+    pastas: list[tuple[Path, Path]] = []
+    for src in srcs:
+        dirs = sorted(
+            (d for d in src.iterdir() if d.is_dir()),
+            key=lambda p: int(m.group(1)) if (m := re.match(r"^(\d+)", p.name)) else 10**6,
+        )
+        pastas.extend((d, src) for d in dirs)
+    print(f"Processando {len(pastas)} pastas de {len(srcs)} origem(ns)...")
+
+    entradas_brutas = [monta_entrada(pasta, src_root, res) for pasta, src_root in pastas]
+    entradas = filtra_duplicados([e for e in entradas_brutas if e is not None], res)
+
+    dados_dir = out / "dados"
+    ids_path = dados_dir / "ids_patentes.json"
+    excluir_path = dados_dir / "excluir.json"
+
+    registro_inicial = carrega_registro(ids_path)
+    registro = atribui_ids(entradas, registro_inicial, res)
+    excluidos = carrega_excluir(excluir_path)
+
+    for e in entradas:
+        pid = registro.get(e.numero)
+        if pid is None:
+            continue
+        if e.corrigido_o:
+            res.avisos.append(f"[{pid}] digito com letra O corrigido para 0.")
+        if e.numero in excluidos:
+            res.excluidos.append(
+                f"[{pid}] excluido por decisao: numero {e.numero} (pasta `{e.pasta.name}`)."
+            )
+            continue
+        p = processa_arquivos(e, pid, out, res)
         if p:
             res.patentes.append(p)
+            res.contagem_origem[str(e.src_root)] += 1
             print(f"  [{p['id']:2d}] {p['categoria']:24s} {p['titulo'][:58]}")
 
     res.patentes.sort(key=lambda p: p["id"])
@@ -710,17 +957,26 @@ def main() -> int:
         for n in sorted(cont, key=lambda s: sem_acento(s).lower())
     ]
 
-    # ---- saidas ----
-    js = serializa(res.patentes, categorias)
-    mudou_js = write_if_changed(out / "js" / "data" / "patentes.js", js.encode("utf-8"))
+    atribuidos_neste_build = {
+        numero: idd for numero, idd in registro.items() if numero not in registro_inicial
+    }
 
     capas_400 = sum(
         (out / p["imagens"]["capa400"]).stat().st_size
         for p in res.patentes
         if (out / p["imagens"]["capa400"]).exists()
     )
-    rel = relatorio(res, categorias, src, capas_400)
-    write_if_changed(out / "scripts" / "build_report.md", rel.encode("utf-8"))
+    rel = relatorio(res, categorias, srcs, capas_400, atribuidos_neste_build)
+
+    sem_erros = not res.erros
+    mudou_js = False
+    if sem_erros:
+        js = serializa(res.patentes, categorias)
+        mudou_js = write_if_changed(out / "js" / "data" / "patentes.js", js.encode("utf-8"))
+        grava_registro(ids_path, registro)
+        write_if_changed(out / "scripts" / "build_report.md", rel.encode("utf-8"))
+    else:
+        write_if_changed(out / "scripts" / "build_report_FALHOU.md", rel.encode("utf-8"))
 
     print()
     print(f"  patentes .......... {len(res.patentes)}")
@@ -728,6 +984,7 @@ def main() -> int:
     print(f"  erros ............. {len(res.erros)}")
     print(f"  avisos ............ {len(res.avisos)}")
     print(f"  ignorados ......... {len(res.ignorados)}")
+    print(f"  excluidos ......... {len(res.excluidos)}")
     print(f"  peso origem ....... {mb(res.bytes_origem)}")
     print(f"  peso saida ........ {mb(res.bytes_saida)}")
     print(f"  soma capa-400 ..... {mb(capas_400)}")
@@ -737,6 +994,11 @@ def main() -> int:
         print("\nERROS:", file=sys.stderr)
         for e in res.erros:
             print("  - " + e, file=sys.stderr)
+        print(
+            f"\npatentes.js e o registro de IDs NAO foram gravados. "
+            f"Relatorio: {out / 'scripts' / 'build_report_FALHOU.md'}",
+            file=sys.stderr,
+        )
         return 1
     return 0
 
