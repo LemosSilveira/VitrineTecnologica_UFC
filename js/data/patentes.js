@@ -2321,17 +2321,1304 @@ window.PATENTES = [
     },
     pdf: "assets/patentes/60-modulo-escalavel-de-potencia-com-pwm-em-gnd-comum/ficha.pdf"
   },
+  {
+    id: 61,
+    slug: "61-estabilidade-termica-de-materiais-avancados",
+    numero: "BR 10 2013 001855-4",
+    ano: 2013,
+    tipo: {
+      sigla: "PI",
+      nome: "Patente de Invenção"
+    },
+    categoria: "Engenharias",
+    titulo: "Estabilidade Térmica de Materiais Avançados",
+    resumo: "Uma nova metodologia para determinar parâmetros de estabilidade térmica em materiais avançados, permitindo identificar aqueles mais adequados para aplicações…",
+    secoes: {
+      oQueE: "Uma nova metodologia para determinar parâmetros de estabilidade térmica em materiais avançados, permitindo identificar aqueles mais adequados para aplicações específicas.",
+      problema: "O desenvolvimento de dispositivos que operam na faixa de micro-ondas exige materiais com características térmicas e estruturais muito específicas. A metodologia facilita a seleção de materiais ideais, otimizando desempenho e reduzindo falhas.",
+      exemploDeUso: "Identificação e seleção de novos materiais, aproveitando recursos naturais disponíveis em uma determinada região ou alinhados a critérios de sustentabilidade e eficiência, para aplicação em dispositivos que operam em micro-ondas.",
+      diferenciais: [
+        "Permite avaliar e selecionar materiais de forma mais rápida e precisa",
+        "Aumenta a eficiência no desenvolvimento de novos dispositivos",
+        "Possibilita uso sustentável de recursos naturais",
+        "Apoia inovação em setores estratégicos de alta tecnologia"
+      ],
+      beneficio: "Reduz tempo e custos na escolha de materiais, promovendo soluções mais eficientes e sustentáveis para dispositivos avançados em micro-ondas."
+    },
+    trl: {
+      min: 4,
+      max: 4,
+      estimado: false,
+      texto: "TRL 4"
+    },
+    imagens: {
+      capa400: "assets/patentes/61-estabilidade-termica-de-materiais-avancados/capa-400.webp",
+      capa800: "assets/patentes/61-estabilidade-termica-de-materiais-avancados/capa-800.webp",
+      ficha600: "assets/patentes/61-estabilidade-termica-de-materiais-avancados/ficha-600.webp",
+      ficha1620: "assets/patentes/61-estabilidade-termica-de-materiais-avancados/ficha-1620.webp",
+      dimensoesCapa: [800, 800]
+    },
+    pdf: "assets/patentes/61-estabilidade-termica-de-materiais-avancados/ficha.pdf"
+  },
+  {
+    id: 62,
+    slug: "62-aplicador-inovador-de-anestesia-odontologica",
+    numero: "BR 10 2013 023074-0",
+    ano: 2013,
+    tipo: {
+      sigla: "PI",
+      nome: "Patente de Invenção"
+    },
+    categoria: "Ciências da Saúde",
+    titulo: "Aplicador Inovador de Anestesia Odontológica",
+    resumo: "Um dispositivo tecnológico desenvolvido para eliminar a dor da punção da agulha durante a aplicação da anestesia em procedimentos odontológicos.",
+    secoes: {
+      oQueE: "Um dispositivo tecnológico desenvolvido para eliminar a dor da punção da agulha durante a aplicação da anestesia em procedimentos odontológicos.",
+      problema: "O medo da agulha e a dor da anestesia são barreiras comuns em consultórios odontológicos, causando desconforto e ansiedade nos pacientes. Este aplicador torna o processo praticamente indolor, melhorando a experiência do paciente.",
+      exemploDeUso: "Uso por dentistas durante atendimentos clínicos, em qualquer procedimento que envolva anestesia local, especialmente em pacientes sensíveis ou com fobia de agulha.",
+      diferenciais: [
+        "Redução ou eliminação da dor da punção inicial",
+        "Maior conforto e aceitação do paciente",
+        "Tecnologia aplicável em diversos contextos odontológicos",
+        "Solução prática para uso diário em consultórios"
+      ],
+      beneficio: "Mais conforto e menos dor durante a anestesia, promovendo uma experiência odontológica mais humana e eficaz."
+    },
+    trl: {
+      min: 6,
+      max: 6,
+      estimado: false,
+      texto: "TRL 6"
+    },
+    imagens: {
+      capa400: "assets/patentes/62-aplicador-inovador-de-anestesia-odontologica/capa-400.webp",
+      capa800: "assets/patentes/62-aplicador-inovador-de-anestesia-odontologica/capa-800.webp",
+      ficha600: "assets/patentes/62-aplicador-inovador-de-anestesia-odontologica/ficha-600.webp",
+      ficha1620: "assets/patentes/62-aplicador-inovador-de-anestesia-odontologica/ficha-1620.webp",
+      dimensoesCapa: [800, 800]
+    },
+    pdf: "assets/patentes/62-aplicador-inovador-de-anestesia-odontologica/ficha.pdf"
+  },
+  {
+    id: 63,
+    slug: "63-fitoterapico-cicatrizacao-de-feridas",
+    numero: "BR 10 2014 031982-4",
+    ano: 2014,
+    tipo: {
+      sigla: "PI",
+      nome: "Patente de Invenção"
+    },
+    categoria: "Ciências da Saúde",
+    titulo: "Fitoterápico: Cicatrização de feridas",
+    resumo: "Produto natural em forma de creme à base de acerola, desenvolvido para estimular a cicatrização rápida e eficaz de feridas.",
+    secoes: {
+      oQueE: "Produto natural em forma de creme à base de acerola, desenvolvido para estimular a cicatrização rápida e eficaz de feridas.",
+      problema: "Muitos tratamentos atuais para cicatrização apresentam alto custo, baixa eficiência ou efeitos colaterais indesejados.",
+      exemploDeUso: "Aplicado em feridas abertas, oferecendo um processo de cicatrização mais rápido, eficiente e seguro em diferentes contextos clínicos e estéticos.",
+      diferenciais: [
+        "Efeito cicatrizante comprovado",
+        "Redução de custos em comparação a tratamentos convencionais",
+        "Produto natural e seguro",
+        "Indicado para diferentes públicos e segmentos da saúde"
+      ],
+      beneficio: "Acelera a recuperação do paciente, reduzindo complicações e custos, além de ampliar a acessibilidade a um tratamento eficaz."
+    },
+    trl: {
+      min: 9,
+      max: 9,
+      estimado: false,
+      texto: "TRL 9"
+    },
+    imagens: {
+      capa400: "assets/patentes/63-fitoterapico-cicatrizacao-de-feridas/capa-400.webp",
+      capa800: "assets/patentes/63-fitoterapico-cicatrizacao-de-feridas/capa-800.webp",
+      ficha600: "assets/patentes/63-fitoterapico-cicatrizacao-de-feridas/ficha-600.webp",
+      ficha1620: "assets/patentes/63-fitoterapico-cicatrizacao-de-feridas/ficha-1620.webp",
+      dimensoesCapa: [800, 800]
+    },
+    pdf: "assets/patentes/63-fitoterapico-cicatrizacao-de-feridas/ficha.pdf"
+  },
+  {
+    id: 64,
+    slug: "64-sensor-optico-de-corrente",
+    numero: "BR 10 2015 029772-6",
+    ano: 2015,
+    tipo: {
+      sigla: "PI",
+      nome: "Patente de Invenção"
+    },
+    categoria: "Engenharias",
+    titulo: "Sensor Óptico de Corrente",
+    resumo: "Novos dispositivos desenvolvidos para o aperfeiçoamento das tecnologias existentes de medição de altas correntes elétricas.",
+    secoes: {
+      oQueE: "Novos dispositivos desenvolvidos para o aperfeiçoamento das tecnologias existentes de medição de altas correntes elétricas.",
+      problema: "As formas atuais de medição de correntes elevadas podem apresentar riscos de segurança e limitações de precisão. A nova tecnologia oferece métodos mais seguros, confiáveis e eficientes.",
+      exemploDeUso: "Medição de altas correntes elétricas em sistemas industriais, redes de energia e equipamentos de grande porte, garantindo maior segurança operacional.",
+      diferenciais: [
+        "Aumenta a segurança na medição de correntes elevadas",
+        "Maior precisão e confiabilidade nos resultados",
+        "Pode ser integrado a diferentes sistemas e aplicações",
+        "Reduz riscos operacionais e custos com falhas"
+      ],
+      beneficio: "Proporciona segurança, precisão e eficiência na medição de correntes em sistemas elétricos de grande porte."
+    },
+    trl: {
+      min: 7,
+      max: 7,
+      estimado: false,
+      texto: "TRL 7"
+    },
+    imagens: {
+      capa400: "assets/patentes/64-sensor-optico-de-corrente/capa-400.webp",
+      capa800: "assets/patentes/64-sensor-optico-de-corrente/capa-800.webp",
+      ficha600: "assets/patentes/64-sensor-optico-de-corrente/ficha-600.webp",
+      ficha1620: "assets/patentes/64-sensor-optico-de-corrente/ficha-1620.webp",
+      dimensoesCapa: [800, 800]
+    },
+    pdf: "assets/patentes/64-sensor-optico-de-corrente/ficha.pdf"
+  },
+  {
+    id: 65,
+    slug: "65-nanoparticulas-lipidicas-para-aplicacao-teranostica",
+    numero: "BR 10 2016 016795-7",
+    ano: 2016,
+    tipo: {
+      sigla: "PI",
+      nome: "Patente de Invenção"
+    },
+    categoria: "Química",
+    titulo: "Nanopartículas Lipídicas para Aplicação Teranóstica",
+    resumo: "Nanopartículas lipídicas sólidas magnéticas, biocompatíveis e sustentáveis, capazes de unir terapia e diagnóstico (teranóstica) em uma única tecnologia.",
+    secoes: {
+      oQueE: "Nanopartículas lipídicas sólidas magnéticas, biocompatíveis e sustentáveis, capazes de unir terapia e diagnóstico (teranóstica) em uma única tecnologia.",
+      problema: "Forma mais segura e precisa de tratar e detectar o câncer, permitindo atacar apenas as células doentes sem afetar tecidos saudáveis, reduzindo os efeitos colaterais dos tratamentos convencionais.",
+      exemploDeUso: "Em ambiente hospitalar, as nanopartículas são injetadas no paciente para localizar e tratar tumores com calor (hipertermia), sem necessidade de cirurgia, com apoio de exames de ressonância magnética.",
+      diferenciais: [
+        "Combina tratamento e diagnóstico em uma única solução",
+        "Utilização de materiais naturais e menos tóxicos",
+        "Permite atacar tumores com precisão e poupar tecidos saudáveis",
+        "Baixo custo, sustentabilidade e maior segurança"
+      ],
+      beneficio: "Maior precisão no tratamento do câncer com menos efeitos colaterais, utilizando uma solução segura, sustentável e inovadora."
+    },
+    trl: {
+      min: 4,
+      max: 4,
+      estimado: false,
+      texto: "TRL 4"
+    },
+    imagens: {
+      capa400: "assets/patentes/65-nanoparticulas-lipidicas-para-aplicacao-teranostica/capa-400.webp",
+      capa800: "assets/patentes/65-nanoparticulas-lipidicas-para-aplicacao-teranostica/capa-800.webp",
+      ficha600: "assets/patentes/65-nanoparticulas-lipidicas-para-aplicacao-teranostica/ficha-600.webp",
+      ficha1620: "assets/patentes/65-nanoparticulas-lipidicas-para-aplicacao-teranostica/ficha-1620.webp",
+      dimensoesCapa: [800, 800]
+    },
+    pdf: "assets/patentes/65-nanoparticulas-lipidicas-para-aplicacao-teranostica/ficha.pdf"
+  },
+  {
+    id: 66,
+    slug: "66-fatiadora-de-palma-forrageira",
+    numero: "BR 10 2016 023223-6",
+    ano: 2016,
+    tipo: {
+      sigla: "PI",
+      nome: "Patente de Invenção"
+    },
+    categoria: "Agropecuária",
+    titulo: "Fatiadora de Palma Forrageira",
+    resumo: "Equipamento inovador desenvolvido para o corte eficiente da palma forrageira, voltado à alimentação de gado.",
+    secoes: {
+      oQueE: "Equipamento inovador desenvolvido para o corte eficiente da palma forrageira, voltado à alimentação de gado.",
+      problema: "O corte manual da palma forrageira é trabalhoso, lento e pouco eficiente, o que aumenta o custo da produção e limita a alimentação do rebanho.",
+      exemploDeUso: "Utilizada diretamente no manejo da palma forrageira para agilizar e padronizar o corte, garantindo maior praticidade e economia na alimentação do gado.",
+      diferenciais: [
+        "Produto inédito no mercado mundial",
+        "Baixo custo de produção e operação",
+        "Maior agilidade e segurança no manejo",
+        "Redução significativa do esforço manual"
+      ],
+      beneficio: "Facilita a rotina do produtor rural, reduzindo custos e aumentando a eficiência na alimentação do rebanho."
+    },
+    trl: {
+      min: 7,
+      max: 7,
+      estimado: false,
+      texto: "TRL 7"
+    },
+    imagens: {
+      capa400: "assets/patentes/66-fatiadora-de-palma-forrageira/capa-400.webp",
+      capa800: "assets/patentes/66-fatiadora-de-palma-forrageira/capa-800.webp",
+      ficha600: "assets/patentes/66-fatiadora-de-palma-forrageira/ficha-600.webp",
+      ficha1620: "assets/patentes/66-fatiadora-de-palma-forrageira/ficha-1620.webp",
+      dimensoesCapa: [800, 800]
+    },
+    pdf: "assets/patentes/66-fatiadora-de-palma-forrageira/ficha.pdf"
+  },
+  {
+    id: 67,
+    slug: "67-produto-analgesico-de-um-derivado-semi-sintetico-de-benzil-isotiocianato",
+    numero: "BR 10 2016 030476-8",
+    ano: 2016,
+    tipo: {
+      sigla: "PI",
+      nome: "Patente de Invenção"
+    },
+    categoria: "Ciências da Saúde",
+    titulo: "Produto Analgésico de um Derivado Semi-Sintético de Benzil-Isotiocianato",
+    resumo: "Um produto analgésico desenvolvido a partir da biodiversidade brasileira, formulado para aliviar a dor com mais segurança e sustentabilidade.",
+    secoes: {
+      oQueE: "Um produto analgésico desenvolvido a partir da biodiversidade brasileira, formulado para aliviar a dor com mais segurança e sustentabilidade.",
+      problema: "O produto utiliza baixa dose e apresenta menor toxicidade, proporcionando alívio da dor de forma mais segura.",
+      exemploDeUso: "Medicação analgésica para tratamento de dores agudas ou crônicas, podendo ser utilizada em diferentes contextos terapêuticos.",
+      diferenciais: [
+        "Baixa dose e menor toxicidade",
+        "Formulação sustentável com ingredientes da biodiversidade brasileira",
+        "Maior segurança para o paciente",
+        "Maior eficiência e menor impacto ambiental"
+      ],
+      beneficio: "Mais eficácia e segurança no alívio da dor, com menor risco de efeitos colaterais e uso de recursos naturais brasileiros de forma sustentável."
+    },
+    trl: {
+      min: 4,
+      max: 4,
+      estimado: false,
+      texto: "TRL 4"
+    },
+    imagens: {
+      capa400: "assets/patentes/67-produto-analgesico-de-um-derivado-semi-sintetico-de-benzil-isotiocianato/capa-400.webp",
+      capa800: "assets/patentes/67-produto-analgesico-de-um-derivado-semi-sintetico-de-benzil-isotiocianato/capa-800.webp",
+      ficha600: "assets/patentes/67-produto-analgesico-de-um-derivado-semi-sintetico-de-benzil-isotiocianato/ficha-600.webp",
+      ficha1620: "assets/patentes/67-produto-analgesico-de-um-derivado-semi-sintetico-de-benzil-isotiocianato/ficha-1620.webp",
+      dimensoesCapa: [800, 800]
+    },
+    pdf: "assets/patentes/67-produto-analgesico-de-um-derivado-semi-sintetico-de-benzil-isotiocianato/ficha.pdf"
+  },
+  {
+    id: 68,
+    slug: "68-produto-analgesico",
+    numero: "BR 10 2016 030480-6",
+    ano: 2016,
+    tipo: {
+      sigla: "PI",
+      nome: "Patente de Invenção"
+    },
+    categoria: "Ciências da Saúde",
+    titulo: "Produto Analgésico",
+    resumo: "Um produto analgésico desenvolvido a partir da biodiversidade brasileira, formulado para aliviar a dor com mais segurança e sustentabilidade.",
+    secoes: {
+      oQueE: "Um produto analgésico desenvolvido a partir da biodiversidade brasileira, formulado para aliviar a dor com mais segurança e sustentabilidade.",
+      problema: "O produto utiliza baixa dose e apresenta menor toxicidade, proporcionando alívio da dor de forma mais segura.",
+      exemploDeUso: "Medicação analgésica para tratamento de dores agudas ou crônicas, podendo ser utilizada em diferentes contextos terapêuticos.",
+      diferenciais: [
+        "Baixa dose e menor toxicidade",
+        "Formulação sustentável com ingredientes da biodiversidade brasileira",
+        "Maior segurança para o paciente",
+        "Maior eficiência e menor impacto ambiental"
+      ],
+      beneficio: "Mais eficácia e segurança no alívio da dor, com menor risco de efeitos colaterais e uso de recursos naturais brasileiros de forma sustentável."
+    },
+    trl: {
+      min: 4,
+      max: 4,
+      estimado: false,
+      texto: "TRL 4"
+    },
+    imagens: {
+      capa400: "assets/patentes/68-produto-analgesico/capa-400.webp",
+      capa800: "assets/patentes/68-produto-analgesico/capa-800.webp",
+      ficha600: "assets/patentes/68-produto-analgesico/ficha-600.webp",
+      ficha1620: "assets/patentes/68-produto-analgesico/ficha-1620.webp",
+      dimensoesCapa: [800, 800]
+    },
+    pdf: "assets/patentes/68-produto-analgesico/ficha.pdf"
+  },
+  {
+    id: 69,
+    slug: "69-produto-analgesico-do-composto-mcd9-benzil-isotiocianato-glicosilado",
+    numero: "BR 10 2016 030484-9",
+    ano: 2016,
+    tipo: {
+      sigla: "PI",
+      nome: "Patente de Invenção"
+    },
+    categoria: "Ciências da Saúde",
+    titulo: "Produto Analgésico do Composto MCD9, Benzil-Isotiocianato Glicosilado",
+    resumo: "Um produto analgésico desenvolvido a partir da biodiversidade brasileira, formulado para aliviar a dor com mais segurança e sustentabilidade.",
+    secoes: {
+      oQueE: "Um produto analgésico desenvolvido a partir da biodiversidade brasileira, formulado para aliviar a dor com mais segurança e sustentabilidade.",
+      problema: "O produto utiliza baixa dose e apresenta menor toxicidade, proporcionando alívio da dor de forma mais segura.",
+      exemploDeUso: "Medicação analgésica para tratamento de dores agudas ou crônicas, podendo ser utilizada em diferentes contextos terapêuticos.",
+      diferenciais: [
+        "Baixa dose e menor toxicidade",
+        "Formulação sustentável com ingredientes da biodiversidade brasileira",
+        "Maior segurança para o paciente",
+        "Maior eficiência e menor impacto ambiental"
+      ],
+      beneficio: "Mais eficácia e segurança no alívio da dor, com menor risco de efeitos colaterais e uso de recursos naturais brasileiros de forma sustentável."
+    },
+    trl: {
+      min: 4,
+      max: 4,
+      estimado: false,
+      texto: "TRL 4"
+    },
+    imagens: {
+      capa400: "assets/patentes/69-produto-analgesico-do-composto-mcd9-benzil-isotiocianato-glicosilado/capa-400.webp",
+      capa800: "assets/patentes/69-produto-analgesico-do-composto-mcd9-benzil-isotiocianato-glicosilado/capa-800.webp",
+      ficha600: "assets/patentes/69-produto-analgesico-do-composto-mcd9-benzil-isotiocianato-glicosilado/ficha-600.webp",
+      ficha1620: "assets/patentes/69-produto-analgesico-do-composto-mcd9-benzil-isotiocianato-glicosilado/ficha-1620.webp",
+      dimensoesCapa: [800, 800]
+    },
+    pdf: "assets/patentes/69-produto-analgesico-do-composto-mcd9-benzil-isotiocianato-glicosilado/ficha.pdf"
+  },
+  {
+    id: 70,
+    slug: "70-composito-de-niobato-de-itrio-e-titanato-de-calcio",
+    numero: "BR 10 2017 007569-9",
+    ano: 2017,
+    tipo: {
+      sigla: "PI",
+      nome: "Patente de Invenção"
+    },
+    categoria: "Engenharias",
+    titulo: "Compósito de Niobato de Ítrio e Titanato de Cálcio",
+    resumo: "Novo material cerâmico desenvolvido para aplicações em micro-ondas, com coeficiente de temperatura da frequência ressonante (TF) próximo de zero e alta…",
+    secoes: {
+      oQueE: "Novo material cerâmico desenvolvido para aplicações em micro-ondas, com coeficiente de temperatura da frequência ressonante (TF) próximo de zero e alta estabilidade térmica.",
+      problema: "Aplicação em dispositivos eletrônicos de comunicação e radares que operam na faixa de micro-ondas, garantindo maior estabilidade térmica e precisão.",
+      exemploDeUso: "Aplicação em dispositivos eletrônicos e de comunicação que operam na faixa de micro-ondas, garantindo estabilidade térmica e desempenho confiável.",
+      diferenciais: [
+        "Coeficiente TF próximo de zero",
+        "Alta estabilidade térmica",
+        "Melhor desempenho em micro-ondas",
+        "Potencial para uso em indústrias de alta tecnologia"
+      ],
+      beneficio: "Garante maior confiabilidade e eficiência em dispositivos de micro-ondas, reduzindo falhas e custos de manutenção."
+    },
+    trl: {
+      min: 4,
+      max: 4,
+      estimado: false,
+      texto: "TRL 4"
+    },
+    imagens: {
+      capa400: "assets/patentes/70-composito-de-niobato-de-itrio-e-titanato-de-calcio/capa-400.webp",
+      capa800: "assets/patentes/70-composito-de-niobato-de-itrio-e-titanato-de-calcio/capa-800.webp",
+      ficha600: "assets/patentes/70-composito-de-niobato-de-itrio-e-titanato-de-calcio/ficha-600.webp",
+      ficha1620: "assets/patentes/70-composito-de-niobato-de-itrio-e-titanato-de-calcio/ficha-1620.webp",
+      dimensoesCapa: [800, 800]
+    },
+    pdf: "assets/patentes/70-composito-de-niobato-de-itrio-e-titanato-de-calcio/ficha.pdf"
+  },
+  {
+    id: 71,
+    slug: "71-composito-de-vanadato-de-estroncio-e-oxido-de-bismuto",
+    numero: "BR 10 2017 012086-4",
+    ano: 2017,
+    tipo: {
+      sigla: "PI",
+      nome: "Patente de Invenção"
+    },
+    categoria: "Engenharias",
+    titulo: "Compósito de Vanadato de Estrôncio e Óxido de Bismuto",
+    resumo: "Novo material cerâmico obtido a partir de vanadato de estrôncio (Sr₃V₂O₈) e óxido de bismuto (Bi₂O₃), com coeficiente de temperatura da frequência ressonante…",
+    secoes: {
+      oQueE: "Novo material cerâmico obtido a partir de vanadato de estrôncio (Sr₃V₂O₈) e óxido de bismuto (Bi₂O₃), com coeficiente de temperatura da frequência ressonante (TF) próximo de zero.",
+      problema: "Materiais tradicionais utilizados em dispositivos de micro-ondas sofrem com instabilidade térmica, o que prejudica o desempenho e reduz a confiabilidade.",
+      exemploDeUso: "Aplicação em memórias eletrônicas, processadores e sistemas de comunicação que exigem alta estabilidade em faixas de micro-ondas.",
+      diferenciais: [
+        "TF próximo de zero → maior estabilidade em diferentes temperaturas",
+        "Alta estabilidade térmica",
+        "Propriedades dielétricas otimizadas",
+        "Potencial para integração com a indústria de componentes eletrônicos e semicondutores"
+      ],
+      beneficio: "Melhora a confiabilidade e a eficiência de dispositivos de micro-ondas em aplicações de alta tecnologia, como memórias DRAM/Flash, processadores e sistemas de radar."
+    },
+    trl: {
+      min: 4,
+      max: 4,
+      estimado: false,
+      texto: "TRL 4"
+    },
+    imagens: {
+      capa400: "assets/patentes/71-composito-de-vanadato-de-estroncio-e-oxido-de-bismuto/capa-400.webp",
+      capa800: "assets/patentes/71-composito-de-vanadato-de-estroncio-e-oxido-de-bismuto/capa-800.webp",
+      ficha600: "assets/patentes/71-composito-de-vanadato-de-estroncio-e-oxido-de-bismuto/ficha-600.webp",
+      ficha1620: "assets/patentes/71-composito-de-vanadato-de-estroncio-e-oxido-de-bismuto/ficha-1620.webp",
+      dimensoesCapa: [800, 800]
+    },
+    pdf: "assets/patentes/71-composito-de-vanadato-de-estroncio-e-oxido-de-bismuto/ficha.pdf"
+  },
+  {
+    id: 72,
+    slug: "72-composito-ceramico-de-titanico-de-litio-e-oxido-de-aluminio",
+    numero: "BR 10 2018 000974-5",
+    ano: 2018,
+    tipo: {
+      sigla: "PI",
+      nome: "Patente de Invenção"
+    },
+    categoria: "Engenharias",
+    titulo: "Compósito Cerâmico de Titânico de lítio e Óxido de Alumínio",
+    resumo: "Novo material cerâmico desenvolvido para aplicações em micro-ondas, com alta estabilidade térmica e propriedades dielétricas otimizadas.",
+    secoes: {
+      oQueE: "Novo material cerâmico desenvolvido para aplicações em micro-ondas, com alta estabilidade térmica e propriedades dielétricas otimizadas.",
+      problema: "Materiais tradicionais apresentam variações de desempenho em diferentes temperaturas, o que compromete a estabilidade de dispositivos de micro-ondas.",
+      exemploDeUso: "Aplicação em dispositivos eletrônicos e de comunicação que operam na faixa de micro-ondas, garantindo estabilidade térmica e desempenho confiável.",
+      diferenciais: [
+        "Coeficiente de temperatura da frequência ressonante (TF) próximo de zero",
+        "Alta estabilidade térmica",
+        "Melhor desempenho dielétrico em micro-ondas",
+        "Potencial para atender demandas de indústrias estratégicas"
+      ],
+      beneficio: "Aumenta a confiabilidade e eficiência de dispositivos de micro-ondas, reduzindo falhas e melhorando a performance em diferentes condições ambientais."
+    },
+    trl: {
+      min: 4,
+      max: 4,
+      estimado: false,
+      texto: "TRL 4"
+    },
+    imagens: {
+      capa400: "assets/patentes/72-composito-ceramico-de-titanico-de-litio-e-oxido-de-aluminio/capa-400.webp",
+      capa800: "assets/patentes/72-composito-ceramico-de-titanico-de-litio-e-oxido-de-aluminio/capa-800.webp",
+      ficha600: "assets/patentes/72-composito-ceramico-de-titanico-de-litio-e-oxido-de-aluminio/ficha-600.webp",
+      ficha1620: "assets/patentes/72-composito-ceramico-de-titanico-de-litio-e-oxido-de-aluminio/ficha-1620.webp",
+      dimensoesCapa: [800, 800]
+    },
+    pdf: "assets/patentes/72-composito-ceramico-de-titanico-de-litio-e-oxido-de-aluminio/ficha.pdf"
+  },
+  {
+    id: 73,
+    slug: "73-produto-para-o-tratamento-de-perda-ossea",
+    numero: "BR 10 2018 073535-7",
+    ano: 2018,
+    tipo: {
+      sigla: "PI",
+      nome: "Patente de Invenção"
+    },
+    categoria: "Ciências da Saúde",
+    titulo: "Produto para o tratamento de perda óssea",
+    resumo: "Um produto inovador para tratar perda óssea e perdas dentárias na periodontia, desenvolvido a partir da biodiversidade brasileira.",
+    secoes: {
+      oQueE: "Um produto inovador para tratar perda óssea e perdas dentárias na periodontia, desenvolvido a partir da biodiversidade brasileira.",
+      problema: "A perda óssea e dentária é um dos principais desafios em tratamentos periodontais. Muitos produtos disponíveis são caros, complexos de aplicar ou possuem alta toxicidade. Nosso produto oferece fácil manuseio, baixa dose e menor toxicidade.",
+      exemploDeUso: "Tratamento auxiliar em consultórios odontológicos e clínicas periodontais para regeneração óssea e suporte na manutenção dentária.",
+      diferenciais: [
+        "Fácil manuseio e aplicação",
+        "Baixa dose e baixa toxicidade",
+        "Desenvolvido a partir de insumos da biodiversidade brasileira",
+        "Sustentável e seguro para o paciente e para o meio ambiente"
+      ],
+      beneficio: "Mais praticidade, segurança e sustentabilidade nos tratamentos odontológicos, com potencial para reduzir custos e aumentar a eficácia clínica."
+    },
+    trl: {
+      min: 4,
+      max: 4,
+      estimado: false,
+      texto: "TRL 4"
+    },
+    imagens: {
+      capa400: "assets/patentes/73-produto-para-o-tratamento-de-perda-ossea/capa-400.webp",
+      capa800: "assets/patentes/73-produto-para-o-tratamento-de-perda-ossea/capa-800.webp",
+      ficha600: "assets/patentes/73-produto-para-o-tratamento-de-perda-ossea/ficha-600.webp",
+      ficha1620: "assets/patentes/73-produto-para-o-tratamento-de-perda-ossea/ficha-1620.webp",
+      dimensoesCapa: [800, 800]
+    },
+    pdf: "assets/patentes/73-produto-para-o-tratamento-de-perda-ossea/ficha.pdf"
+  },
+  {
+    id: 74,
+    slug: "74-bebida-vegetal-funcional",
+    numero: "BR 10 2019 016050-0",
+    ano: 2019,
+    tipo: {
+      sigla: "PI",
+      nome: "Patente de Invenção"
+    },
+    categoria: "Alimentos",
+    titulo: "Bebida Vegetal Funcional",
+    resumo: "Produto à base de frutas, cereais, grãos e legumes, desenvolvido para complementar a dieta de pessoas com deficiência de nutrientes.",
+    secoes: {
+      oQueE: "Produto à base de frutas, cereais, grãos e legumes, desenvolvido para complementar a dieta de pessoas com deficiência de nutrientes.",
+      problema: "Grande parte da população possui intolerância à lactose e ao glúten, além de enfrentar dificuldade em manter uma dieta rica em fibras e nutrientes de forma prática.",
+      exemploDeUso: "Consumida refrigerada nos momentos de lanche, como uma opção nutritiva, saudável e de fácil acesso para diferentes públicos.",
+      diferenciais: [
+        "Sem lactose e sem glúten",
+        "Rica em fibras e nutrientes essenciais",
+        "Praticidade e conveniência no consumo",
+        "Alternativa saudável às bebidas convencionais"
+      ],
+      beneficio: "Oferece nutrição prática e acessível, favorecendo a saúde e o bem-estar do consumidor, com alto potencial de aceitação no mercado."
+    },
+    trl: {
+      min: 9,
+      max: 9,
+      estimado: false,
+      texto: "TRL 9"
+    },
+    imagens: {
+      capa400: "assets/patentes/74-bebida-vegetal-funcional/capa-400.webp",
+      capa800: "assets/patentes/74-bebida-vegetal-funcional/capa-800.webp",
+      ficha600: "assets/patentes/74-bebida-vegetal-funcional/ficha-600.webp",
+      ficha1620: "assets/patentes/74-bebida-vegetal-funcional/ficha-1620.webp",
+      dimensoesCapa: [800, 800]
+    },
+    pdf: "assets/patentes/74-bebida-vegetal-funcional/ficha.pdf"
+  },
+  {
+    id: 75,
+    slug: "75-processo-biocatalitico-para-producao-de-propafenona",
+    numero: "BR 10 2019 020946-1",
+    ano: 2019,
+    tipo: {
+      sigla: "PI",
+      nome: "Patente de Invenção"
+    },
+    categoria: "Biotecnologia",
+    titulo: "Processo Biocatalítico para Produção de Propafenona",
+    resumo: "Um processo biocatalítico inovador que utiliza enzimas como catalisadores para separar enantiômeros da propafenona com alta pureza, de forma mais sustentável e…",
+    secoes: {
+      oQueE: "Um processo biocatalítico inovador que utiliza enzimas como catalisadores para separar enantiômeros da propafenona com alta pureza, de forma mais sustentável e eficiente do que os métodos químicos tradicionais.",
+      problema: "A separação dos enantiômeros da propafenona é difícil e cara, além de gerar resíduos químicos. A nova metodologia permite obter alta pureza de forma mais limpa, econômica e eficaz.",
+      exemploDeUso: "Produção de propafenona de alta pureza para medicamentos mais seguros e eficazes, reduzindo custos e etapas complexas no processo industrial.",
+      diferenciais: [
+        "Alta seletividade e pureza dos enantiômeros",
+        "Processo mais rápido e econômico",
+        "Redução significativa da geração de resíduos químicos",
+        "Solução sustentável para a indústria farmacêutica"
+      ],
+      beneficio: "Fornece um método sustentável e eficiente para produção de propafenona de alta pureza, garantindo medicamentos mais eficazes e com menor impacto ambiental."
+    },
+    trl: {
+      min: 4,
+      max: 4,
+      estimado: false,
+      texto: "TRL 4"
+    },
+    imagens: {
+      capa400: "assets/patentes/75-processo-biocatalitico-para-producao-de-propafenona/capa-400.webp",
+      capa800: "assets/patentes/75-processo-biocatalitico-para-producao-de-propafenona/capa-800.webp",
+      ficha600: "assets/patentes/75-processo-biocatalitico-para-producao-de-propafenona/ficha-600.webp",
+      ficha1620: "assets/patentes/75-processo-biocatalitico-para-producao-de-propafenona/ficha-1620.webp",
+      dimensoesCapa: [800, 800]
+    },
+    pdf: "assets/patentes/75-processo-biocatalitico-para-producao-de-propafenona/ficha.pdf"
+  },
+  {
+    id: 76,
+    slug: "76-molho-de-frutas-amarelas",
+    numero: "BR 10 2020 015725-6",
+    ano: 2020,
+    tipo: {
+      sigla: "PI",
+      nome: "Patente de Invenção"
+    },
+    categoria: "Alimentos",
+    titulo: "Molho de Frutas Amarelas",
+    resumo: "Um molho feito com frutas amarelas regionais, pensado para promover o consumo diário de frutas sazonais e oferecer nutrientes de forma prática e natural.",
+    secoes: {
+      oQueE: "Um molho feito com frutas amarelas regionais, pensado para promover o consumo diário de frutas sazonais e oferecer nutrientes de forma prática e natural.",
+      problema: "Grande parte dos molhos industrializados usa conservantes químicos e não valoriza frutas locais. Este produto oferece uma alternativa saudável e sustentável.",
+      exemploDeUso: "Pode ser utilizado em sanduíches, saladas e aperitivos como um molho nutritivo, prático e saboroso.",
+      diferenciais: [
+        "Sem aditivos químicos",
+        "Uso de frutas regionais (como caju e cajá-umbu)",
+        "Valorização da produção local",
+        "Sustentabilidade e conveniência"
+      ],
+      beneficio: "Mais saúde, praticidade e apoio à economia regional, ao mesmo tempo que promove uma alimentação equilibrada."
+    },
+    trl: {
+      min: 4,
+      max: 4,
+      estimado: false,
+      texto: "TRL 4"
+    },
+    imagens: {
+      capa400: "assets/patentes/76-molho-de-frutas-amarelas/capa-400.webp",
+      capa800: "assets/patentes/76-molho-de-frutas-amarelas/capa-800.webp",
+      ficha600: "assets/patentes/76-molho-de-frutas-amarelas/ficha-600.webp",
+      ficha1620: "assets/patentes/76-molho-de-frutas-amarelas/ficha-1620.webp",
+      dimensoesCapa: [800, 800]
+    },
+    pdf: "assets/patentes/76-molho-de-frutas-amarelas/ficha.pdf"
+  },
+  {
+    id: 77,
+    slug: "77-vitalflakes-amazonia-snack-natural-e-energetico",
+    numero: "BR 10 2020 021723-2",
+    ano: 2020,
+    tipo: {
+      sigla: "PI",
+      nome: "Patente de Invenção"
+    },
+    categoria: "Alimentos",
+    titulo: "VitalFlakes Amazônia Snack Natural e Energético",
+    resumo: "Snack nutritivo feito a partir de superfrutas amazônicas como açaí e guaraná, estruturado com tecnologia à base de hidrocolóides. É prático, saboroso e…",
+    secoes: {
+      oQueE: "Snack nutritivo feito a partir de superfrutas amazônicas como açaí e guaraná, estruturado com tecnologia à base de hidrocolóides. É prático, saboroso e estável, oferecendo energia natural e vitalidade a qualquer momento, sem ultraprocessados ou aditivos.",
+      problema: "No ritmo acelerado da vida moderna, muitas pessoas recorrem a lanches ultraprocessados e pouco nutritivos. A VitalFlakes Amazônia oferece uma solução saudável, prática e saborosa, que concentra energia e nutrientes naturais em um formato portátil.",
+      exemploDeUso: "A VitalFlakes Amazônia pode ser consumida no trabalho, em deslocamentos ou após atividades físicas, substituindo lanches ultraprocessados. É uma opção prática, nutritiva e deliciosa para manter energia e vitalidade no dia a dia.",
+      diferenciais: [
+        "Superfrutas amazônicas (açaí, guaraná, banana, amendoim)",
+        "Energia e vitalidade naturais, sem conservantes",
+        "Snack prático, nutritivo e estável",
+        "Alternativa superior a lanches ultraprocessados"
+      ],
+      beneficio: "Nutrição concentrada e energia natural em um formato portátil, unindo praticidade e saúde para consumidores que não querem abrir mão do bem-estar na rotina."
+    },
+    trl: {
+      min: 4,
+      max: 4,
+      estimado: false,
+      texto: "TRL 4"
+    },
+    imagens: {
+      capa400: "assets/patentes/77-vitalflakes-amazonia-snack-natural-e-energetico/capa-400.webp",
+      capa800: "assets/patentes/77-vitalflakes-amazonia-snack-natural-e-energetico/capa-800.webp",
+      ficha600: "assets/patentes/77-vitalflakes-amazonia-snack-natural-e-energetico/ficha-600.webp",
+      ficha1620: "assets/patentes/77-vitalflakes-amazonia-snack-natural-e-energetico/ficha-1620.webp",
+      dimensoesCapa: [800, 800]
+    },
+    pdf: "assets/patentes/77-vitalflakes-amazonia-snack-natural-e-energetico/ficha.pdf"
+  },
+  {
+    id: 78,
+    slug: "78-biocurativo-para-tratamento-de-feridas",
+    numero: "BR 10 2021 012762-7",
+    ano: 2021,
+    tipo: {
+      sigla: "PI",
+      nome: "Patente de Invenção"
+    },
+    categoria: "Ciências da Saúde",
+    titulo: "Biocurativo para Tratamento de Feridas",
+    resumo: "Um biocurativo desenvolvido para acelerar a cicatrização de feridas crônicas, formulado com compostos derivados da biodiversidade brasileira.",
+    secoes: {
+      oQueE: "Um biocurativo desenvolvido para acelerar a cicatrização de feridas crônicas, formulado com compostos derivados da biodiversidade brasileira.",
+      problema: "Feridas crônicas demandam longos períodos de tratamento e uso repetitivo de curativos convencionais. Este biocurativo visa encurtar o tempo de cicatrização e reduzir custos associados.",
+      exemploDeUso: "Aplicação em ambiente hospitalar ou domiciliar, com troca periódica de curativos para tratamento de feridas crônicas.",
+      diferenciais: [
+        "Processo acelerado de cicatrização",
+        "Uso de compostos naturais da biodiversidade brasileira",
+        "Sustentabilidade e aumento da eficiência no cuidado",
+        "Potencial para redução de custos hospitalares"
+      ],
+      beneficio: "Promove cicatrização mais rápida, sustentável e eficaz, melhorando a qualidade de vida do paciente."
+    },
+    trl: {
+      min: 4,
+      max: 4,
+      estimado: false,
+      texto: "TRL 4"
+    },
+    imagens: {
+      capa400: "assets/patentes/78-biocurativo-para-tratamento-de-feridas/capa-400.webp",
+      capa800: "assets/patentes/78-biocurativo-para-tratamento-de-feridas/capa-800.webp",
+      ficha600: "assets/patentes/78-biocurativo-para-tratamento-de-feridas/ficha-600.webp",
+      ficha1620: "assets/patentes/78-biocurativo-para-tratamento-de-feridas/ficha-1620.webp",
+      dimensoesCapa: [800, 800]
+    },
+    pdf: "assets/patentes/78-biocurativo-para-tratamento-de-feridas/ficha.pdf"
+  },
+  {
+    id: 79,
+    slug: "79-nanoformulacao-para-tratamento-da-leishmaniose",
+    numero: "BR 10 2023 004857-9",
+    ano: 2023,
+    tipo: {
+      sigla: "PI",
+      nome: "Patente de Invenção"
+    },
+    categoria: "Ciências da Saúde",
+    titulo: "Nanoformulação para Tratamento da Leishmaniose",
+    resumo: "Uma nanoformulação com princípio ativo inovador, desenvolvida como alternativa segura e eficaz para o tratamento da leishmaniose. O produto apresenta potencial…",
+    secoes: {
+      oQueE: "Uma nanoformulação com princípio ativo inovador, desenvolvida como alternativa segura e eficaz para o tratamento da leishmaniose. O produto apresenta potencial de uso tanto veterinário quanto, futuramente, humano.",
+      problema: "Os tratamentos atuais da leishmaniose são limitados, tóxicos e muitas vezes ineficazes. Esta nanoformulação oferece uma nova abordagem terapêutica com menor toxicidade e alto efeito biológico contra o parasita.",
+      exemploDeUso: "Aplicação no tratamento de leishmaniose em animais (uso veterinário), com possibilidade de expansão futura para tratamentos humanos, conforme avanços nos estudos.",
+      diferenciais: [
+        "Princípio ativo inédito e altamente eficaz",
+        "Baixa toxicidade comprovada",
+        "Potencial de uso em diferentes espécies",
+        "Alternativa frente à resistência aos tratamentos atuais"
+      ],
+      beneficio: "Uma solução mais segura e eficiente para o combate à leishmaniose, com potencial de mercado tanto na saúde animal quanto humana."
+    },
+    trl: {
+      min: 4,
+      max: 4,
+      estimado: false,
+      texto: "TRL 4"
+    },
+    imagens: {
+      capa400: "assets/patentes/79-nanoformulacao-para-tratamento-da-leishmaniose/capa-400.webp",
+      capa800: "assets/patentes/79-nanoformulacao-para-tratamento-da-leishmaniose/capa-800.webp",
+      ficha600: "assets/patentes/79-nanoformulacao-para-tratamento-da-leishmaniose/ficha-600.webp",
+      ficha1620: "assets/patentes/79-nanoformulacao-para-tratamento-da-leishmaniose/ficha-1620.webp",
+      dimensoesCapa: [800, 800]
+    },
+    pdf: "assets/patentes/79-nanoformulacao-para-tratamento-da-leishmaniose/ficha.pdf"
+  },
+  {
+    id: 80,
+    slug: "80-tea-desestressa-bebida-funcional-natural",
+    numero: "BR 10 2023 011275-7",
+    ano: 2023,
+    tipo: {
+      sigla: "PI",
+      nome: "Patente de Invenção"
+    },
+    categoria: "Alimentos",
+    titulo: "Tea Desestressa – Bebida Funcional Natural",
+    resumo: "Bebida composta à base de caldo de cana e matcha (Camellia sinensis), adicionada de plantas medicinais como camomila e melissa. Produto 100% natural, sem…",
+    secoes: {
+      oQueE: "Bebida composta à base de caldo de cana e matcha (Camellia sinensis), adicionada de plantas medicinais como camomila e melissa. Produto 100% natural, sem aditivos sintéticos, com efeito calmante e antioxidante.",
+      problema: "O Brasil é o país mais ansioso do mundo (OMS). Os ansiolíticos convencionais causam efeitos colaterais indesejados, como sedação e alterações motoras. O Tea Desestressa oferece uma alternativa natural, segura e saudável para reduzir a ansiedade.",
+      exemploDeUso: "Consumido diariamente como chá ou bebida refrescante (inclusive em versão gaseificada), auxiliando no controle da ansiedade e promovendo leveza e bem-estar.",
+      diferenciais: [
+        "Ingredientes naturais e nutritivos",
+        "Efeito calmante sem causar sonolência ou alterações motoras",
+        "Ação antioxidante e benefícios ao sistema nervoso central",
+        "Pode ser comercializado também como refrigerante saudável"
+      ],
+      beneficio: "Redução natural da ansiedade com praticidade e sabor, oferecendo uma alternativa inovadora e saudável aos calmantes convencionais."
+    },
+    trl: {
+      min: 4,
+      max: 4,
+      estimado: false,
+      texto: "TRL 4"
+    },
+    imagens: {
+      capa400: "assets/patentes/80-tea-desestressa-bebida-funcional-natural/capa-400.webp",
+      capa800: "assets/patentes/80-tea-desestressa-bebida-funcional-natural/capa-800.webp",
+      ficha600: "assets/patentes/80-tea-desestressa-bebida-funcional-natural/ficha-600.webp",
+      ficha1620: "assets/patentes/80-tea-desestressa-bebida-funcional-natural/ficha-1620.webp",
+      dimensoesCapa: [800, 800]
+    },
+    pdf: "assets/patentes/80-tea-desestressa-bebida-funcional-natural/ficha.pdf"
+  },
+  {
+    id: 81,
+    slug: "81-nanoemulsao-com-efeitos-multiplos",
+    numero: "BR 10 2023 011512-8",
+    ano: 2023,
+    tipo: {
+      sigla: "PI",
+      nome: "Patente de Invenção"
+    },
+    categoria: "Ciências da Saúde",
+    titulo: "Nanoemulsão com Efeitos Múltiplos",
+    resumo: "Uma nanoemulsão inovadora com efeito tripanocida, também com potencial anticâncer e para outras doenças ainda em estudo.",
+    secoes: {
+      oQueE: "Uma nanoemulsão inovadora com efeito tripanocida, também com potencial anticâncer e para outras doenças ainda em estudo.",
+      problema: "Terapias convencionais para doenças parasitárias ou câncer podem ser pouco eficazes ou muito tóxicas. Esta nanoemulsão mostrou maior seletividade ao alvo, aumentando a eficiência e a segurança do tratamento.",
+      exemploDeUso: "Pode ser aplicada na forma líquida, como já é obtida, ou ainda na forma de comprimido, ampliando as possibilidades de administração.",
+      diferenciais: [
+        "Efeito tripanocida comprovado",
+        "Potencial anticâncer e para outras doenças em estudo",
+        "Maior seletividade ao alvo",
+        "Possibilidade de uso líquido ou em comprimido"
+      ],
+      beneficio: "Maior eficiência e segurança no tratamento, com novas possibilidades terapêuticas para diferentes doenças."
+    },
+    trl: {
+      min: 4,
+      max: 4,
+      estimado: false,
+      texto: "TRL 4"
+    },
+    imagens: {
+      capa400: "assets/patentes/81-nanoemulsao-com-efeitos-multiplos/capa-400.webp",
+      capa800: "assets/patentes/81-nanoemulsao-com-efeitos-multiplos/capa-800.webp",
+      ficha600: "assets/patentes/81-nanoemulsao-com-efeitos-multiplos/ficha-600.webp",
+      ficha1620: "assets/patentes/81-nanoemulsao-com-efeitos-multiplos/ficha-1620.webp",
+      dimensoesCapa: [800, 800]
+    },
+    pdf: "assets/patentes/81-nanoemulsao-com-efeitos-multiplos/ficha.pdf"
+  },
+  {
+    id: 82,
+    slug: "82-formula-natural-e-seletiva-para-tratar-o-cancer-de-prostata",
+    numero: "BR 10 2023 019624-1",
+    ano: 2023,
+    tipo: {
+      sigla: "PI",
+      nome: "Patente de Invenção"
+    },
+    categoria: "Química",
+    titulo: "Fórmula Natural e Seletiva para Tratar o Câncer de Próstata",
+    resumo: "Fórmula natural e altamente seletiva para tratamento do câncer de próstata, desenvolvida para atacar apenas as células doentes e reduzir significativamente os…",
+    secoes: {
+      oQueE: "Fórmula natural e altamente seletiva para tratamento do câncer de próstata, desenvolvida para atacar apenas as células doentes e reduzir significativamente os efeitos colaterais.",
+      problema: "Oferece uma alternativa mais segura e sustentável aos tratamentos tradicionais para câncer de próstata, que costumam gerar muitos efeitos colaterais e impactar a qualidade de vida dos pacientes.",
+      exemploDeUso: "Uma empresa farmacêutica pode utilizar a fórmula para desenvolver um medicamento oral ou injetável que trata o câncer de próstata de forma mais seletiva, utilizando ingredientes naturais.",
+      diferenciais: [
+        "Ingredientes naturais com alta seletividade",
+        "Menor incidência de efeitos colaterais",
+        "Alternativa mais segura e sustentável",
+        "Potencial para formulações orais ou injetáveis"
+      ],
+      beneficio: "Tratamento eficaz do câncer de próstata com maior segurança, seletividade e sustentabilidade, reduzindo os impactos negativos para o paciente."
+    },
+    trl: {
+      min: 3,
+      max: 3,
+      estimado: false,
+      texto: "TRL 3"
+    },
+    imagens: {
+      capa400: "assets/patentes/82-formula-natural-e-seletiva-para-tratar-o-cancer-de-prostata/capa-400.webp",
+      capa800: "assets/patentes/82-formula-natural-e-seletiva-para-tratar-o-cancer-de-prostata/capa-800.webp",
+      ficha600: "assets/patentes/82-formula-natural-e-seletiva-para-tratar-o-cancer-de-prostata/ficha-600.webp",
+      ficha1620: "assets/patentes/82-formula-natural-e-seletiva-para-tratar-o-cancer-de-prostata/ficha-1620.webp",
+      dimensoesCapa: [800, 800]
+    },
+    pdf: "assets/patentes/82-formula-natural-e-seletiva-para-tratar-o-cancer-de-prostata/ficha.pdf"
+  },
+  {
+    id: 83,
+    slug: "83-gel-bucal-inovador-para-tratamento-de-osteonecrose",
+    numero: "BR 10 2023 019926-7",
+    ano: 2023,
+    tipo: {
+      sigla: "PI",
+      nome: "Patente de Invenção"
+    },
+    categoria: "Ciências da Saúde",
+    titulo: "Gel Bucal Inovador para Tratamento de Osteonecrose",
+    resumo: "Um gel inovador de uso local, desenvolvido especialmente para tratar a osteonecrose causada por tratamentos de câncer ósseo, como o uso de bisfosfonatos.",
+    secoes: {
+      oQueE: "Um gel inovador de uso local, desenvolvido especialmente para tratar a osteonecrose causada por tratamentos de câncer ósseo, como o uso de bisfosfonatos.",
+      problema: "Pacientes com câncer ósseo, ao usar bisfosfonatos, podem desenvolver osteonecrose — uma condição dolorosa e debilitante que afeta os ossos da boca. Este gel atua diretamente no local, reduzindo a perda óssea e oferecendo mais segurança no tratamento.",
+      exemploDeUso: "Uso em clínicas odontológicas e hospitais para pacientes oncológicos que estão em tratamento com bisfosfonatos, prevenindo ou tratando a osteonecrose bucal.",
+      diferenciais: [
+        "Aplicação local e fácil uso",
+        "Redução da perda óssea associada ao tratamento com bisfosfonatos",
+        "Aumento da eficiência do tratamento oncológico",
+        "Segurança comprovada"
+      ],
+      beneficio: "Mais qualidade de vida para pacientes com câncer ósseo, com um produto seguro e eficaz que reduz complicações bucais durante o tratamento."
+    },
+    trl: {
+      min: 4,
+      max: 4,
+      estimado: false,
+      texto: "TRL 4"
+    },
+    imagens: {
+      capa400: "assets/patentes/83-gel-bucal-inovador-para-tratamento-de-osteonecrose/capa-400.webp",
+      capa800: "assets/patentes/83-gel-bucal-inovador-para-tratamento-de-osteonecrose/capa-800.webp",
+      ficha600: "assets/patentes/83-gel-bucal-inovador-para-tratamento-de-osteonecrose/ficha-600.webp",
+      ficha1620: "assets/patentes/83-gel-bucal-inovador-para-tratamento-de-osteonecrose/ficha-1620.webp",
+      dimensoesCapa: [800, 800]
+    },
+    pdf: "assets/patentes/83-gel-bucal-inovador-para-tratamento-de-osteonecrose/ficha.pdf"
+  },
+  {
+    id: 84,
+    slug: "84-gel-energetico-de-carboidratos",
+    numero: "BR 10 2023 021438-0",
+    ano: 2023,
+    tipo: {
+      sigla: "PI",
+      nome: "Patente de Invenção"
+    },
+    categoria: "Alimentos",
+    titulo: "Gel Energético de Carboidratos",
+    resumo: "Um gel energético desenvolvido a partir de matérias--primas regionais, rico em compostos bioativos e com sabores e cores naturais das frutas. Tem potencial…",
+    secoes: {
+      oQueE: "Um gel energético desenvolvido a partir de matérias--primas regionais, rico em compostos bioativos e com sabores e cores naturais das frutas. Tem potencial para reposição rápida de energia e recuperação da fadiga muscular.",
+      problema: "A maioria dos géis energéticos disponíveis no mercado contém aditivos artificiais. Este produto oferece uma alternativa natural e mais saudável para atletas e praticantes de atividade física.",
+      exemploDeUso: "Reposição energética eficiente para aumento da glicemia sanguínea e recuperação muscular após exercício físico de longa duração.",
+      diferenciais: [
+        "Base de frutas regionais",
+        "Sem adição de saborizantes, corantes ou aromatizantes artificiais",
+        "Potencial de reposição energética e recuperação muscular",
+        "Produto natural e funcional"
+      ],
+      beneficio: "Energia rápida, natural e sustentável para praticantes de esportes, com apoio à produção local e maior valor nutricional."
+    },
+    trl: {
+      min: 5,
+      max: 5,
+      estimado: false,
+      texto: "TRL 5"
+    },
+    imagens: {
+      capa400: "assets/patentes/84-gel-energetico-de-carboidratos/capa-400.webp",
+      capa800: "assets/patentes/84-gel-energetico-de-carboidratos/capa-800.webp",
+      ficha600: "assets/patentes/84-gel-energetico-de-carboidratos/ficha-600.webp",
+      ficha1620: "assets/patentes/84-gel-energetico-de-carboidratos/ficha-1620.webp",
+      dimensoesCapa: [800, 800]
+    },
+    pdf: "assets/patentes/84-gel-energetico-de-carboidratos/ficha.pdf"
+  },
+  {
+    id: 85,
+    slug: "85-enxaguante-bucal-e-curativo-para-saude-bucal-e-de-pele",
+    numero: "BR 10 2023 023821-1",
+    ano: 2023,
+    tipo: {
+      sigla: "PI",
+      nome: "Patente de Invenção"
+    },
+    categoria: "Ciências da Saúde",
+    titulo: "Enxaguante Bucal e Curativo para Saúde Bucal e de Pele",
+    resumo: "Uma solução inovadora que atua tanto como enxaguante bucal para tratar periodontite quanto como curativo para feridas crônicas, promovendo cicatrização e…",
+    secoes: {
+      oQueE: "Uma solução inovadora que atua tanto como enxaguante bucal para tratar periodontite quanto como curativo para feridas crônicas, promovendo cicatrização e higiene de forma mais eficiente e sustentável.",
+      problema: "O tratamento de doenças como a periodontite e feridas crônicas geralmente é longo e pouco eficiente. Essa tecnologia acelera o tempo de recuperação e melhora os resultados clínicos, tanto na boca quanto na pele.",
+      exemploDeUso: "Uso em clínicas odontológicas no tratamento de gengivites e periodontites, além de aplicação hospitalar em pacientes com feridas crônicas, como úlceras diabéticas e lesões de difícil cicatrização.",
+      diferenciais: [
+        "Redução no tempo de tratamento",
+        "Maior eficiência na cicatrização",
+        "Produto sustentável",
+        "Aplicação dupla: saúde bucal e da pele"
+      ],
+      beneficio: "Mais qualidade de vida para pacientes com câncer ósseo, com um produto seguro e eficaz que reduz complicações bucais durante o tratamento."
+    },
+    trl: {
+      min: 4,
+      max: 4,
+      estimado: false,
+      texto: "TRL 4"
+    },
+    imagens: {
+      capa400: "assets/patentes/85-enxaguante-bucal-e-curativo-para-saude-bucal-e-de-pele/capa-400.webp",
+      capa800: "assets/patentes/85-enxaguante-bucal-e-curativo-para-saude-bucal-e-de-pele/capa-800.webp",
+      ficha600: "assets/patentes/85-enxaguante-bucal-e-curativo-para-saude-bucal-e-de-pele/ficha-600.webp",
+      ficha1620: "assets/patentes/85-enxaguante-bucal-e-curativo-para-saude-bucal-e-de-pele/ficha-1620.webp",
+      dimensoesCapa: [800, 800]
+    },
+    pdf: "assets/patentes/85-enxaguante-bucal-e-curativo-para-saude-bucal-e-de-pele/ficha.pdf"
+  },
+  {
+    id: 86,
+    slug: "86-metodo-para-avaliacao-de-solos-coesos",
+    numero: "BR 10 2023 023864-5",
+    ano: 2023,
+    tipo: {
+      sigla: "PI",
+      nome: "Patente de Invenção"
+    },
+    categoria: "Agropecuária",
+    titulo: "Método para Avaliação de Solos Coesos",
+    resumo: "Técnica inovadora baseada em espectrometria de reflexão, desenvolvida para caracterizar e avaliar solos com caráter coeso de forma mais prática e precisa.",
+    secoes: {
+      oQueE: "Técnica inovadora baseada em espectrometria de reflexão, desenvolvida para caracterizar e avaliar solos com caráter coeso de forma mais prática e precisa.",
+      problema: "Até o pedido de patente não existiam métodos que realizassem esse tipo de caracterização de solos, o que dificultava a identificação e reduzia a confiabilidade dos levantamentos.",
+      exemploDeUso: "Aplicado em estudos e levantamentos de solos, permitindo identificar com maior facilidade e precisão solos que apresentam caráter coeso.",
+      diferenciais: [
+        "Primeira técnica dedicada a esse tipo de caracterização",
+        "Aumenta a precisão e a confiabilidade dos levantamentos",
+        "Simplifica o processo de identificação de solos coesos",
+        "Apoia pesquisas e aplicações práticas no setor agrícola e ambiental"
+      ],
+      beneficio: "Facilita e torna mais precisa a identificação de solos coesos, oferecendo suporte a pesquisas científicas e aplicações no campo."
+    },
+    trl: {
+      min: 3,
+      max: 3,
+      estimado: false,
+      texto: "TRL 3"
+    },
+    imagens: {
+      capa400: "assets/patentes/86-metodo-para-avaliacao-de-solos-coesos/capa-400.webp",
+      capa800: "assets/patentes/86-metodo-para-avaliacao-de-solos-coesos/capa-800.webp",
+      ficha600: "assets/patentes/86-metodo-para-avaliacao-de-solos-coesos/ficha-600.webp",
+      ficha1620: "assets/patentes/86-metodo-para-avaliacao-de-solos-coesos/ficha-1620.webp",
+      dimensoesCapa: [800, 800]
+    },
+    pdf: "assets/patentes/86-metodo-para-avaliacao-de-solos-coesos/ficha.pdf"
+  },
+  {
+    id: 87,
+    slug: "87-uso-analgesico-do-derivado-13-hidroxi-2a-propanoiloxiestemodano-sm-2",
+    numero: "BR 10 2024 007891-8",
+    ano: 2024,
+    tipo: {
+      sigla: "PI",
+      nome: "Patente de Invenção"
+    },
+    categoria: "Ciências da Saúde",
+    titulo: "Uso Analgésico do Derivado 13-Hidroxi-2a-Propanoiloxiestemodano (SM-2)",
+    resumo: "Um produto analgésico desenvolvido a partir da biodiversidade brasileira, formulado para aliviar a dor com mais segurança e sustentabilidade.",
+    secoes: {
+      oQueE: "Um produto analgésico desenvolvido a partir da biodiversidade brasileira, formulado para aliviar a dor com mais segurança e sustentabilidade.",
+      problema: "O produto utiliza baixa dose e apresenta menor toxicidade, proporcionando alívio da dor de forma mais segura.",
+      exemploDeUso: "Medicação analgésica para tratamento de dores agudas ou crônicas, podendo ser utilizada em diferentes contextos terapêuticos.",
+      diferenciais: [
+        "Baixa dose e menor toxicidade",
+        "Formulação sustentável com ingredientes da biodiversidade brasileira",
+        "Maior segurança para o paciente",
+        "Maior eficiência e menor impacto ambiental"
+      ],
+      beneficio: "Mais eficácia e segurança no alívio da dor, com menor risco de efeitos colaterais e uso de recursos naturais brasileiros de forma sustentável."
+    },
+    trl: {
+      min: 4,
+      max: 4,
+      estimado: false,
+      texto: "TRL 4"
+    },
+    imagens: {
+      capa400: "assets/patentes/87-uso-analgesico-do-derivado-13-hidroxi-2a-propanoiloxiestemodano-sm-2/capa-400.webp",
+      capa800: "assets/patentes/87-uso-analgesico-do-derivado-13-hidroxi-2a-propanoiloxiestemodano-sm-2/capa-800.webp",
+      ficha600: "assets/patentes/87-uso-analgesico-do-derivado-13-hidroxi-2a-propanoiloxiestemodano-sm-2/ficha-600.webp",
+      ficha1620: "assets/patentes/87-uso-analgesico-do-derivado-13-hidroxi-2a-propanoiloxiestemodano-sm-2/ficha-1620.webp",
+      dimensoesCapa: [800, 800]
+    },
+    pdf: "assets/patentes/87-uso-analgesico-do-derivado-13-hidroxi-2a-propanoiloxiestemodano-sm-2/ficha.pdf"
+  },
+  {
+    id: 88,
+    slug: "88-dispositivo-para-transporte-de-animais-vivos",
+    numero: "BR 10 2024 018749-0",
+    ano: 2024,
+    tipo: {
+      sigla: "PI",
+      nome: "Patente de Invenção"
+    },
+    categoria: "Agropecuária",
+    titulo: "Dispositivo para Transporte de Animais Vivos",
+    resumo: "Um novo modelo de caixa para transporte de animais vivos, desenvolvido especialmente para aves e coelhos, garantindo mais conforto e bem-estar durante o…",
+    secoes: {
+      oQueE: "Um novo modelo de caixa para transporte de animais vivos, desenvolvido especialmente para aves e coelhos, garantindo mais conforto e bem-estar durante o trajeto.",
+      problema: "As caixas tradicionais não oferecem boa circulação de ar, causando estresse térmico e desconforto aos animais. As aberturas laterais são pequenas ou mal posicionadas, dificultando a ventilação interna.",
+      exemploDeUso: "Transporte de aves e coelhos em granjas, abatedouros, feiras ou criadouros, assegurando condições adequadas ao longo do percurso.",
+      diferenciais: [
+        "Melhor circulação e renovação do ar",
+        "Redução do estresse e do desconforto dos animais",
+        "Design adequado às necessidades físicas e fisiológicas",
+        "Transporte mais seguro e eficiente"
+      ],
+      beneficio: "Mais bem-estar animal, redução de perdas e maior eficiência para empresas que transportam aves e coelhos vivos."
+    },
+    trl: {
+      min: 5,
+      max: 5,
+      estimado: false,
+      texto: "TRL 5"
+    },
+    imagens: {
+      capa400: "assets/patentes/88-dispositivo-para-transporte-de-animais-vivos/capa-400.webp",
+      capa800: "assets/patentes/88-dispositivo-para-transporte-de-animais-vivos/capa-800.webp",
+      ficha600: "assets/patentes/88-dispositivo-para-transporte-de-animais-vivos/ficha-600.webp",
+      ficha1620: "assets/patentes/88-dispositivo-para-transporte-de-animais-vivos/ficha-1620.webp",
+      dimensoesCapa: [800, 800]
+    },
+    pdf: "assets/patentes/88-dispositivo-para-transporte-de-animais-vivos/ficha.pdf"
+  },
+  {
+    id: 89,
+    slug: "89-caracterizacao-espectral-de-solos-coesos",
+    numero: "BR 10 2024 019064-5",
+    ano: 2024,
+    tipo: {
+      sigla: "PI",
+      nome: "Patente de Invenção"
+    },
+    categoria: "Energia e Meio Ambiente",
+    titulo: "Caracterização Espectral de Solos Coesos",
+    resumo: "Método inovador para caracterizar solos com caráter coeso submetidos a ciclos de umedecimento, secagem e extração de amorfos.",
+    secoes: {
+      oQueE: "Método inovador para caracterizar solos com caráter coeso submetidos a ciclos de umedecimento, secagem e extração de amorfos.",
+      problema: "Até então não havia um método confiável para identificar solos com caráter coeso nessas condições específicas, o que dificultava pesquisas e levantamentos mais precisos.",
+      exemploDeUso: "Levantamentos de solos, pesquisas acadêmicas e estudos ambientais que exigem identificação precisa de solos com caráter coeso.",
+      diferenciais: [
+        "Primeiro método específico para solos coesos submetidos a ciclos de umedecimento e secagem",
+        "Mais precisão e segurança na caracterização de solos",
+        "Apoia pesquisas e levantamentos ambientais",
+        "Contribui para o avanço científico e tecnológico na área de solos"
+      ],
+      beneficio: "Proporciona maior segurança e confiabilidade na identificação de solos coesos, apoiando estudos ambientais e agrícolas."
+    },
+    trl: {
+      min: 3,
+      max: 3,
+      estimado: false,
+      texto: "TRL 3"
+    },
+    imagens: {
+      capa400: "assets/patentes/89-caracterizacao-espectral-de-solos-coesos/capa-400.webp",
+      capa800: "assets/patentes/89-caracterizacao-espectral-de-solos-coesos/capa-800.webp",
+      ficha600: "assets/patentes/89-caracterizacao-espectral-de-solos-coesos/ficha-600.webp",
+      ficha1620: "assets/patentes/89-caracterizacao-espectral-de-solos-coesos/ficha-1620.webp",
+      dimensoesCapa: [800, 800]
+    },
+    pdf: "assets/patentes/89-caracterizacao-espectral-de-solos-coesos/ficha.pdf"
+  },
+  {
+    id: 90,
+    slug: "90-tecnologia-clareadora-com-captopril",
+    numero: "BR 10 2025 001276-6",
+    ano: 2025,
+    tipo: {
+      sigla: "PI",
+      nome: "Patente de Invenção"
+    },
+    categoria: "Cosméticos",
+    titulo: "Tecnologia Clareadora com Captopril",
+    resumo: "Formulações cosméticas e farmacêuticas que utilizam captopril veiculado ou não em nanopartículas de cristais líquidos, desenvolvidas para clareamento eficaz…",
+    secoes: {
+      oQueE: "Formulações cosméticas e farmacêuticas que utilizam captopril veiculado ou não em nanopartículas de cristais líquidos, desenvolvidas para clareamento eficaz, seguro e uniforme da pele.",
+      problema: "Os clareadores atuais costumam ser lentos, causar irritações na pele ou não entregarem resultados uniformes. A inovação oferece clareamento eficiente, seguro e com maior uniformidade.",
+      exemploDeUso: "O consumidor aplica o produto diariamente sobre as manchas, de forma contínua, para alcançar melhores resultados no clareamento da pele.",
+      diferenciais: [
+        "Clareamento eficaz e uniforme",
+        "Menor risco de irritação da pele",
+        "Liberação direcionada do ativo",
+        "Uso seguro em aplicações diárias"
+      ],
+      beneficio: "Tratamento clareador inovador, que alia eficácia, segurança e uniformidade, oferecendo uma solução superior aos clareadores tradicionais."
+    },
+    trl: {
+      min: 3,
+      max: 3,
+      estimado: false,
+      texto: "TRL 3"
+    },
+    imagens: {
+      capa400: "assets/patentes/90-tecnologia-clareadora-com-captopril/capa-400.webp",
+      capa800: "assets/patentes/90-tecnologia-clareadora-com-captopril/capa-800.webp",
+      ficha600: "assets/patentes/90-tecnologia-clareadora-com-captopril/ficha-600.webp",
+      ficha1620: "assets/patentes/90-tecnologia-clareadora-com-captopril/ficha-1620.webp",
+      dimensoesCapa: [800, 800]
+    },
+    pdf: "assets/patentes/90-tecnologia-clareadora-com-captopril/ficha.pdf"
+  },
+  {
+    id: 91,
+    slug: "91-dispositivos-para-processamento-avancado",
+    numero: "BR 10 2025 014098-5",
+    ano: 2025,
+    tipo: {
+      sigla: "PI",
+      nome: "Patente de Invenção"
+    },
+    categoria: "Engenharias",
+    titulo: "Dispositivos para Processamento Avançado",
+    resumo: "Tecnologias inovadoras que desenvolvem novos dispositivos capazes de melhorar e tornar mais eficiente o processamento computacional.",
+    secoes: {
+      oQueE: "Tecnologias inovadoras que desenvolvem novos dispositivos capazes de melhorar e tornar mais eficiente o processamento computacional.",
+      problema: "O processamento atual enfrenta limitações de desempenho, eficiência e custo. Esses novos dispositivos podem aumentar a velocidade de processamento, reduzir gastos energéticos e trazer soluções mais escaláveis.",
+      exemploDeUso: "Centros de dados, servidores, computadores pessoais de alto desempenho, dispositivos móveis e aplicações em inteligência artificial que exigem maior velocidade de processamento e menor consumo de energia.",
+      diferenciais: [
+        "Maior eficiência no uso de energia",
+        "Redução significativa de custos de operação",
+        "Potencial para superar barreiras de desempenho atuais",
+        "Alinhamento com tendências globais de alto desempenho e sustentabilidade"
+      ],
+      beneficio: "Mais desempenho e eficiência energética, atendendo a demandas crescentes de empresas de tecnologia e indústrias de hardware."
+    },
+    trl: {
+      min: 4,
+      max: 4,
+      estimado: false,
+      texto: "TRL 4"
+    },
+    imagens: {
+      capa400: "assets/patentes/91-dispositivos-para-processamento-avancado/capa-400.webp",
+      capa800: "assets/patentes/91-dispositivos-para-processamento-avancado/capa-800.webp",
+      ficha600: "assets/patentes/91-dispositivos-para-processamento-avancado/ficha-600.webp",
+      ficha1620: "assets/patentes/91-dispositivos-para-processamento-avancado/ficha-1620.webp",
+      dimensoesCapa: [800, 800]
+    },
+    pdf: "assets/patentes/91-dispositivos-para-processamento-avancado/ficha.pdf"
+  },
+  {
+    id: 92,
+    slug: "92-emulgel-a-base-de-nitrocumarina-para-o-tratamento-da-periodontite",
+    numero: "BR 10 2025 014453-0",
+    ano: 2025,
+    tipo: {
+      sigla: "PI",
+      nome: "Patente de Invenção"
+    },
+    categoria: "Biotecnologia",
+    titulo: "Emulgel à Base de Nitrocumarina para o Tratamento da Periodontite",
+    resumo: "Um produto inovador para tratar perda óssea e perdas dentárias na periodontia, desenvolvido a partir da biodiversidade brasileira.",
+    secoes: {
+      oQueE: "Um produto inovador para tratar perda óssea e perdas dentárias na periodontia, desenvolvido a partir da biodiversidade brasileira.",
+      problema: "A perda óssea e dentária é um dos principais desafios em tratamentos periodontais. Muitos produtos disponíveis são caros, complexos de aplicar ou possuem alta toxicidade. Nosso produto oferece fácil manuseio, baixa dose e menor toxicidade.",
+      exemploDeUso: "Tratamento auxiliar em consultórios odontológicos e clínicas periodontais para regeneração óssea e suporte na manutenção dentária.",
+      diferenciais: [
+        "Fácil manuseio e aplicação",
+        "Baixa dose e baixa toxicidade",
+        "Desenvolvido a partir de insumos da biodiversidade brasileira",
+        "Sustentável e seguro para o paciente e para o meio ambiente"
+      ],
+      beneficio: "Mais praticidade, segurança e sustentabilidade nos tratamentos odontológicos, com potencial para reduzir custos e aumentar a eficácia clínica."
+    },
+    trl: {
+      min: 4,
+      max: 4,
+      estimado: false,
+      texto: "TRL 4"
+    },
+    imagens: {
+      capa400: "assets/patentes/92-emulgel-a-base-de-nitrocumarina-para-o-tratamento-da-periodontite/capa-400.webp",
+      capa800: "assets/patentes/92-emulgel-a-base-de-nitrocumarina-para-o-tratamento-da-periodontite/capa-800.webp",
+      ficha600: "assets/patentes/92-emulgel-a-base-de-nitrocumarina-para-o-tratamento-da-periodontite/ficha-600.webp",
+      ficha1620: "assets/patentes/92-emulgel-a-base-de-nitrocumarina-para-o-tratamento-da-periodontite/ficha-1620.webp",
+      dimensoesCapa: [800, 800]
+    },
+    pdf: "assets/patentes/92-emulgel-a-base-de-nitrocumarina-para-o-tratamento-da-periodontite/ficha.pdf"
+  },
+  {
+    id: 93,
+    slug: "93-gel-com-cinamaldeido-para-tratamento-de-lesao-periapical",
+    numero: "BR 10 2025 014465-4",
+    ano: 2025,
+    tipo: {
+      sigla: "PI",
+      nome: "Patente de Invenção"
+    },
+    categoria: "Ciências da Saúde",
+    titulo: "Gel com Cinamaldeído para Tratamento de Lesão Periapical",
+    resumo: "Um gel à base de cinamaldeído desenvolvido para tratar lesões periapicais resistentes a tratamentos convencionais causadas por infecções nos dentes.",
+    secoes: {
+      oQueE: "Um gel à base de cinamaldeído desenvolvido para tratar lesões periapicais resistentes a tratamentos convencionais causadas por infecções nos dentes.",
+      problema: "Lesões periapicais resistentes são difíceis de tratar com métodos convencionais, exigindo soluções mais eficazes, seguras e de fácil aplicação. Nosso gel oferece baixa toxicidade, não mancha o dente e é feito com ingredientes da biodiversidade brasileira.",
+      exemploDeUso: "Tratamento auxiliar em consultórios odontológicos e clínicas para lesões periapicais persistentes, garantindo aplicação prática e resultados consistentes.",
+      diferenciais: [
+        "Baixa dose e baixa toxicidade",
+        "Fácil manuseio e aplicação",
+        "Não mancha o dente",
+        "Ingredientes naturais da biodiversidade brasileira"
+      ],
+      beneficio: "Mais eficácia, segurança e praticidade no tratamento de lesões periapicais resistentes, reduzindo o risco de complicações e melhorando os resultados clínicos."
+    },
+    trl: {
+      min: 4,
+      max: 4,
+      estimado: false,
+      texto: "TRL 4"
+    },
+    imagens: {
+      capa400: "assets/patentes/93-gel-com-cinamaldeido-para-tratamento-de-lesao-periapical/capa-400.webp",
+      capa800: "assets/patentes/93-gel-com-cinamaldeido-para-tratamento-de-lesao-periapical/capa-800.webp",
+      ficha600: "assets/patentes/93-gel-com-cinamaldeido-para-tratamento-de-lesao-periapical/ficha-600.webp",
+      ficha1620: "assets/patentes/93-gel-com-cinamaldeido-para-tratamento-de-lesao-periapical/ficha-1620.webp",
+      dimensoesCapa: [800, 800]
+    },
+    pdf: "assets/patentes/93-gel-com-cinamaldeido-para-tratamento-de-lesao-periapical/ficha.pdf"
+  },
 ];
 
 window.CATEGORIAS = [
-  { nome: "Agropecuária", total: 16 },
-  { nome: "Alimentos", total: 15 },
-  { nome: "Biotecnologia", total: 4 },
-  { nome: "Ciências da Saúde", total: 4 },
-  { nome: "Cosméticos", total: 2 },
-  { nome: "Energia e Meio Ambiente", total: 1 },
-  { nome: "Engenharias", total: 11 },
+  { nome: "Agropecuária", total: 19 },
+  { nome: "Alimentos", total: 20 },
+  { nome: "Biotecnologia", total: 6 },
+  { nome: "Ciências da Saúde", total: 17 },
+  { nome: "Cosméticos", total: 3 },
+  { nome: "Energia e Meio Ambiente", total: 2 },
+  { nome: "Engenharias", total: 17 },
   { nome: "Indústria", total: 2 },
-  { nome: "Química", total: 3 },
+  { nome: "Química", total: 5 },
   { nome: "TIC", total: 2 },
 ];
