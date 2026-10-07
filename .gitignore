@@ -11,3 +11,6 @@ Thumbs.db
 __pycache__/
 *.pyc
 scripts/build_report_FALHOU.md
+PRD-insercao-patentes.md
+PRD-deploy-vercel.md
+.claude
